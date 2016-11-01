@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.quizz.database.beans.User;
 import com.quizz.database.services.AppService;
-import com.quizz.database.services.UserService;
 
 @RestController
 @RequestMapping(value = "/user")
@@ -45,8 +45,13 @@ public class UserController {
 
     @RequestMapping(value = "/get", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> getUser(@RequestParam(name = "pseudo") String pseudo) {
-    	
-        return ResponseEntity.ok("User !");
+    	try{
+    		User user = appService.getUser(pseudo);
+    		return ResponseEntity.ok(user);
+    	}catch(Exception e){
+    		
+    	}
+		return null;
     }
 
     @RequestMapping(value = "/getByMail", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

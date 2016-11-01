@@ -6,6 +6,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.Repository;
+import org.springframework.stereotype.Component;
 
 import com.quizz.database.beans.User;
 
@@ -15,6 +16,7 @@ import com.quizz.database.beans.User;
  *
  */
 @Transactional
+@Component
 public interface UserRepository extends CrudRepository<User, String>{
 	
 	List<User >findAll();
