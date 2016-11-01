@@ -1,0 +1,38 @@
+package com.quizz.database.beans;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+
+@Data
+@Entity
+@NoArgsConstructor
+public class User implements Serializable {
+	
+	/**
+	 * Using for serialise object
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	private String pseudo;
+	
+	@Column(nullable = false)
+	private String password;
+	
+	@Column(nullable = false)
+	private String mail;
+	
+	public User(String pseudo, String password, String mail){
+		this.pseudo = pseudo;
+		this.password = password;
+		this.mail = mail;
+	}
+	
+}
