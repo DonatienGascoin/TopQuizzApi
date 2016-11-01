@@ -1,12 +1,13 @@
 package com.quizz.database.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.quizz.database.beans.User;
 import com.quizz.database.services.AppService;
 import com.quizz.database.services.UserService;
 
-
+@Service
 public class AppServiceImpl implements AppService {
 	
 	@Autowired
