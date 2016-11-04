@@ -42,15 +42,15 @@ Which URL call
 
 ### Urls
 **/user/add**
-Params:
+Params POST:
 - pseudo (String)
 - mail (String)
 - password (String)
 
 **/get/**
-Params:
+Params POST:
 - pseudo (String)
 
 **getByMail**
-Params
+Params POST:
 - mail (String)
