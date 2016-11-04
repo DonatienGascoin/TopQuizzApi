@@ -41,4 +41,16 @@ Which URL call
 |MySql|http://54.93.98.119/phpmyadmin/index.php|
 
 ### Urls
-user/add
+**/user/add**
+Params:
+- pseudo (String)
+- mail (String)
+- password (String)
+
+**/get/**
+Params:
+- pseudo (String)
+
+**getByMail**
+Params
+- mail (String)
