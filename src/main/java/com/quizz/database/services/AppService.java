@@ -18,6 +18,8 @@ public interface AppService {
 	
 	User getUser(String pseudo);
 	
+	User getUserByMail(String mail);
+	
 	User addUser(String pseudo, String mail, String password);
 	
 	User editUser(String pseudo, String mail, String password);
