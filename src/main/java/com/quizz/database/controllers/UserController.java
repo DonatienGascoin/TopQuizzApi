@@ -12,51 +12,68 @@ import org.springframework.web.bind.annotation.RestController;
 import com.quizz.database.beans.User;
 import com.quizz.database.services.AppService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping(value = "/user")
 public class UserController {
-	
+
 	@Autowired
 	private AppService appService;
 
 	@RequestMapping("/")
-    @ResponseBody
-    public ResponseEntity<?> home() {
-        return ResponseEntity.badRequest().body("Access denied");
-    }
-	
-    @RequestMapping(value = "/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<?> addUser(@RequestParam(name = "pseudo") String pseudo,
-			@RequestParam(name = "mail") String mail,
-			@RequestParam(name = "password") String password) {
-    	try {
-			String result = "";
+	@ResponseBody
+	public ResponseEntity<?> home() {
+		return ResponseEntity.badRequest().body("Access denied");
+	}
 
-			appService.addUser(pseudo, mail, password);
-
-			return ResponseEntity.ok().body(result);
+	@RequestMapping(value = "/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<?> addUser(@RequestParam(name = "pseudo") String pseudo,
+			@RequestParam(name = "mail") String mail, @RequestParam(name = "password") String password) {
+		try {
+			User user = appService.addUser(pseudo, mail, password);
+			if(user != null){
+				log.info("Add user [pseudo: " + pseudo + ", mail: " + mail + "]");
+				return ResponseEntity.ok().body(user);
+			}
+			log.error("Impossible to add User [pseudo: " + pseudo + ", mail: " + mail + "]");
+			return ResponseEntity.unprocessableEntity().body("Impossible to create user in DB");
 		} catch (IllegalArgumentException e) {
-			// logger.error("Error during add product [" + productId+
-			// "] in basket [" + sessionId + "] with the quantity ["+ quantity +
-			// "]", e);
+			log.error("Impossible to add User [pseudo: " + pseudo + ", mail: " + mail + "]", e);
 			return ResponseEntity.unprocessableEntity().body(e.getMessage());
 		}
-    }
+	}
 
-    @RequestMapping(value = "/get", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<?> getUser(@RequestParam(name = "pseudo") String pseudo) {
-    	try{
-    		User user = appService.getUser(pseudo);
-    		return ResponseEntity.ok(user);
-    	}catch(Exception e){
-    		
-    	}
-		return null;
-    }
+	@RequestMapping(value = "/get", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<?> getUser(@RequestParam(name = "pseudo") String pseudo) {
+		try {
+			User user = appService.getUser(pseudo);
+			if (user != null) {
+				log.info("Get User [pseudo: " + pseudo + "]");
+				return ResponseEntity.ok(user);
+			}
+			log.error("User not found [pseudo: " + pseudo + "]");
+			return ResponseEntity.notFound().build();
+		} catch (Exception e) {
+			log.error("Impossible to get User [pseudo: " + pseudo + "]", e);
+			return ResponseEntity.notFound().build();
+		}
+	}
 
-    @RequestMapping(value = "/getByMail", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<?> getUserByMail(@RequestParam(name = "mail") String mail) {
-    	
-        return ResponseEntity.ok("User !");
-    }
+	@RequestMapping(value = "/getByMail", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<?> getUserByMail(@RequestParam(name = "mail") String mail) {
+		try {
+			User user = appService.getUserByMail(mail);
+			if (user != null) {
+				log.info("Get User [mail: " + mail + "]");
+				return ResponseEntity.ok(user);
+			}
+			log.error("User not found [mail: " + mail + "]");
+			return ResponseEntity.notFound().build();
+		} catch (Exception e) {
+			log.error("Impossible to get User [mail: " + mail + "]", e);
+			return ResponseEntity.notFound().build();
+		}
+	}
 }

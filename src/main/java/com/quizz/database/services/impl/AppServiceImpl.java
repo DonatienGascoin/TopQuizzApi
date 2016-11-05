@@ -34,4 +34,9 @@ public class AppServiceImpl implements AppService {
 		return userService.deleteUser(pseudo);
 	}
 
+	@Override
+	public User getUserByMail(String mail) {
+		return userService.getUserByMail(mail);
+	}
+
 }
