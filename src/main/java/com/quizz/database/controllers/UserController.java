@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.quizz.database.beans.UserBean;
 import com.quizz.database.datas.ReturnCode;
 import com.quizz.database.modeles.ReturnObject;
+import com.quizz.database.beans.User;
 import com.quizz.database.services.AppService;
 
 import lombok.extern.slf4j.Slf4j;

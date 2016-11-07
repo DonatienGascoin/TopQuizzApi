@@ -20,7 +20,7 @@ public class AppServiceImpl implements AppService {
 	@Override
 	public ReturnObject getUser(String pseudo) {
 		
-		return userService.getUser(pseudo);
+		return userService.getUser(pseudo, password);
 	}
 
 	@Override
