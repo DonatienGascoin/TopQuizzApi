@@ -39,4 +39,9 @@ public class AppServiceImpl implements AppService {
 		return userService.getUserByMail(mail);
 	}
 
+	@Override
+	public User changePassword(String password, String email) {
+		return userService.changePassword(password, email);
+	}
+
 }

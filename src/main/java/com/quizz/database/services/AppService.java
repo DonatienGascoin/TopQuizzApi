@@ -26,4 +26,6 @@ public interface AppService {
 	
 	Boolean deleteUser(String pseudo);
 	
+	User changePassword(String password, String email);
+	
 }

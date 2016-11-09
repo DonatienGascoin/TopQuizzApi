@@ -27,4 +27,6 @@ public interface UserService {
 	public User editUser(String pseudo, String mail, String password);
 
 	boolean deleteUser(String pseudo);
+	
+	public User changePassword(String password, String email);
 }

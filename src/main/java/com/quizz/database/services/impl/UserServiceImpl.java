@@ -68,5 +68,16 @@ public class UserServiceImpl implements UserService {
 	public User getUserByMail(String mail) {
 		return userRepository.findByMail(mail);
 	}
+	
+	@Override
+	public User changePassword(String password, String email) {
+		User u = userRepository.findByMail(email);
+		if(StringUtils.isNotBlank(password)){
+			u.setPassword(password);
+		}
+		return userRepository.save(u);
+	}
+	
+	
 
 }
