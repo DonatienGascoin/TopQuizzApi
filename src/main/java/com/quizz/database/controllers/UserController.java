@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.quizz.database.beans.User;
+import com.quizz.database.datas.ReturnCode;
+import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.services.AppService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -29,13 +31,15 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<?> addUser(@RequestParam(name = "pseudo") String pseudo,
+	public ResponseEntity<ReturnObject> addUser(@RequestParam(name = "pseudo") String pseudo,
 			@RequestParam(name = "mail") String mail, @RequestParam(name = "password") String password) {
+			ReturnObject object = new ReturnObject();
 		try {
-			User user = appService.addUser(pseudo, mail, password);
-			if(user != null){
+			object.setUser(appService.addUser(pseudo, mail, password));
+			if(object.getUser() != null){
 				log.info("Add user [pseudo: " + pseudo + ", mail: " + mail + "]");
-				return ResponseEntity.ok().body(user);
+				object.setCode(ReturnCode.ERROR_000);
+				return ResponseEntity.ok().body(object);
 			}
 			log.error("Impossible to add User [pseudo: " + pseudo + ", mail: " + mail + "]");
 			return ResponseEntity.unprocessableEntity().body("Impossible to create user in DB");
