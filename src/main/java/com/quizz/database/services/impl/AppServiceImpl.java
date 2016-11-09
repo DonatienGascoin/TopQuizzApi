@@ -1,14 +1,17 @@
 package com.quizz.database.services.impl;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.quizz.database.modeles.Question;
+import com.quizz.database.beans.Theme;
 import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.modeles.User;
 import com.quizz.database.services.AppService;
+import com.quizz.database.services.ThemeService;
 import com.quizz.database.services.UserService;
 
 @Service
@@ -16,6 +19,9 @@ public class AppServiceImpl implements AppService {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private ThemeService themeService;
 
 	@Override
 	public ReturnObject getUser(String pseudo) {
@@ -40,6 +46,11 @@ public class AppServiceImpl implements AppService {
 	@Override
 	public ReturnObject getUserByMail(String mail) {
 		return userService.getUserByMail(mail);
+	}
+
+	@Override
+	public List<Theme> getAllThemes() {
+		return themeService.getAllThemes();
 	}
 
 	@Override
