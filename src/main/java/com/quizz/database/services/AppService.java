@@ -1,7 +1,10 @@
 package com.quizz.database.services;
 
-import com.quizz.database.beans.User;
-import com.quizz.database.services.QuizzService;
+import java.util.Collection;
+
+import com.quizz.database.modeles.Question;
+import com.quizz.database.modeles.ReturnObject;
+import com.quizz.database.modeles.User;
 
 /**
  * 
@@ -16,16 +19,16 @@ import com.quizz.database.services.QuizzService;
  */
 public interface AppService {
 	
-	User getUser(String pseudo);
+	ReturnObject getUser(String pseudo);
 	
-	User getUserByMail(String mail);
+	ReturnObject getUserByMail(String mail);
 	
-	User addUser(String pseudo, String mail, String password);
+	ReturnObject addUser(String pseudo, String mail, String password);
 	
-	User editUser(String pseudo, String mail, String password);
+	ReturnObject editUser(String pseudo, String mail, String password, Collection<User> friends, Collection<Question> questions);
 	
-	Boolean deleteUser(String pseudo);
+	ReturnObject deleteUser(String pseudo);
 	
-	User changePassword(String password, String email);
+	ReturnObject changePassword(String password, String email);
 	
 }

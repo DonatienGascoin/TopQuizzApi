@@ -1,9 +1,13 @@
 package com.quizz.database.services.impl;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.quizz.database.beans.User;
+import com.quizz.database.modeles.Question;
+import com.quizz.database.modeles.ReturnObject;
+import com.quizz.database.modeles.User;
 import com.quizz.database.services.AppService;
 import com.quizz.database.services.UserService;
 
@@ -14,33 +18,33 @@ public class AppServiceImpl implements AppService {
 	private UserService userService;
 
 	@Override
-	public User getUser(String pseudo) {
+	public ReturnObject getUser(String pseudo) {
 		
 		return userService.getUser(pseudo);
 	}
 
 	@Override
-	public User addUser(String pseudo, String mail, String password) {
+	public ReturnObject addUser(String pseudo, String mail, String password) {
 		return userService.addUser(pseudo, mail, password);
 	}
 
 	@Override
-	public User editUser(String pseudo, String mail, String password) {
-		return userService.editUser(pseudo, mail, password);
+	public ReturnObject editUser(String pseudo, String mail, String password, Collection<User> friends, Collection<Question> questions) {
+		return userService.editUser(pseudo, mail, password, friends, questions);
 	}
 
 	@Override
-	public Boolean deleteUser(String pseudo) {
+	public ReturnObject deleteUser(String pseudo) {
 		return userService.deleteUser(pseudo);
 	}
 
 	@Override
-	public User getUserByMail(String mail) {
+	public ReturnObject getUserByMail(String mail) {
 		return userService.getUserByMail(mail);
 	}
 
 	@Override
-	public User changePassword(String password, String email) {
+	public ReturnObject changePassword(String password, String email) {
 		return userService.changePassword(password, email);
 	}
 

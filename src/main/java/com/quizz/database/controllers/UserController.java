@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.quizz.database.beans.User;
+import com.quizz.database.beans.UserBean;
+import com.quizz.database.datas.ReturnCode;
+import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.services.AppService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -29,70 +31,48 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<?> addUser(@RequestParam(name = "pseudo") String pseudo,
+	public ResponseEntity<ReturnObject> addUser(@RequestParam(name = "pseudo") String pseudo,
 			@RequestParam(name = "mail") String mail, @RequestParam(name = "password") String password) {
+		ReturnObject object = new ReturnObject();
 		try {
-			User user = appService.addUser(pseudo, mail, password);
-			if(user != null){
-				log.info("Add user [pseudo: " + pseudo + ", mail: " + mail + "]");
-				return ResponseEntity.ok().body(user);
-			}
-			log.error("Impossible to add User [pseudo: " + pseudo + ", mail: " + mail + "]");
-			return ResponseEntity.unprocessableEntity().body("Impossible to create user in DB");
-		} catch (IllegalArgumentException e) {
+			object = appService.addUser(pseudo, mail, password);
+		} catch (Exception e) {
 			log.error("Impossible to add User [pseudo: " + pseudo + ", mail: " + mail + "]", e);
-			return ResponseEntity.unprocessableEntity().body(e.getMessage());
 		}
+		return ResponseEntity.ok().body(object);
 	}
 
 	@RequestMapping(value = "/get", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<?> getUser(@RequestParam(name = "pseudo") String pseudo) {
+	public ResponseEntity<ReturnObject> getUser(@RequestParam(name = "pseudo") String pseudo) {
+		ReturnObject object = null;
 		try {
-			User user = appService.getUser(pseudo);
-			if (user != null) {
-				log.info("Get User [pseudo: " + pseudo + "]");
-				return ResponseEntity.ok(user);
-			}
-			log.error("User not found [pseudo: " + pseudo + "]");
-			return ResponseEntity.notFound().build();
+			object = appService.getUser(pseudo);
 		} catch (Exception e) {
 			log.error("Impossible to get User [pseudo: " + pseudo + "]", e);
-			return ResponseEntity.notFound().build();
 		}
+		return ResponseEntity.ok().body(object);
 	}
 
 	@RequestMapping(value = "/getByMail", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<?> getUserByMail(@RequestParam(name = "mail") String mail) {
+	public ResponseEntity<ReturnObject> getUserByMail(@RequestParam(name = "mail") String mail) {
+		ReturnObject object = new ReturnObject();
 		try {
-			User user = appService.getUserByMail(mail);
-			if (user != null) {
-				log.info("Get User [mail: " + mail + "]");
-				return ResponseEntity.ok(user);
-			}
-			log.error("User not found [mail: " + mail + "]");
-			return ResponseEntity.notFound().build();
+			object = appService.getUserByMail(mail);
 		} catch (Exception e) {
 			log.error("Impossible to get User [mail: " + mail + "]", e);
-			return ResponseEntity.notFound().build();
 		}
+		return ResponseEntity.ok().body(object);
 	}
 	
 	@RequestMapping(value = "/changePassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<?> changePassword(@RequestParam(name = "password") String password, @RequestParam(name = "email") String email) {
+		ReturnObject object = null;
 		try {
-			User user = appService.getUserByMail(email);
-			if (user != null) {
-				log.info("Get User [mail: " + email + "]");
-				log.info("New password [password: " + password + "]");
-				user = appService.changePassword(password, email);
-				return ResponseEntity.ok(user);
-			}
-			log.error("User not found [mail: " + email + "]");
-			return ResponseEntity.notFound().build();
+			object = appService.changePassword(password, email);
 		} catch (Exception e) {
-			log.error("Impossible to get User [mail: " + email + "]", e);
-			return ResponseEntity.notFound().build();
+			log.error("Impossible to change password User [mail: " + email + "]", e);
 		}
+		return ResponseEntity.ok().body(object);
 	}
 	
 }

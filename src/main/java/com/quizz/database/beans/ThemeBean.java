@@ -1,11 +1,10 @@
 package com.quizz.database.beans;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +12,8 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @NoArgsConstructor
-public class Theme implements Serializable {
+@Table(name="Theme")
+public class ThemeBean {
 
 	/**
 	 * Using for serialise object

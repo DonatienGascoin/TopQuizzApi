@@ -1,18 +1,13 @@
-package com.quizz.database.beans;
+package com.quizz.database.modeles;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import com.quizz.database.beans.ResponseBean;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Entity
 @NoArgsConstructor
 public class Response implements Serializable {
 
@@ -20,15 +15,19 @@ public class Response implements Serializable {
 	 * Using for serialise object
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	@Id
-	@GeneratedValue
+
 	private int id;
 	
-	@Column(nullable = false)
 	private String label;
 	
-	@Column(nullable = false)
 	private Boolean isValide;
-
+	
+	public ResponseBean convertToBean(){
+		ResponseBean bean = new ResponseBean();
+		bean.setId(this.id);
+		bean.setLabel(this.label);
+		bean.setIsValide(this.isValide);
+		
+		return bean;
+	}
 }
