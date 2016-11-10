@@ -5,14 +5,17 @@ import java.util.Collection;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.springframework.context.annotation.Lazy;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @Table(name="Quizz")
-public class Quizz implements Serializable {
+public class QuizzBean implements Serializable {
 
 	/**
 	 * Using for serialise object
@@ -38,7 +41,7 @@ public class Quizz implements Serializable {
 	@Column(nullable = false)
 	private char isVisible;
 
-	@ManyToMany
+	@ManyToMany(fetch=FetchType.LAZY)
 	@JoinTable(
 		name="Quizz_Question",
 				joinColumns=
@@ -46,6 +49,6 @@ public class Quizz implements Serializable {
 				inverseJoinColumns=
 					@JoinColumn(name="Question", referencedColumnName="id")
 	)
-	public Collection<Question> questions;
+	public Collection<QuestionBean> questions;
 
 }
