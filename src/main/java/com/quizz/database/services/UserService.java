@@ -31,5 +31,5 @@ public interface UserService {
 
 	public ReturnObject deleteUser(String pseudo);
 	
-	public User changePassword(String password, String email);
+	public ReturnObject changePassword(String password, String mail);
 }

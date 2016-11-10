@@ -29,6 +29,6 @@ public interface AppService {
 	
 	ReturnObject deleteUser(String pseudo);
 	
-	User changePassword(String password, String email);
+	ReturnObject changePassword(String password, String email);
 	
 }

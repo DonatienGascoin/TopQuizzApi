@@ -66,20 +66,13 @@ public class UserController {
 	
 	@RequestMapping(value = "/changePassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<?> changePassword(@RequestParam(name = "password") String password, @RequestParam(name = "email") String email) {
+		ReturnObject object = null;
 		try {
-			User user = appService.getUserByMail(email);
-			if (user != null) {
-				log.info("Get User [mail: " + email + "]");
-				log.info("New password [password: " + password + "]");
-				user = appService.changePassword(password, email);
-				return ResponseEntity.ok(user);
-			}
-			log.error("User not found [mail: " + email + "]");
-			return ResponseEntity.notFound().build();
+			object = appService.changePassword(password, email);
 		} catch (Exception e) {
-			log.error("Impossible to get User [mail: " + email + "]", e);
-			return ResponseEntity.notFound().build();
+			log.error("Impossible to change password User [mail: " + email + "]", e);
 		}
+		return ResponseEntity.ok().body(object);
 	}
 	
 }

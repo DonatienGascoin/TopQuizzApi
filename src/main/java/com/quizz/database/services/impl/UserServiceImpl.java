@@ -232,12 +232,17 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public User changePassword(String password, String email) {
-		User u = userRepository.findByMail(email);
+	public ReturnObject changePassword(String password, String mail) {
+		log.info("Edit password User [mail: " + mail + "]");
+		ReturnObject object = new ReturnObject();
+		
+		ReturnObject userByMail = getUserByMail(mail);
+		User user = (User)userByMail.getObject();
+		
 		if(StringUtils.isNotBlank(password)){
-			u.setPassword(password);
+			object = editUser(user.getPseudo(), user.getMail(), password, user.getFriends(), user.getQuestions());
 		}
-		return userRepository.save(u);
+		return object;
 	}
 	
 	

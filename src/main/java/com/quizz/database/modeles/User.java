@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.commons.collections4.CollectionUtils;
+
 import com.quizz.database.beans.QuestionBean;
 import com.quizz.database.beans.UserBean;
 
@@ -40,18 +42,21 @@ public class User implements Serializable {
 		bean.setPassword(this.password);
 		bean.setMail(this.mail);
 
-		Collection<UserBean> friendsBean = new ArrayList<UserBean>();
-		for (User user : this.friends) {
-			friendsBean.add(user.convertToBean());
+		if (CollectionUtils.isNotEmpty(friends)) {
+			Collection<UserBean> friendsBean = new ArrayList<UserBean>();
+			for (User user : this.friends) {
+				friendsBean.add(user.convertToBean());
+			}
+			bean.setFriends(friendsBean);
 		}
 
-		bean.setFriends(friendsBean);
-
-		Collection<QuestionBean> questionsBean = new ArrayList<QuestionBean>();
-		for (Question question : this.questions) {
-			questionsBean.add(question.convertToBean());
+		if (CollectionUtils.isNotEmpty(questions)) {
+			Collection<QuestionBean> questionsBean = new ArrayList<QuestionBean>();
+			for (Question question : this.questions) {
+				questionsBean.add(question.convertToBean());
+			}
+			bean.setQuestion(questionsBean);
 		}
-		bean.setQuestion(questionsBean);
 
 		return bean;
 	}

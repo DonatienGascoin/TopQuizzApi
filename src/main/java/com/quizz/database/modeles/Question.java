@@ -6,6 +6,8 @@ import java.util.Collection;
 
 import javax.persistence.Column;
 
+import org.apache.commons.collections4.CollectionUtils;
+
 import com.quizz.database.beans.QuestionBean;
 import com.quizz.database.beans.QuizzBean;
 import com.quizz.database.beans.ResponseBean;
@@ -39,24 +41,30 @@ public class Question implements Serializable {
 		bean.setLabel(this.label);
 		bean.setPseudo(this.pseudo);
 
-		Collection<ResponseBean> responsesBean = new ArrayList<ResponseBean>();
-		for (Response reponse : reponses) {
-			responsesBean.add(reponse.convertToBean());
-		}
-		bean.setReponses(responsesBean);
-
-		Collection<ThemeBean> themesBean = new ArrayList<ThemeBean>();
-		for (Theme theme : themes) {
-			themesBean.add(theme.convertToBean());
-		}
-		bean.setReponses(responsesBean);
-
-		Collection<QuizzBean> quizzsBean = new ArrayList<QuizzBean>();
-		for (Quizz quizz : quizzs) {
-			quizzsBean.add(quizz.convertToBean());
+		if (CollectionUtils.isNotEmpty(reponses)) {
+			Collection<ResponseBean> responsesBean = new ArrayList<ResponseBean>();
+			for (Response reponse : reponses) {
+				responsesBean.add(reponse.convertToBean());
+			}
+			bean.setReponses(responsesBean);
 		}
 
-		bean.setQuizzs(quizzsBean);
+		if (CollectionUtils.isNotEmpty(themes)) {
+			Collection<ThemeBean> themesBean = new ArrayList<ThemeBean>();
+			for (Theme theme : themes) {
+				themesBean.add(theme.convertToBean());
+			}
+			bean.setTheme(themesBean);
+		}
+
+		if (CollectionUtils.isNotEmpty(quizzs)) {
+			Collection<QuizzBean> quizzsBean = new ArrayList<QuizzBean>();
+			for (Quizz quizz : quizzs) {
+				quizzsBean.add(quizz.convertToBean());
+			}
+			bean.setQuizzs(quizzsBean);
+		}
+
 
 		return bean;
 	}

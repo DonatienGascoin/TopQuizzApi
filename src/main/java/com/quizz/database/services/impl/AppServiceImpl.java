@@ -44,7 +44,7 @@ public class AppServiceImpl implements AppService {
 	}
 
 	@Override
-	public User changePassword(String password, String email) {
+	public ReturnObject changePassword(String password, String email) {
 		return userService.changePassword(password, email);
 	}
 
