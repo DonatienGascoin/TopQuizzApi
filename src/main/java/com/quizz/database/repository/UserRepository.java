@@ -8,7 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.Repository;
 import org.springframework.stereotype.Component;
 
-import com.quizz.database.beans.User;
+import com.quizz.database.beans.UserBean;
 
 /**
  * 
@@ -17,10 +17,10 @@ import com.quizz.database.beans.User;
  */
 @Transactional
 @Component
-public interface UserRepository extends CrudRepository<User, String>{
+public interface UserRepository extends CrudRepository<UserBean, String>{
 	
-	List<User >findAll();
+	List<UserBean >findAll();
 	
-	User findByMail(String mail);
+	UserBean findByMail(String mail);
 	
 }
