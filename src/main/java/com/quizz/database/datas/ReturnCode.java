@@ -6,6 +6,10 @@ public enum ReturnCode {
 	 */
 	ERROR_000,
 	/**
+	 * Unknown problem
+	 */
+	ERROR_050,
+	/**
 	 * ObjectNotFound
 	 */
 	ERROR_100,
@@ -20,5 +24,9 @@ public enum ReturnCode {
 	/**
 	 * Email already exist
 	 */
-	ERROR_400;
+	ERROR_350,
+	/**
+	 * IllegalArgumentException
+	 */
+	ERROR_500;
 }
