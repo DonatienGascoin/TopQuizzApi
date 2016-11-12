@@ -33,4 +33,7 @@ public interface AppService {
 	
 	public ReturnObject checkUserCredentials(String pseudo, String password);
 	
+	ReturnObject getAllQuizzesByPseudo(String pseudo);
+	
+	ReturnObject getQuizzByName(String name);
 }
