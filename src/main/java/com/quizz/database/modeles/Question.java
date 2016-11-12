@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.persistence.Column;
-
 import org.apache.commons.collections4.CollectionUtils;
 
 import com.quizz.database.beans.QuestionBean;
@@ -28,7 +26,7 @@ public class Question implements Serializable {
 
 	private String pseudo;
 
-	private Collection<Response> reponses;
+	private Collection<Response> responses;
 
 	public Collection<Theme> themes;
 
@@ -41,9 +39,9 @@ public class Question implements Serializable {
 		bean.setLabel(this.label);
 		bean.setPseudo(this.pseudo);
 
-		if (CollectionUtils.isNotEmpty(reponses)) {
+		if (CollectionUtils.isNotEmpty(responses)) {
 			Collection<ResponseBean> responsesBean = new ArrayList<ResponseBean>();
-			for (Response reponse : reponses) {
+			for (Response reponse : responses) {
 				responsesBean.add(reponse.convertToBean());
 			}
 			bean.setReponses(responsesBean);

@@ -1,7 +1,6 @@
 package com.quizz.database.services;
 
 import java.util.Collection;
-import java.util.List;
 
 import com.quizz.database.modeles.Question;
 import com.quizz.database.modeles.ReturnObject;
