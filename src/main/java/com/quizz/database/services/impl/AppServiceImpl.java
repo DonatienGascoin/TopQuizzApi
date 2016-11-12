@@ -85,6 +85,16 @@ public class AppServiceImpl implements AppService {
 	}
 
 	@Override
+	public ReturnObject getAllQuizzesByPseudo(String pseudo) {
+		return quizzService.getAllQuizzesByPseudo(pseudo);
+	}
+
+	@Override
+	public ReturnObject getQuizzByName(String name) {
+		return quizzService.getQuizzByName(name);
+	}
+
+	@Override
 	public ReturnObject activeUser(String mail) {
 		return userService.activeUser(mail);
 	}
