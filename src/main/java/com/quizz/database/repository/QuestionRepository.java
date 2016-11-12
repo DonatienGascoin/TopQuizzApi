@@ -8,12 +8,10 @@ import org.springframework.stereotype.Component;
 import com.quizz.database.beans.QuestionBean;
 
 /**
- * 
- * @author Louis
- *
+ * @author Maxence Royer
  */
 @Transactional
 @Component
-public interface QuestionRepository extends CrudRepository<QuestionBean, Integer>{
-
+public interface QuestionRepository extends CrudRepository<QuestionBean, String>{
+	QuestionBean findById(Integer id);
 }

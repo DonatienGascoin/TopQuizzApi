@@ -35,6 +35,10 @@ public interface AppService {
 	
 	public ReturnObject activeUser(String mail);
 	
+	ReturnObject getAllQuizzesByPseudo(String pseudo);
+	
+	ReturnObject getQuizzByName(String name);
+	
 	public ReturnObject addQuestion(String pseudo, String label, String themes, String explanation);
 	
 	public ReturnObject addTmpResponse(String number, String pseudo, String label, Boolean isValide);

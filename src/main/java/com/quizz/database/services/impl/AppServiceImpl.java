@@ -14,6 +14,7 @@ import com.quizz.database.modeles.Theme;
 import com.quizz.database.modeles.User;
 import com.quizz.database.services.AppService;
 import com.quizz.database.services.QuestionService;
+import com.quizz.database.services.QuizzService;
 import com.quizz.database.services.ResponseService;
 import com.quizz.database.services.UserService;
 
@@ -23,6 +24,9 @@ public class AppServiceImpl implements AppService {
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private QuizzService quizzService;
+	
 	@Autowired
 	private QuestionService questionService;
 
@@ -46,9 +50,8 @@ public class AppServiceImpl implements AppService {
 	}
 
 	@Override
-	public ReturnObject editUser(String pseudo, String mail, String password, Boolean active, Collection<User> friends,
-			Collection<Question> questions) {
-		return userService.editUser(pseudo, mail, password, active, friends, questions);
+	public ReturnObject editUser(String pseudo, String mail, String password, Collection<User> friends, Collection<Question> questions) {
+		return userService.editUser(pseudo, mail, password, friends, questions);
 	}
 
 	@Override
@@ -69,6 +72,16 @@ public class AppServiceImpl implements AppService {
 	@Override
 	public ReturnObject checkUserCredentials(String pseudo, String password) {
 		return userService.checkUserCredentials(pseudo, password);
+	}
+
+	@Override
+	public ReturnObject getAllQuizzesByPseudo(String pseudo) {
+		return quizzService.getAllQuizzesByPseudo(pseudo);
+	}
+
+	@Override
+	public ReturnObject getQuizzByName(String name) {
+		return quizzService.getQuizzByName(name);
 	}
 
 	@Override
