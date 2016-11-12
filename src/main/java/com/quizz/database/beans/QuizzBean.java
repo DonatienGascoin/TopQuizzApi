@@ -39,7 +39,7 @@ public class QuizzBean implements Serializable {
 	private String name;
 	
 	@Column(nullable = false)
-	private char isVisible;
+	private String isVisible;
 
 	@ManyToMany(fetch=FetchType.LAZY)
 	@JoinTable(
