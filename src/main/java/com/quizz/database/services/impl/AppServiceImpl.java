@@ -19,8 +19,7 @@ public class AppServiceImpl implements AppService {
 
 	@Override
 	public ReturnObject getUser(String pseudo) {
-		
-		return userService.getUser(pseudo, password);
+		return userService.getUser(pseudo);
 	}
 
 	@Override
@@ -46,6 +45,10 @@ public class AppServiceImpl implements AppService {
 	@Override
 	public ReturnObject changePassword(String password, String email) {
 		return userService.changePassword(password, email);
+	}
+	
+	public ReturnObject checkUserCredentials(String pseudo, String password) {
+		return userService.checkUserCredentials(pseudo, password);
 	}
 
 }

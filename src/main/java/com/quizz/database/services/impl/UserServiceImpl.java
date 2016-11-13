@@ -33,6 +33,8 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * Return pseudo, mail, friend (pseudo), question (id)
 	 * 
+	 * Warning: password was not test
+	 * 
 	 * @return {@link User}
 	 */
 	@Override
@@ -48,6 +50,34 @@ public class UserServiceImpl implements UserService {
 		} catch (IllegalArgumentException e) {
 			object.setCode(ReturnCode.ERROR_100);
 			log.error("User not found [pseudo: " + pseudo + "], " + ReturnCode.ERROR_100);
+		}
+		object.setObject(result);
+
+		return object;
+	}
+
+	/**
+	 * Return pseudo and mail
+	 * 
+	 * @return {@link User}
+	 */
+	@Override
+	public ReturnObject checkUserCredentials(String pseudo, String password) {
+		ReturnObject object = new ReturnObject();
+
+		User result = new User();
+		try {
+			UserBean tmp = userRepository.findByPseudoAndPassword(pseudo, password);
+			result = getUserByUserBean(tmp);
+			if(result != null){
+				object.setCode(ReturnCode.ERROR_100);
+			}else{
+				object.setCode(ReturnCode.ERROR_000);
+			}
+			log.info("Check if User exist [pseudo: " + pseudo + ", password: *****]");
+		} catch (IllegalArgumentException e) {
+			object.setCode(ReturnCode.ERROR_100);
+			log.error("User not found [pseudo: " + pseudo + "], password: *****" + ReturnCode.ERROR_100);
 		}
 		object.setObject(result);
 
@@ -176,7 +206,7 @@ public class UserServiceImpl implements UserService {
 			UserBean userBean = userRepository.save(u);
 
 			user = getUserByUserBean(userBean);
-					
+
 			object.setCode(ReturnCode.ERROR_000);
 			log.info("User successfully edit");
 		} catch (IllegalArgumentException e) {
@@ -229,51 +259,50 @@ public class UserServiceImpl implements UserService {
 		object.setObject(user);
 		return object;
 	}
-	
+
 	@Override
 	public ReturnObject changePassword(String password, String mail) {
 		log.info("Edit password User [mail: " + mail + "]");
 		ReturnObject object = new ReturnObject();
-		
+
 		ReturnObject userByMail = getUserByMail(mail);
-		User user = (User)userByMail.getObject();
-		
-		if(StringUtils.isNotBlank(password)){
+		User user = (User) userByMail.getObject();
+
+		if (StringUtils.isNotBlank(password)) {
 			object = editUser(user.getPseudo(), user.getMail(), password, user.getFriends(), user.getQuestions());
 		}
 		return object;
 	}
-	
-	
 
 	/**
-	 * Convert UserBean to User
-	 * Warning: Password is not set
+	 * Convert UserBean to User Warning: Password is not set
 	 * 
 	 * @param bean
 	 * @return {@link User}
 	 */
-	private User getUserByUserBean(UserBean bean){
+	private User getUserByUserBean(UserBean bean) {
 		User user = new User();
-		user.setMail(bean.getMail());
-		user.setPseudo(bean.getPseudo());
-
-		Collection<User> friends = new ArrayList<User>();
-		for (UserBean userB : bean.getFriends()) {
-			User u = new User();
-			u.setPseudo(userB.getPseudo());
-			friends.add(u);
+		if(bean != null){			
+			user.setMail(bean.getMail());
+			user.setPseudo(bean.getPseudo());
+			
+			Collection<User> friends = new ArrayList<User>();
+			for (UserBean userB : bean.getFriends()) {
+				User u = new User();
+				u.setPseudo(userB.getPseudo());
+				friends.add(u);
+			}
+			user.setFriends(friends);
+			
+			Collection<Question> questions = new ArrayList<Question>();
+			for (QuestionBean question : bean.getQuestion()) {
+				Question q = new Question();
+				q.setId(question.getId());
+				questions.add(q);
+			}
+			user.setQuestions(questions);
 		}
-		user.setFriends(friends);
 
-		Collection<Question> questions = new ArrayList<Question>();
-		for (QuestionBean question : bean.getQuestion()) {
-			Question q = new Question();
-			q.setId(question.getId());
-			questions.add(q);
-		}
-		user.setQuestions(questions);
-		
 		return user;
 	}
 }
