@@ -20,6 +20,8 @@ public interface UserService {
 	
 	public ReturnObject getUser(String pseudo);
 	
+	public ReturnObject checkUserCredentials(String pseudo, String password);
+	
 	public ReturnObject getUserByMail(String mail);
 
 	public ReturnObject getAllUsers();

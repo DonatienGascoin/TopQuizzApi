@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.quizz.database.beans.UserBean;
-import com.quizz.database.datas.ReturnCode;
 import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.services.AppService;
 
@@ -63,9 +61,10 @@ public class UserController {
 		}
 		return ResponseEntity.ok().body(object);
 	}
-	
+
 	@RequestMapping(value = "/changePassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<?> changePassword(@RequestParam(name = "password") String password, @RequestParam(name = "email") String email) {
+	public ResponseEntity<?> changePassword(@RequestParam(name = "password") String password,
+			@RequestParam(name = "email") String email) {
 		ReturnObject object = null;
 		try {
 			object = appService.changePassword(password, email);
@@ -74,5 +73,17 @@ public class UserController {
 		}
 		return ResponseEntity.ok().body(object);
 	}
-	
+
+	@RequestMapping(value = "/checkCredentials", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<ReturnObject> checkCredentials(@RequestParam(name = "pseudo") String pseudo,
+			@RequestParam(name = "password") String password) {
+		ReturnObject object = null;
+		try {
+			object = appService.checkUserCredentials(pseudo, password);
+		} catch (Exception e) {
+			log.error("Impossible to get User [pseudo: " + pseudo + "]", e);
+		}
+		return ResponseEntity.ok().body(object);
+	}
+
 }

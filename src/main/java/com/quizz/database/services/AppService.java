@@ -19,16 +19,18 @@ import com.quizz.database.modeles.User;
  */
 public interface AppService {
 	
-	ReturnObject getUser(String pseudo);
+	public ReturnObject getUser(String pseudo);
 	
-	ReturnObject getUserByMail(String mail);
+	public ReturnObject getUserByMail(String mail);
 	
-	ReturnObject addUser(String pseudo, String mail, String password);
+	public ReturnObject addUser(String pseudo, String mail, String password);
 	
-	ReturnObject editUser(String pseudo, String mail, String password, Collection<User> friends, Collection<Question> questions);
+	public ReturnObject editUser(String pseudo, String mail, String password, Collection<User> friends, Collection<Question> questions);
 	
-	ReturnObject deleteUser(String pseudo);
+	public ReturnObject deleteUser(String pseudo);
 	
-	ReturnObject changePassword(String password, String email);
+	public ReturnObject changePassword(String password, String email);
+	
+	public ReturnObject checkUserCredentials(String pseudo, String password);
 	
 }
