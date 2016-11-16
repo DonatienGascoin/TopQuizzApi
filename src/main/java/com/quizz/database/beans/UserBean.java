@@ -37,6 +37,9 @@ public class UserBean implements Serializable {
 
 	@Column(nullable = false, unique = true)
 	private String mail;
+	
+	@Column(nullable = false)
+	private Boolean active;
 
 	@Column
 	@ManyToMany(fetch=FetchType.LAZY)
@@ -48,10 +51,11 @@ public class UserBean implements Serializable {
 	@JoinColumn
 	private java.util.Collection<QuestionBean> question;
 
-	public UserBean(String pseudo, String password, String mail) {
+	public UserBean(String pseudo, String password, String mail, Boolean active) {
 		this.pseudo = pseudo;
 		this.password = password;
 		this.mail = mail;
+		this.active = active;
 	}
 
 }

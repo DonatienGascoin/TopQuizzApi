@@ -23,15 +23,18 @@ public class User implements Serializable {
 	private String password;
 
 	private String mail;
+	
+	private Boolean active;
 
 	private java.util.Collection<User> friends;
 
 	private java.util.Collection<Question> questions;
 
-	public User(String pseudo, String password, String mail, Collection<User> friends, Collection<Question> questions) {
+	public User(String pseudo, String password, String mail, Boolean active, Collection<User> friends, Collection<Question> questions) {
 		this.pseudo = pseudo;
 		this.password = password;
 		this.mail = mail;
+		this.active = active;
 		this.friends = friends;
 		this.questions = questions;
 	}
@@ -41,6 +44,7 @@ public class User implements Serializable {
 		bean.setPseudo(this.pseudo);
 		bean.setPassword(this.password);
 		bean.setMail(this.mail);
+		bean.setActive(this.active);
 
 		if (CollectionUtils.isNotEmpty(friends)) {
 			Collection<UserBean> friendsBean = new ArrayList<UserBean>();

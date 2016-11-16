@@ -28,5 +28,13 @@ public enum ReturnCode {
 	/**
 	 * IllegalArgumentException
 	 */
-	ERROR_500;
+	ERROR_500,
+	/**
+	 * User active
+	 */
+	ERROR_600,
+	/**
+	 * User inactive
+	 */
+	ERROR_650;
 }
