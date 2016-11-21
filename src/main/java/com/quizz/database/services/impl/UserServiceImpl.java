@@ -68,12 +68,12 @@ public class UserServiceImpl implements UserService {
 		User result = new User();
 		try {
 			UserBean tmp = userRepository.findByPseudoAndPassword(pseudo, password);
-			result = getUserByUserBean(tmp);
-			if(result == null){
+			if(tmp == null){
 				object.setCode(ReturnCode.ERROR_100);
 			}else{
 				object.setCode(ReturnCode.ERROR_000);
 			}
+			result = getUserByUserBean(tmp);
 			log.info("Check if User exist [pseudo: " + pseudo + ", password: *****]");
 		} catch (IllegalArgumentException e) {
 			object.setCode(ReturnCode.ERROR_100);
@@ -284,7 +284,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	private User getUserByUserBean(UserBean bean) {
 		User user = new User();
-		if(bean != null){			
+		if(bean != null){	
 			user.setMail(bean.getMail());
 			user.setPseudo(bean.getPseudo());
 			
