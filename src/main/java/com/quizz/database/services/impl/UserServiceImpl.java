@@ -65,10 +65,9 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ReturnObject checkUserCredentials(String pseudo, String password) {
 		ReturnObject object = new ReturnObject();
-
-		User result = new User();
+		UserBean tmp = new UserBean();
 		try {
-			UserBean tmp = userRepository.findByPseudoAndPassword(pseudo, password);
+			tmp = userRepository.findByPseudoAndPassword(pseudo, password);
 			if(tmp == null){
 				object.setCode(ReturnCode.ERROR_100);
 			} else {
@@ -80,13 +79,12 @@ public class UserServiceImpl implements UserService {
 					log.info("User is not active [pseudo: " + pseudo + "]");
 				}
 			}
-			result = getUserByUserBean(tmp);
 			log.info("Check if User exist [pseudo: " + pseudo + ", password: *****]");
 		} catch (IllegalArgumentException e) {
 			object.setCode(ReturnCode.ERROR_100);
 			log.error("User not found [pseudo: " + pseudo + "], password: *****" + ReturnCode.ERROR_100);
 		}
-		object.setObject(result);
+		object.setObject(getUserByUserBean(tmp));
 		return object;
 	}
 
