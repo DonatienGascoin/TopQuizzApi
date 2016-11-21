@@ -25,7 +25,7 @@ public interface AppService {
 	
 	public ReturnObject addUser(String pseudo, String mail, String password);
 	
-	public ReturnObject editUser(String pseudo, String mail, String password, Collection<User> friends, Collection<Question> questions);
+	public ReturnObject editUser(String pseudo, String mail, String password, Boolean active, Collection<User> friends, Collection<Question> questions);
 	
 	public ReturnObject deleteUser(String pseudo);
 	
@@ -33,4 +33,5 @@ public interface AppService {
 	
 	public ReturnObject checkUserCredentials(String pseudo, String password);
 	
+	public ReturnObject activeUser(String mail);
 }

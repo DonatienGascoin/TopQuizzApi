@@ -63,13 +63,13 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/changePassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<?> changePassword(@RequestParam(name = "password") String password,
-			@RequestParam(name = "email") String email) {
-		ReturnObject object = null;
+	public ResponseEntity<ReturnObject> changePassword(@RequestParam(name = "password") String password,
+			@RequestParam(name = "mail") String mail) {
+		ReturnObject object = new ReturnObject();
 		try {
-			object = appService.changePassword(password, email);
+			object = appService.changePassword(password, mail);
 		} catch (Exception e) {
-			log.error("Impossible to change password User [mail: " + email + "]", e);
+			log.error("Impossible to change password User [mail: " + mail + "]", e);
 		}
 		return ResponseEntity.ok().body(object);
 	}
@@ -77,7 +77,7 @@ public class UserController {
 	@RequestMapping(value = "/checkCredentials", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<ReturnObject> checkCredentials(@RequestParam(name = "pseudo") String pseudo,
 			@RequestParam(name = "password") String password) {
-		ReturnObject object = null;
+		ReturnObject object = new ReturnObject();
 		try {
 			object = appService.checkUserCredentials(pseudo, password);
 		} catch (Exception e) {
@@ -85,5 +85,15 @@ public class UserController {
 		}
 		return ResponseEntity.ok().body(object);
 	}
-
+	
+	@RequestMapping(value = "/activeUser", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<ReturnObject> activeUser(@RequestParam(name = "mail") String mail) {
+		ReturnObject object = new ReturnObject();
+		try {
+			object = appService.activeUser(mail);
+		} catch (Exception e) {
+			log.error("Impossible to active User [mail: " + mail + "]", e);
+		}
+		return ResponseEntity.ok().body(object);
+	}
 }
