@@ -96,16 +96,4 @@ public class UserController {
 		}
 		return ResponseEntity.ok().body(object);
 	}
-	
-	@RequestMapping(value = "/checkActive", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<ReturnObject> checkActive(@RequestParam(name = "pseudo") String pseudo) {
-		ReturnObject object = new ReturnObject();
-		try {
-			object = appService.checkActive(pseudo);
-		} catch (Exception e) {
-			log.error("Impossible to know if user is active [pseudo: " + pseudo + "]", e);
-		}
-		return ResponseEntity.ok().body(object);
-	}
-
 }

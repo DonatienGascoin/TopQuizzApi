@@ -347,27 +347,4 @@ public class UserServiceImpl implements UserService {
 		object.setObject(null);
 		return object;
 	}
-	
-	@Override
-	public ReturnObject checkActive(String pseudo) {
-		log.info("Check if user is active [pseudo: " + pseudo + "]");
-		ReturnObject object = new ReturnObject();
-		User user = new User();
-		try {
-			object = getUserByMail(pseudo);
-			user = (User) object.getObject();
-			if(BooleanUtils.isTrue(user.getActive())) {
-				object.setCode(ReturnCode.ERROR_600);
-				log.info("User is active [pseudo: " + pseudo + "]");
-			} else {
-				object.setCode(ReturnCode.ERROR_650);
-				log.info("User is not active [pseudo: " + pseudo + "]");
-			}
-		} catch (IllegalArgumentException e) {
-			object.setCode(ReturnCode.ERROR_100);
-			log.error("User not found [pseudo: " + pseudo + "]" + ReturnCode.ERROR_100);
-		}
-		object.setObject(null);
-		return object;
-	}
 }

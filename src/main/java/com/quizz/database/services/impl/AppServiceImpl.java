@@ -54,8 +54,4 @@ public class AppServiceImpl implements AppService {
 	public ReturnObject activeUser(String mail) {
 		return userService.activeUser(mail);
 	}
-
-	public ReturnObject checkActive(String pseudo) {
-		return userService.checkActive(pseudo);
-	}
 }

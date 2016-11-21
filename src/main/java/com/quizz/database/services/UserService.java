@@ -35,6 +35,4 @@ public interface UserService {
 	public ReturnObject changePassword(String password, String mail);
 	
 	public ReturnObject activeUser(String mail);
-	
-	public ReturnObject checkActive(String pseudo);
 }

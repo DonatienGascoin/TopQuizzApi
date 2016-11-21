@@ -34,6 +34,4 @@ public interface AppService {
 	public ReturnObject checkUserCredentials(String pseudo, String password);
 	
 	public ReturnObject activeUser(String mail);
-	
-	public ReturnObject checkActive(String pseudo);
 }
