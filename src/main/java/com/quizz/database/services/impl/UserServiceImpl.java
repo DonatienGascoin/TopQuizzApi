@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -79,7 +78,6 @@ public class UserServiceImpl implements UserService {
 					log.info("User is not active [pseudo: " + pseudo + "]");
 				}
 			}
-			result = getUserByUserBean(tmp);
 			log.info("Check if User exist [pseudo: " + pseudo + ", password: *****]");
 		} catch (IllegalArgumentException e) {
 			object.setCode(ReturnCode.ERROR_100);
@@ -286,10 +284,14 @@ public class UserServiceImpl implements UserService {
 			if (StringUtils.isNotBlank(password)) {
 				object = editUser(user.getPseudo(), user.getMail(), password, user.getActive(), user.getFriends(), user.getQuestions());
 			}
+			object.setCode(ReturnCode.ERROR_000);
 			log.info("Password changed for User [mail: " + mail + "]");
 		} catch (IllegalArgumentException e) {
+			object.setCode(ReturnCode.ERROR_350);
+			log.error("User can not be modify [mail: " + mail + "]" + ReturnCode.ERROR_100);
+		} catch (Exception e) {
 			object.setCode(ReturnCode.ERROR_100);
-			log.error("User not found [pseudo: " + user.getPseudo() + "]" + ReturnCode.ERROR_100);
+			log.error("User not found [mail: " + mail + "] " + ReturnCode.ERROR_100);
 		}
 		object.setObject(user);
 		return object;
