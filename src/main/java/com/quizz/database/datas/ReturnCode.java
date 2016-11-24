@@ -25,6 +25,11 @@ public enum ReturnCode {
 	 * Email already exist
 	 */
 	ERROR_350,
+        
+        /**
+         * Theme already exist
+         */
+        ERROR_400,
 	/**
 	 * IllegalArgumentException
 	 */

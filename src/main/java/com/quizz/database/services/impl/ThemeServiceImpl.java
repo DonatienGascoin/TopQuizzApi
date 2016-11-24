@@ -1,0 +1,180 @@
+package com.quizz.database.services.impl;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.quizz.database.beans.ThemeBean;
+import com.quizz.database.datas.ReturnCode;
+import com.quizz.database.modeles.ReturnObject;
+import com.quizz.database.modeles.Theme;
+import com.quizz.database.repository.ThemeRepository;
+import com.quizz.database.repository.UserRepository;
+import com.quizz.database.services.ThemeService;
+
+import lombok.extern.slf4j.Slf4j;
+
+/*
+ * Warning: Never return password !
+ */
+@Slf4j
+@Service
+public class ThemeServiceImpl implements ThemeService {
+    
+    @Autowired
+    private ThemeRepository themeRepository;
+    
+    /**
+    * Return name, id, question (id)
+    * 
+    * @return {@link Theme}
+    */
+    public ReturnObject getThemeByName(String name){
+        log.info("Get Theme [name: " + name + "]");
+		ReturnObject object = new ReturnObject();
+		Theme theme = null;
+		try {
+			ThemeBean findByName = themeRepository.findByName(name);
+			theme = getThemeByThemeBean(findByName);
+			object.setCode(ReturnCode.ERROR_000);
+		} catch (IllegalArgumentException e) {
+			object.setCode(ReturnCode.ERROR_500);
+			log.error("Impossible to get Theme [name: " + name + "], " + ReturnCode.ERROR_500);
+		} catch (RuntimeException e) {
+			object.setCode(ReturnCode.ERROR_200);
+			log.error("Impossible to get Theme [name: " + name + "], " + ReturnCode.ERROR_200);
+		} catch (Exception e) {
+			object.setCode(ReturnCode.ERROR_050);
+			log.error("Impossible to get Theme [name: " + name + "], " + ReturnCode.ERROR_050);
+		}
+		object.setObject(theme);
+		return object;
+    }
+
+    /**
+    * Return name, id, question (id)
+    * 
+    * @return {@link Theme}
+    */
+    public ReturnObject getAllTheme(){
+        log.info("Get all Theme");
+		ReturnObject object = new ReturnObject();
+//		List<Theme> themes = new ArrayList<Theme>();
+//		try {
+//			List<ThemeBean> findAll = themeRepository.findAll();
+//			for (UserBean userBean : findAll) {
+//				User user = new User();
+//
+//				user.setMail(userBean.getMail());
+//				user.setPseudo(userBean.getPseudo());
+//
+//				Collection<User> friends = new ArrayList<User>();
+//				for (UserBean userB : userBean.getFriends()) {
+//					User u = new User();
+//					u.setPseudo(userB.getPseudo());
+//					friends.add(u);
+//				}
+//				user.setFriends(friends);
+//
+//				Collection<Question> questions = new ArrayList<Question>();
+//				for (QuestionBean question : userBean.getQuestion()) {
+//					Question q = new Question();
+//					q.setId(question.getId());
+//					questions.add(q);
+//				}
+//				user.setQuestions(questions);
+//
+//				users.add(user);
+//				object.setCode(ReturnCode.ERROR_000);
+//			}
+//		} catch (IllegalArgumentException e) {
+//			object.setCode(ReturnCode.ERROR_500);
+//			log.error("Impossible to get all User " + ReturnCode.ERROR_500);
+//		} catch (RuntimeException e) {
+//			object.setCode(ReturnCode.ERROR_200);
+//			log.error("Impossible to get all User " + ReturnCode.ERROR_200);
+//		} catch (Exception e) {
+//			object.setCode(ReturnCode.ERROR_050);
+//			log.error("Impossible to get all User " + ReturnCode.ERROR_050);
+//		}
+//		object.setObject(users);
+
+		return object;
+
+    }
+
+    public ReturnObject addTheme(String name){
+
+        log.info("Add theme [name: " + name + "]");
+
+        ReturnObject object = new ReturnObject();
+        
+        // Test if name was already used
+        if (themeRepository.findByName(name) != null) {
+                log.info("Theme [name: " + name + "] already exist");
+                object.setCode(ReturnCode.ERROR_400);
+                return object;
+        }
+        Theme theme = new Theme();
+        theme.setName(name);
+        
+
+        // The theme does not exist
+        ThemeBean t = theme.convertToBean();
+        try {
+                // Save method was automatically managed by CrudRepository
+                ThemeBean themeBean = themeRepository.save(t);
+                theme = new Theme(themeBean.getId(), themeBean.getName());
+                object.setCode(ReturnCode.ERROR_000);
+                log.info("Theme successfully added");
+        } catch (IllegalArgumentException e) {
+                object.setCode(ReturnCode.ERROR_500);
+                log.error("Impossible to add Theme [name: " + name + "], " + ReturnCode.ERROR_500);
+        } catch (RuntimeException e) {
+                object.setCode(ReturnCode.ERROR_200);
+                log.error("Impossible to add Theme [name: " + name + "], " + ReturnCode.ERROR_200);
+        } catch (Exception e) {
+                object.setCode(ReturnCode.ERROR_050);
+                log.error("Impossible to add Theme [name: " + name + "], " + ReturnCode.ERROR_050);
+        }
+
+        object.setObject(theme);
+        return object;
+    }
+
+    public ReturnObject deleteTheme(String name){
+        log.info("Delete Theme [name: " + name + "]");
+        
+		ReturnObject object = new ReturnObject();
+		try {
+                    //TODO : Attend un String Id (pas un name)
+			themeRepository.delete(name);
+			object.setCode(ReturnCode.ERROR_000);
+		} catch (IllegalArgumentException e) {
+			object.setCode(ReturnCode.ERROR_100);
+		}
+        return object;
+
+    }    
+    
+    /**
+	 * Convert ThemeBean to Theme
+	 * 
+	 * @param bean
+	 * @return {@link Theme}
+	 */
+	private Theme getThemeByThemeBean(ThemeBean bean) {
+		Theme theme = null;
+		if(bean != null){
+                    theme = new Theme();
+			theme.setName(bean.getName());
+			theme.setId(bean.getId());
+		}
+		return theme;
+	}
+}

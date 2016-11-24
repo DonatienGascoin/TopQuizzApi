@@ -16,6 +16,11 @@ public class Theme implements Serializable {
 	private int id;
 
 	private String name;
+        
+        public Theme (int id, String name) {
+		this.id = id;
+                this.name = name;
+	}
 	
 	public ThemeBean convertToBean(){
 		ThemeBean bean = new ThemeBean();

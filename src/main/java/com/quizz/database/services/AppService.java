@@ -32,5 +32,11 @@ public interface AppService {
 	public ReturnObject changePassword(String password, String email);
 	
 	public ReturnObject checkUserCredentials(String pseudo, String password);
+        
+        public ReturnObject addTheme(String name);
+        
+        public ReturnObject deleteTheme (String name);
+        
+        public ReturnObject getThemeByName (String name);
 	
 }

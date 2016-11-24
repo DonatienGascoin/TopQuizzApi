@@ -10,6 +10,7 @@ import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.modeles.User;
 import com.quizz.database.services.AppService;
 import com.quizz.database.services.UserService;
+import com.quizz.database.services.ThemeService;
 
 @Service
 public class AppServiceImpl implements AppService {
@@ -50,5 +51,24 @@ public class AppServiceImpl implements AppService {
 	public ReturnObject checkUserCredentials(String pseudo, String password) {
 		return userService.checkUserCredentials(pseudo, password);
 	}
+        
+        
+        @Autowired
+	private ThemeService themeService;
+        
+        @Override
+	public ReturnObject addTheme(String name) {
+		return themeService.addTheme(name);
+	}
+        
+        @Override
+        public ReturnObject deleteTheme(String name) {
+                return themeService.deleteTheme(name);
+        }
+        
+        @Override
+        public ReturnObject getThemeByName(String name) {
+            return themeService.getThemeByName(name);
+        }
 
 }
