@@ -60,4 +60,15 @@ public class ThemeController {
         }
         return ResponseEntity.ok().body(object);
     }
+    
+    @RequestMapping(value = "/getAll", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<ReturnObject> getAllTheme(){
+        ReturnObject object = new ReturnObject();
+        try {
+            object = appService.getAllTheme();
+        }catch (Exception e) {
+            log.error("Impossible to get all Themes", e);
+        }
+        return ResponseEntity.ok().body(object);
+    }
 }

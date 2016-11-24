@@ -63,48 +63,29 @@ public class ThemeServiceImpl implements ThemeService {
     */
     public ReturnObject getAllTheme(){
         log.info("Get all Theme");
-		ReturnObject object = new ReturnObject();
-//		List<Theme> themes = new ArrayList<Theme>();
-//		try {
-//			List<ThemeBean> findAll = themeRepository.findAll();
-//			for (UserBean userBean : findAll) {
-//				User user = new User();
-//
-//				user.setMail(userBean.getMail());
-//				user.setPseudo(userBean.getPseudo());
-//
-//				Collection<User> friends = new ArrayList<User>();
-//				for (UserBean userB : userBean.getFriends()) {
-//					User u = new User();
-//					u.setPseudo(userB.getPseudo());
-//					friends.add(u);
-//				}
-//				user.setFriends(friends);
-//
-//				Collection<Question> questions = new ArrayList<Question>();
-//				for (QuestionBean question : userBean.getQuestion()) {
-//					Question q = new Question();
-//					q.setId(question.getId());
-//					questions.add(q);
-//				}
-//				user.setQuestions(questions);
-//
-//				users.add(user);
-//				object.setCode(ReturnCode.ERROR_000);
-//			}
-//		} catch (IllegalArgumentException e) {
-//			object.setCode(ReturnCode.ERROR_500);
-//			log.error("Impossible to get all User " + ReturnCode.ERROR_500);
-//		} catch (RuntimeException e) {
-//			object.setCode(ReturnCode.ERROR_200);
-//			log.error("Impossible to get all User " + ReturnCode.ERROR_200);
-//		} catch (Exception e) {
-//			object.setCode(ReturnCode.ERROR_050);
-//			log.error("Impossible to get all User " + ReturnCode.ERROR_050);
-//		}
-//		object.setObject(users);
+        ReturnObject object = new ReturnObject();
+        List<Theme> themes = new ArrayList<Theme>();
+        try {
+                List<ThemeBean> findAll = themeRepository.findAll();
+                for (ThemeBean themeBean : findAll) {
+                        Theme theme = new Theme();
 
-		return object;
+                        theme.setName(themeBean.getName());
+                        theme.setId(themeBean.getId());
+
+                        themes.add(theme);
+                }
+        object.setCode(ReturnCode.ERROR_000);
+        } catch (RuntimeException e) {
+                object.setCode(ReturnCode.ERROR_200);
+                log.error("Impossible to get all Theme " + ReturnCode.ERROR_200);
+        } catch (Exception e) {
+                object.setCode(ReturnCode.ERROR_050);
+                log.error("Impossible to get all Theme " + ReturnCode.ERROR_050);
+        }
+        object.setObject(themes);
+
+        return object;
 
     }
 

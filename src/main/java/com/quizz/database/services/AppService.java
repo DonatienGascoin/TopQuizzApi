@@ -38,5 +38,7 @@ public interface AppService {
         public ReturnObject deleteTheme (String name);
         
         public ReturnObject getThemeByName (String name);
+        
+        public ReturnObject getAllTheme ();
 	
 }

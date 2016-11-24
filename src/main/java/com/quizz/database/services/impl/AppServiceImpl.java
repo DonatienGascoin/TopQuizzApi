@@ -70,5 +70,10 @@ public class AppServiceImpl implements AppService {
         public ReturnObject getThemeByName(String name) {
             return themeService.getThemeByName(name);
         }
+        
+        @Override
+        public ReturnObject getAllTheme() {
+            return themeService.getAllTheme();
+        }
 
 }
