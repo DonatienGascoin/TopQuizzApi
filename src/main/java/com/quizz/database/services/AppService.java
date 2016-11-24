@@ -7,7 +7,6 @@ import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.modeles.User;
 import java.util.List;
 
-import com.quizz.database.beans.Theme;
 import com.quizz.database.services.QuizzService;
 
 /**
@@ -35,7 +34,7 @@ public interface AppService {
 
 	public ReturnObject changePassword(String password, String email);
 	
-	public List<Theme> getAllThemes();
+	public ReturnObject getAllThemes();
 	
 	public ReturnObject checkUserCredentials(String pseudo, String password);
 	

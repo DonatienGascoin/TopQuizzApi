@@ -1,7 +1,7 @@
 package com.quizz.database.services;
 
-import com.quizz.database.beans.Theme;
+import com.quizz.database.modeles.ReturnObject;
 
 public interface ThemeService {
-	java.util.List<Theme> getAllThemes();
+	ReturnObject getAllThemes();
 }

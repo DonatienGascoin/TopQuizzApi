@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.quizz.database.beans.Theme;
-import com.quizz.database.beans.User;
+import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.services.AppService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,20 +31,10 @@ public class ThemeController {
 	}
 
 	@RequestMapping(value = "/get", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<?> getAllThemes() {
-		try {
-			List<Theme> listThemes = appService.getAllThemes();
-			
-			if (listThemes != null && listThemes.size()!=0) {
-				log.info("Get All Themes [Theme Element Number: " + listThemes.size() + "]");
-				return ResponseEntity.ok(listThemes);
-			}
-			log.error("No Theme in database.");
-			return ResponseEntity.notFound().build();
-		} catch (Exception e) {
-			log.error("Problem when calling getAllThemes() ", e);
-			return ResponseEntity.notFound().build();
-		}
+	public ResponseEntity<ReturnObject> getAllThemes() {
+		ReturnObject object = new ReturnObject();
+		object = appService.getAllThemes();
+		return ResponseEntity.ok().body(object);
 	}
 
 }

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.quizz.database.modeles.Question;
-import com.quizz.database.beans.Theme;
 import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.modeles.User;
 import com.quizz.database.services.AppService;
@@ -49,7 +48,7 @@ public class AppServiceImpl implements AppService {
 	}
 
 	@Override
-	public List<Theme> getAllThemes() {
+	public ReturnObject getAllThemes() {
 		return themeService.getAllThemes();
 	}
 
