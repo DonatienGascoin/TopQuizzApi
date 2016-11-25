@@ -4,16 +4,22 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 
 import com.quizz.database.beans.ThemeBean;
 
 @Transactional
 @Component
-public interface ThemeRepository extends CrudRepository<ThemeBean, String>{
+public interface ThemeRepository extends CrudRepository<ThemeBean, Integer>{
 
-	List<ThemeBean>findAll();
+	public List<ThemeBean> findAll();
+	
+	public List<ThemeBean> findByIdQuestion(int idQuestion);
+	
+	
 	
 }
 

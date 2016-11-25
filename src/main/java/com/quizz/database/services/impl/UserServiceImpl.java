@@ -348,4 +348,23 @@ public class UserServiceImpl implements UserService {
 		object.setObject(null);
 		return object;
 	}
+
+	@Override
+	public ReturnObject getQuestions(String pseudo) {
+		log.info("Get questions for user [pseudo: " + pseudo + "]");
+		ReturnObject object = new ReturnObject();
+		User user = null;
+		try {
+			object = getUser(pseudo);
+			user = (User) object.getObject();
+			if (user == null) {
+				object.setCode(ReturnCode.ERROR_100);
+				log.error("User not found [pseudo: " + pseudo + "]" + ReturnCode.ERROR_100);
+			}
+		} catch (IllegalArgumentException e) {
+			object.setCode(ReturnCode.ERROR_100);
+			log.error("User not found [pseudo: " + pseudo + "]" + ReturnCode.ERROR_100);
+		}
+		return object;
+	}
 }

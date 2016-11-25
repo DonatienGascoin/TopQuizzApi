@@ -35,4 +35,6 @@ public interface UserService {
 	public ReturnObject changePassword(String password, String mail);
 	
 	public ReturnObject activeUser(String mail);
+	
+	public ReturnObject getQuestions(String pseudo);
 }
