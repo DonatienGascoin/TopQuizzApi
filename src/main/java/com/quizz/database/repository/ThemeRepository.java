@@ -16,7 +16,7 @@ import com.quizz.database.beans.ThemeBean;
  */
 @Transactional
 @Component
-public interface ThemeRepository extends CrudRepository<ThemeBean, String>{
+public interface ThemeRepository extends CrudRepository<ThemeBean, Integer>{
 	
 	List<ThemeBean >findAll();
 	

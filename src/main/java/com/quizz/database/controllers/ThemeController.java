@@ -1,5 +1,6 @@
 package com.quizz.database.controllers;
 
+import com.quizz.database.datas.ReturnCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -40,12 +41,13 @@ public class ThemeController {
     }
     
     @RequestMapping(value = "/delete", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<ReturnObject> deleteTheme(@RequestParam(name = "name") String name){
+    public ResponseEntity<ReturnObject> deleteTheme(@RequestParam int id){
         ReturnObject object = new ReturnObject();
         try {
-            object = appService.deleteTheme(name);
+            object = appService.deleteTheme(id);
         }catch (Exception e) {
-            log.error("Impossible to delete Theme [name: " + name + "]", e);
+            log.error("Impossible to delete ThemeException [id: " + id + "]", e);
+            object.setCode(ReturnCode.ERROR_100);
         }
         return ResponseEntity.ok().body(object);
     }

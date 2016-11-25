@@ -9,11 +9,11 @@ import com.quizz.database.repository.UserRepository;
 
 /**
  * 
- * {@link UserService} will validate data and call {@link UserRepository} 
+ * {@link ThemeService} will validate data and call {@link ThemeRepository} 
  * 
- * @author Donatien Gascoin
+ * @author Romain Chazottier
  * @version 1.0
- * @since 31/10/2016
+ * @since 25/11/2016
  * 
  */
 public interface ThemeService {
@@ -24,6 +24,6 @@ public interface ThemeService {
 
 	public ReturnObject addTheme(String name);
 
-	public ReturnObject deleteTheme(String name);
+	public ReturnObject deleteTheme(int id);
 	
 }

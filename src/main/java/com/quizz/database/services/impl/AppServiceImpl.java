@@ -52,7 +52,6 @@ public class AppServiceImpl implements AppService {
 		return userService.checkUserCredentials(pseudo, password);
 	}
         
-        
         @Autowired
 	private ThemeService themeService;
         
@@ -62,8 +61,8 @@ public class AppServiceImpl implements AppService {
 	}
         
         @Override
-        public ReturnObject deleteTheme(String name) {
-                return themeService.deleteTheme(name);
+        public ReturnObject deleteTheme(int id) {
+                return themeService.deleteTheme(id);
         }
         
         @Override

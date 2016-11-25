@@ -18,10 +18,8 @@ import com.quizz.database.repository.UserRepository;
 import com.quizz.database.services.ThemeService;
 
 import lombok.extern.slf4j.Slf4j;
+import sun.invoke.empty.Empty;
 
-/*
- * Warning: Never return password !
- */
 @Slf4j
 @Service
 public class ThemeServiceImpl implements ThemeService {
@@ -41,7 +39,11 @@ public class ThemeServiceImpl implements ThemeService {
 		try {
 			ThemeBean findByName = themeRepository.findByName(name);
 			theme = getThemeByThemeBean(findByName);
-			object.setCode(ReturnCode.ERROR_000);
+                        if (theme == null){
+                            object.setCode(ReturnCode.ERROR_100);
+                        }else {
+                            object.setCode(ReturnCode.ERROR_000);
+                        }
 		} catch (IllegalArgumentException e) {
 			object.setCode(ReturnCode.ERROR_500);
 			log.error("Impossible to get Theme [name: " + name + "], " + ReturnCode.ERROR_500);
@@ -75,7 +77,11 @@ public class ThemeServiceImpl implements ThemeService {
 
                         themes.add(theme);
                 }
-        object.setCode(ReturnCode.ERROR_000);
+                if (themes.isEmpty()){
+                    object.setCode(ReturnCode.ERROR_100);
+                }else{
+                    object.setCode(ReturnCode.ERROR_000);
+                }
         } catch (RuntimeException e) {
                 object.setCode(ReturnCode.ERROR_200);
                 log.error("Impossible to get all Theme " + ReturnCode.ERROR_200);
@@ -95,49 +101,53 @@ public class ThemeServiceImpl implements ThemeService {
 
         ReturnObject object = new ReturnObject();
         
-        // Test if name was already used
-        if (themeRepository.findByName(name) != null) {
-                log.info("Theme [name: " + name + "] already exist");
-                object.setCode(ReturnCode.ERROR_400);
-                return object;
-        }
         Theme theme = new Theme();
         theme.setName(name);
         
-
         // The theme does not exist
         ThemeBean t = theme.convertToBean();
         try {
-                // Save method was automatically managed by CrudRepository
-                ThemeBean themeBean = themeRepository.save(t);
-                theme = new Theme(themeBean.getId(), themeBean.getName());
-                object.setCode(ReturnCode.ERROR_000);
-                log.info("Theme successfully added");
+            // Test if name was already used
+            if (themeRepository.findByName(name) != null) {
+                log.info("Theme [name: " + name + "] already exist");
+                object.setCode(ReturnCode.ERROR_400);
+                return object;
+            }
+            
+            // Save method was automatically managed by CrudRepository
+            ThemeBean themeBean = themeRepository.save(t);
+            theme = new Theme(themeBean.getId(), themeBean.getName());
+
+            if (theme == null){
+                object.setCode(ReturnCode.ERROR_050); 
+            }else{
+                object.setCode(ReturnCode.ERROR_000); 
+            }
+            log.info("Theme successfully added");
         } catch (IllegalArgumentException e) {
-                object.setCode(ReturnCode.ERROR_500);
-                log.error("Impossible to add Theme [name: " + name + "], " + ReturnCode.ERROR_500);
+            object.setCode(ReturnCode.ERROR_500);
+            log.error("Impossible to add Theme [name: " + name + "], " + ReturnCode.ERROR_500);
         } catch (RuntimeException e) {
-                object.setCode(ReturnCode.ERROR_200);
-                log.error("Impossible to add Theme [name: " + name + "], " + ReturnCode.ERROR_200);
+            object.setCode(ReturnCode.ERROR_200);
+            log.error("Impossible to add Theme [name: " + name + "], " + ReturnCode.ERROR_200);
         } catch (Exception e) {
-                object.setCode(ReturnCode.ERROR_050);
-                log.error("Impossible to add Theme [name: " + name + "], " + ReturnCode.ERROR_050);
+            object.setCode(ReturnCode.ERROR_050);
+            log.error("Impossible to add Theme [name: " + name + "], " + ReturnCode.ERROR_050);
         }
 
         object.setObject(theme);
         return object;
     }
 
-    public ReturnObject deleteTheme(String name){
-        log.info("Delete Theme [name: " + name + "]");
+    public ReturnObject deleteTheme(int id){
+        log.info("Delete Theme [id: " + id + "]");
         
 		ReturnObject object = new ReturnObject();
 		try {
-                    //TODO : Attend un String Id (pas un name)
-			themeRepository.delete(name);
-			object.setCode(ReturnCode.ERROR_000);
+                    themeRepository.delete(id);
+                    object.setCode(ReturnCode.ERROR_000);
 		} catch (IllegalArgumentException e) {
-			object.setCode(ReturnCode.ERROR_100);
+                    object.setCode(ReturnCode.ERROR_100);
 		}
         return object;
 
