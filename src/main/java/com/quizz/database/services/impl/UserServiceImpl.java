@@ -64,23 +64,26 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ReturnObject checkUserCredentials(String pseudo, String password) {
 		ReturnObject object = new ReturnObject();
-
-		User result = new User();
+		UserBean tmp = new UserBean();
 		try {
-			UserBean tmp = userRepository.findByPseudoAndPassword(pseudo, password);
-			result = getUserByUserBean(tmp);
-			if(result == null){
+			tmp = userRepository.findByPseudoAndPassword(pseudo, password);
+			if(tmp == null){
 				object.setCode(ReturnCode.ERROR_100);
-			}else{
-				object.setCode(ReturnCode.ERROR_000);
+			} else {
+				if(tmp.getActive()) {
+					object.setCode(ReturnCode.ERROR_000);
+					log.info("Credentials are great [pseudo: " + pseudo + "]");
+				} else {
+					object.setCode(ReturnCode.ERROR_650);
+					log.info("User is not active [pseudo: " + pseudo + "]");
+				}
 			}
 			log.info("Check if User exist [pseudo: " + pseudo + ", password: *****]");
 		} catch (IllegalArgumentException e) {
 			object.setCode(ReturnCode.ERROR_100);
 			log.error("User not found [pseudo: " + pseudo + "], password: *****" + ReturnCode.ERROR_100);
 		}
-		object.setObject(result);
-
+		object.setObject(getUserByUserBean(tmp));
 		return object;
 	}
 
@@ -96,6 +99,7 @@ public class UserServiceImpl implements UserService {
 
 				user.setMail(userBean.getMail());
 				user.setPseudo(userBean.getPseudo());
+				user.setActive(userBean.getActive());
 
 				Collection<User> friends = new ArrayList<User>();
 				for (UserBean userB : userBean.getFriends()) {
@@ -150,11 +154,11 @@ public class UserServiceImpl implements UserService {
 			return object;
 		}
 		// The user does not exist and this mail was not used
-		UserBean u = new UserBean(pseudo, password, mail);
+		UserBean u = new UserBean(pseudo, password, mail, false);
 		try {
 			// Save method was automatically managed by CrudRepository
 			UserBean userBean = userRepository.save(u);
-			user = new User(userBean.getPseudo(), null, userBean.getMail(), null, null);
+			user = new User(userBean.getPseudo(), null, userBean.getMail(), false, null, null);
 			object.setCode(ReturnCode.ERROR_000);
 			log.info("User successfully added");
 		} catch (IllegalArgumentException e) {
@@ -173,7 +177,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ReturnObject editUser(String pseudo, String mail, String password, Collection<User> friends,
+	public ReturnObject editUser(String pseudo, String mail, String password, Boolean active, Collection<User> friends,
 			Collection<Question> questions) {
 		log.info("Edit user [pseudo: " + pseudo + ", mail: " + mail + "]");
 		ReturnObject object = new ReturnObject();
@@ -187,6 +191,8 @@ public class UserServiceImpl implements UserService {
 		if (StringUtils.isNotBlank(password)) {
 			u.setPassword(password);
 		}
+		
+		u.setActive(active);
 
 		if (CollectionUtils.isNotEmpty(friends)) {
 			Collection<UserBean> friendsBean = new ArrayList<UserBean>();
@@ -247,7 +253,12 @@ public class UserServiceImpl implements UserService {
 		try {
 			UserBean findByMail = userRepository.findByMail(mail);
 			user = getUserByUserBean(findByMail);
-			object.setCode(ReturnCode.ERROR_000);
+			if(StringUtils.isNotBlank(user.getMail())){
+				object.setCode(ReturnCode.ERROR_000);
+			}else{				
+				log.error("User not found [mail: " + mail + "], " + ReturnCode.ERROR_100);
+				object.setCode(ReturnCode.ERROR_100);
+			}
 		} catch (IllegalArgumentException e) {
 			object.setCode(ReturnCode.ERROR_500);
 			log.error("Impossible to get User [mail: " + mail + "], " + ReturnCode.ERROR_500);
@@ -266,28 +277,39 @@ public class UserServiceImpl implements UserService {
 	public ReturnObject changePassword(String password, String mail) {
 		log.info("Edit password User [mail: " + mail + "]");
 		ReturnObject object = new ReturnObject();
-
-		ReturnObject userByMail = getUserByMail(mail);
-		User user = (User) userByMail.getObject();
-
-		if (StringUtils.isNotBlank(password)) {
-			object = editUser(user.getPseudo(), user.getMail(), password, user.getFriends(), user.getQuestions());
+		User user = new User();
+		try {
+			object = getUserByMail(mail);
+			user = (User) object.getObject();
+			if (StringUtils.isNotBlank(password)) {
+				object = editUser(user.getPseudo(), user.getMail(), password, user.getActive(), user.getFriends(), user.getQuestions());
+			}
+			object.setCode(ReturnCode.ERROR_000);
+			log.info("Password changed for User [mail: " + mail + "]");
+		} catch (IllegalArgumentException e) {
+			object.setCode(ReturnCode.ERROR_350);
+			log.error("User can not be modify [mail: " + mail + "]" + ReturnCode.ERROR_100);
+		} catch (Exception e) {
+			object.setCode(ReturnCode.ERROR_100);
+			log.error("User not found [mail: " + mail + "] " + ReturnCode.ERROR_100);
 		}
+		object.setObject(user);
 		return object;
 	}
 
 	/**
-	 * Convert UserBean to User Warning: Password is not set
+	 * Convert UserBean to User <br />
+	 *  <b><i>Warning</i></b>: Password is not set
 	 * 
-	 * @param bean
+	 * @param bean {@link UserBean}
 	 * @return {@link User}
 	 */
 	private User getUserByUserBean(UserBean bean) {
 		User user = new User();
-		if(bean != null){			
+		if(bean != null){	
 			user.setMail(bean.getMail());
 			user.setPseudo(bean.getPseudo());
-			
+			user.setActive(bean.getActive());
 			Collection<User> friends = new ArrayList<User>();
 			for (UserBean userB : bean.getFriends()) {
 				User u = new User();
@@ -304,7 +326,26 @@ public class UserServiceImpl implements UserService {
 			}
 			user.setQuestions(questions);
 		}
-
 		return user;
+	}
+	
+	@Override
+	public ReturnObject activeUser(String mail) {
+		log.info("Active user [mail: " + mail + "]");
+		ReturnObject object = new ReturnObject();
+		User user = new User();
+		try {
+			object = getUserByMail(mail);
+			user = (User) object.getObject();
+			if (StringUtils.isNotBlank(user.getMail())) {
+				object = editUser(user.getPseudo(), user.getMail(), user.getPassword(), true, user.getFriends(), user.getQuestions());
+				log.info("User is now active [pseudo: " + user.getPseudo() + "]");
+			}
+		} catch (IllegalArgumentException e) {
+			object.setCode(ReturnCode.ERROR_100);
+			log.error("User not found [pseudo: " + user.getPseudo() + "]" + ReturnCode.ERROR_100);
+		}
+		object.setObject(null);
+		return object;
 	}
 }
