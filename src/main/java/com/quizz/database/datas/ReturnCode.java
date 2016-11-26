@@ -33,4 +33,8 @@ public enum ReturnCode {
 	 * Exception
 	 */
 	ERROR_600;
+	/**
+	 * User inactive
+	 */
+	ERROR_650;
 }

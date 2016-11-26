@@ -32,8 +32,8 @@ public class AppServiceImpl implements AppService {
 	}
 
 	@Override
-	public ReturnObject editUser(String pseudo, String mail, String password, Collection<User> friends, Collection<Question> questions) {
-		return userService.editUser(pseudo, mail, password, friends, questions);
+	public ReturnObject editUser(String pseudo, String mail, String password, Boolean active, Collection<User> friends, Collection<Question> questions) {
+		return userService.editUser(pseudo, mail, password, active, friends, questions);
 	}
 
 	@Override
@@ -64,5 +64,8 @@ public class AppServiceImpl implements AppService {
 	public ReturnObject getQuizzByName(String name) {
 		return quizzService.getQuizzByName(name);
 	}
-
+	
+	public ReturnObject activeUser(String mail) {
+		return userService.activeUser(mail);
+	}
 }
