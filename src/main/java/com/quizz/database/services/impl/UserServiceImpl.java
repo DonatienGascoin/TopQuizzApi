@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ReturnObject checkUserCredentials(String pseudo, String password) {
 		ReturnObject object = new ReturnObject();
-		UserBean tmp = new UserBean();
+		User result = new User();
 		try {
 			UserBean tmp = userRepository.findByPseudoAndPassword(pseudo, password);
 			result = getUserByUserBean(tmp);
@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService {
 			object.setCode(ReturnCode.ERROR_100);
 			log.error("User not found [pseudo: " + pseudo + "], password: *****" + ReturnCode.ERROR_100);
 		}
-		object.setObject(getUserByUserBean(tmp));
+		object.setObject(result);
 		return object;
 	}
 

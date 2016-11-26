@@ -32,7 +32,7 @@ public enum ReturnCode {
 	/**
 	 * Exception
 	 */
-	ERROR_600;
+	ERROR_600,
 	/**
 	 * User inactive
 	 */
