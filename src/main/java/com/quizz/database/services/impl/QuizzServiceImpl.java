@@ -13,6 +13,7 @@ import com.quizz.database.beans.ResponseBean;
 import com.quizz.database.beans.UserBean;
 import com.quizz.database.beans.ThemeBean;
 import com.quizz.database.datas.ReturnCode;
+import com.quizz.database.datas.Visibility;
 import com.quizz.database.modeles.Question;
 import com.quizz.database.modeles.Quizz;
 import com.quizz.database.modeles.Response;
@@ -127,7 +128,13 @@ public class QuizzServiceImpl implements QuizzService {
 		Quizz quizz = new Quizz();
 		quizz.setId(bean.getId());
 		quizz.setName(bean.getName());
-		quizz.setIsVisible(bean.getIsVisible());
+		Visibility vis = null;
+		for (Visibility v : Visibility.values()) {
+			if (v.getId() == bean.getId()) {
+				vis = v;
+			}
+		}
+		quizz.setIsVisible(vis);
 		
 		Collection<Question> questions = new ArrayList<Question>();
 		for (QuestionBean question : bean.getQuestions()) {
@@ -135,6 +142,7 @@ public class QuizzServiceImpl implements QuizzService {
 			q.setId(question.getId());
 			q.setPseudo(question.getPseudo());
 			q.setLabel(question.getLabel());
+			q.setExplanation(question.getExplanation());
 			
 			Collection<Theme> themes = new ArrayList<Theme>();
 			for (ThemeBean theme : new ArrayList<ThemeBean>(question.getTheme())) {
@@ -153,7 +161,7 @@ public class QuizzServiceImpl implements QuizzService {
 				r.setLabel(response.getLabel());
 				responses.add(r);
 			}
-			q.setReponses(responses);
+			q.setResponses(responses);
 			
 			questions.add(q);
 		}

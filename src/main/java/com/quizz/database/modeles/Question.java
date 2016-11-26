@@ -25,6 +25,8 @@ public class Question implements Serializable {
 	private String label;
 
 	private String pseudo;
+	
+	private String explanation;
 
 	private Collection<Response> responses;
 
