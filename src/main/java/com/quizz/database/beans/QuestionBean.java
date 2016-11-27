@@ -40,6 +40,9 @@ public class QuestionBean implements Serializable {
 
 	@Column(nullable = false)
 	private String label;
+	
+	@Column(nullable = false)
+	private String explanation;
 
 	@OneToMany(fetch=FetchType.LAZY)
 	@JoinColumn(name="idQuestion")
