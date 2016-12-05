@@ -22,12 +22,20 @@ public class Response implements Serializable {
 	
 	private Boolean isValide;
 	
+	private int idQuestion; 
+	
+	public Response(String label, Boolean isValide, int idQuestion) {
+		int id;
+		this.label = label;
+		this.isValide = isValide;
+		this.idQuestion = idQuestion;
+	}
+	
 	public ResponseBean convertToBean(){
 		ResponseBean bean = new ResponseBean();
-		bean.setId(this.id);
 		bean.setLabel(this.label);
 		bean.setIsValide(this.isValide);
-		
+		bean.setIdQuestion(this.idQuestion);
 		return bean;
 	}
 }

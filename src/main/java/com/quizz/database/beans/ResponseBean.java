@@ -31,5 +31,13 @@ public class ResponseBean implements Serializable {
 	
 	@Column(nullable = false)
 	private Boolean isValide;
+	
+	@Column(nullable = false)
+	private int idQuestion;
 
+	public ResponseBean(String label, Boolean isValide, int idQuestion) {
+		this.label = label;
+		this.isValide = isValide;
+		this.idQuestion = idQuestion;
+	}
 }
