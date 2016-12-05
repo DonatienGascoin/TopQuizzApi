@@ -47,9 +47,6 @@ public class QuestionBean{
 	@JoinColumn(name="idQuestion")
 	public Collection<ThemeBean> themes;
 	
-	@Column(name="explanation")
-	private String explanation;
-	
 	@ManyToMany(fetch=FetchType.LAZY)
 	@JoinTable(
 		name="Quizz_Question",

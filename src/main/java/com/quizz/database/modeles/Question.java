@@ -34,8 +34,6 @@ public class Question implements Serializable {
 
 	public Collection<Quizz> quizzs;
 	
-	private String explanation;
-	
 	public Question(String label, String pseudo, String explanation) {
 		int id;
 		this.pseudo = pseudo;

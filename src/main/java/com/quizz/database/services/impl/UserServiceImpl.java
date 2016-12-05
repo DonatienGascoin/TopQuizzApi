@@ -45,8 +45,14 @@ public class UserServiceImpl implements UserService {
 		try {
 			UserBean tmp = userRepository.findOne(pseudo);
 			result = getUserByUserBean(tmp);
-			object.setCode(ReturnCode.ERROR_000);
-			log.info("Get User [pseudo: " + pseudo + "]");
+			
+			if (result != null) {
+				object.setCode(ReturnCode.ERROR_000);
+				log.info("Get User [pseudo: " + pseudo + "]");
+			} else {
+				object.setCode(ReturnCode.ERROR_100);
+				log.error("User not found [pseudo: " + pseudo + "], " + ReturnCode.ERROR_100);
+			}
 		} catch (IllegalArgumentException e) {
 			object.setCode(ReturnCode.ERROR_100);
 			log.error("User not found [pseudo: " + pseudo + "], " + ReturnCode.ERROR_100);
@@ -66,8 +72,9 @@ public class UserServiceImpl implements UserService {
 		ReturnObject object = new ReturnObject();
 		User result = new User();
 		try {
-			tmp = userRepository.findByPseudoAndPassword(pseudo, password);
-			if(tmp == null){
+			UserBean tmp = userRepository.findByPseudoAndPassword(pseudo, password);
+			result = getUserByUserBean(tmp);
+			if(tmp == null || result == null){
 				object.setCode(ReturnCode.ERROR_100);
 			} else {
 				if(tmp.getActive()) {

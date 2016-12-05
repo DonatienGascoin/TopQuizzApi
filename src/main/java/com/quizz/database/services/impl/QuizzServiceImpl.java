@@ -145,7 +145,7 @@ public class QuizzServiceImpl implements QuizzService {
 			q.setExplanation(question.getExplanation());
 			
 			Collection<Theme> themes = new ArrayList<Theme>();
-			for (ThemeBean theme : new ArrayList<ThemeBean>(question.getTheme())) {
+			for (ThemeBean theme : new ArrayList<ThemeBean>(question.getThemes())) {
 				Theme t = new Theme();
 				t.setId(theme.getId());
 				t.setName(theme.getName());
@@ -154,7 +154,7 @@ public class QuizzServiceImpl implements QuizzService {
 			q.setThemes(themes);
 			
 			Collection<Response> responses = new ArrayList<Response>();
-			for (ResponseBean response : new ArrayList<ResponseBean>(question.getReponses())) {
+			for (ResponseBean response : new ArrayList<ResponseBean>(question.getResponses())) {
 				Response r = new Response();
 				r.setId(response.getId());
 				r.setIsValide(response.getIsValide());
