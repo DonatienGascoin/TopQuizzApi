@@ -25,25 +25,20 @@ public class ResponseServiceImpl implements ResponseService{
 		ReturnObject object = new ReturnObject();
 		Response response = new Response();
 		object.setObject(response);
-
 		ResponseBean r = new ResponseBean(label, isValide, idQuestion);
 		try {
 			// Save method was automatically managed by CrudRepository
 			ResponseBean responseBean = responseRepository.save(r);
 			response = new Response(responseBean.getLabel(), responseBean.getIsValide(), responseBean.getIdQuestion());
 			object.setCode(ReturnCode.ERROR_000);
-			log.info("User successfully added");
-		} catch (IllegalArgumentException e) {
-			object.setCode(ReturnCode.ERROR_500);
-			log.error("Impossible to add Response [response: " + label + "], " + ReturnCode.ERROR_500);
+			log.info("Response succesfully created");
 		} catch (RuntimeException e) {
 			object.setCode(ReturnCode.ERROR_200);
-			log.error("Impossible to add Response [[response: " + label + "], " + ReturnCode.ERROR_200);
+			log.error("idQuestion not exist in table Question [[response: " + label + "], " + ReturnCode.ERROR_200);
 		} catch (Exception e) {
 			object.setCode(ReturnCode.ERROR_050);
 			log.error("Impossible to add Response [response: " + label + "], " + ReturnCode.ERROR_050);
 		}
-
 		object.setObject(response);
 		return object;
 	}
