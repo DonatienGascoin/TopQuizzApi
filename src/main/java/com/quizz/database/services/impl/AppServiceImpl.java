@@ -9,6 +9,8 @@ import com.quizz.database.modeles.Question;
 import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.modeles.User;
 import com.quizz.database.services.AppService;
+import com.quizz.database.services.QuestionService;
+import com.quizz.database.services.ResponseService;
 import com.quizz.database.services.UserService;
 
 @Service
@@ -16,6 +18,12 @@ public class AppServiceImpl implements AppService {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private QuestionService questionService;
+	
+	@Autowired
+	private ResponseService responseService;
 
 	@Override
 	public ReturnObject getUser(String pseudo) {
@@ -47,11 +55,22 @@ public class AppServiceImpl implements AppService {
 		return userService.changePassword(password, email);
 	}
 	
+	@Override
 	public ReturnObject checkUserCredentials(String pseudo, String password) {
 		return userService.checkUserCredentials(pseudo, password);
 	}
 	
+	@Override
 	public ReturnObject activeUser(String mail) {
 		return userService.activeUser(mail);
+	}
+	
+	public ReturnObject addResponse(String label, Boolean isValide, int idQuestion) {
+		return responseService.addResponse(label, isValide, idQuestion);
+	}
+
+	@Override
+	public ReturnObject addQuestion(String label, String pseudo, String explanation) {
+		return questionService.addQuestion(label, pseudo, explanation);
 	}
 }

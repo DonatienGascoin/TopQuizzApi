@@ -31,6 +31,15 @@ public class Question implements Serializable {
 	public Collection<Theme> themes;
 
 	public Collection<Quizz> quizzs;
+	
+	private String explanation;
+	
+	public Question(String label, String pseudo, String explanation) {
+		int id;
+		this.pseudo = pseudo;
+		this.label = label;
+		this.explanation = explanation;
+	}
 
 	public QuestionBean convertToBean() {
 		QuestionBean bean = new QuestionBean();
@@ -64,6 +73,7 @@ public class Question implements Serializable {
 		}
 
 
+		bean.setExplanation(this.explanation);
 		return bean;
 	}
 }

@@ -59,4 +59,9 @@ public class QuestionBean implements Serializable {
 	)
 	public Collection<QuizzBean> quizzs;
 
+	public QuestionBean(String label, String pseudo, String explanation) {
+		this.pseudo = pseudo;
+		this.label = label;
+		this.explanation = explanation;
+	}
 }
