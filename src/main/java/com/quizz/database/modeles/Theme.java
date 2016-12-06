@@ -18,7 +18,7 @@ public class Theme implements Serializable, Comparable<Theme> {
 
 	private String name;
 
-	private int idQuestion;
+	private Integer idQuestion;
 	
 	public ThemeBean convertToBean(){
 		ThemeBean bean = new ThemeBean();
@@ -30,7 +30,13 @@ public class Theme implements Serializable, Comparable<Theme> {
 	}
 
 	@Override
-	public int compareTo(Theme o) {
-		return this.name.compareTo(o.getName());
+	public int compareTo(Theme t) {
+		final int BEFORE = -1;
+	    final int EQUAL = 0;
+	    final int AFTER = 1;
+	    if(this.id == t.id){
+	    	return EQUAL;
+	    }
+		return (this.id < t.id)? BEFORE: AFTER;
 	}
 }

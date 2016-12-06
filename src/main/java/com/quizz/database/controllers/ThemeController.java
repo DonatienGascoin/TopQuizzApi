@@ -1,7 +1,5 @@
 package com.quizz.database.controllers;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +36,6 @@ public class ThemeController {
 		} catch (Exception e) {
 			log.error("Impossible to get all Theme for user [" + pseudo + "]");
 		}
-
 		return ResponseEntity.ok().body(object);
 	}
 

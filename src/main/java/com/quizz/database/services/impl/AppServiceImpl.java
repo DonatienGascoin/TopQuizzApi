@@ -1,12 +1,10 @@
 package com.quizz.database.services.impl;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.quizz.database.beans.QuestionBean;
 import com.quizz.database.datas.ReturnCode;
 import com.quizz.database.modeles.Question;
 import com.quizz.database.modeles.ReturnObject;
@@ -15,8 +13,11 @@ import com.quizz.database.services.AppService;
 import com.quizz.database.services.ThemeService;
 import com.quizz.database.services.UserService;
 
+import antlr.StringUtils;
+
 @Service
 public class AppServiceImpl implements AppService {
+	
 
 	@Autowired
 	private UserService userService;
@@ -57,7 +58,6 @@ public class AppServiceImpl implements AppService {
 			return themeService.getAllThemesByUser((Collection<Question>) ((User) obj.getObject()).getQuestions());
 		}
 		obj.setCode(ReturnCode.ERROR_100);
-
 		return obj;
 	}
 

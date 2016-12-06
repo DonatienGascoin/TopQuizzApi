@@ -1,8 +1,6 @@
 package com.quizz.database.services.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -10,7 +8,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.quizz.database.beans.QuestionBean;
 import com.quizz.database.beans.ThemeBean;
 import com.quizz.database.datas.ReturnCode;
 import com.quizz.database.modeles.Question;
@@ -41,20 +38,17 @@ public class ThemeServiceImpl implements ThemeService {
 					}
 				}
 				object.setObject(listTheme);
-				object.setCode(ReturnCode.ERROR_000);				
+				object.setCode(ReturnCode.ERROR_000);
 			} else {
 				object.setCode(ReturnCode.ERROR_100);
 				log.info("This user dont have theme");
 
 			}
-		}catch(
+		} catch (Exception e) {
+			object.setCode(ReturnCode.ERROR_700);
+		}
 
-	Exception e)
-	{
-		object.setCode(ReturnCode.ERROR_700);
-	}
-
-	return object;
+		return object;
 	}
 
 	/**
@@ -69,6 +63,7 @@ public class ThemeServiceImpl implements ThemeService {
 			theme = new Theme();
 			theme.setName(bean.getName());
 			theme.setId(bean.getId());
+			theme.setIdQuestion(bean.getIdQuestion());
 		}
 		return theme;
 	}
