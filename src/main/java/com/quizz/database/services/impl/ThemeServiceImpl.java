@@ -46,13 +46,13 @@ public class ThemeServiceImpl implements ThemeService {
                         }
 		} catch (IllegalArgumentException e) {
 			object.setCode(ReturnCode.ERROR_500);
-			log.error("Impossible to get Theme [name: " + name + "], " + ReturnCode.ERROR_500);
+			log.error("Impossible to get Theme [name: " + name + "], " + ReturnCode.ERROR_500, e);
 		} catch (RuntimeException e) {
 			object.setCode(ReturnCode.ERROR_200);
-			log.error("Impossible to get Theme [name: " + name + "], " + ReturnCode.ERROR_200);
+			log.error("Impossible to get Theme [name: " + name + "], " + ReturnCode.ERROR_200, e);
 		} catch (Exception e) {
 			object.setCode(ReturnCode.ERROR_050);
-			log.error("Impossible to get Theme [name: " + name + "], " + ReturnCode.ERROR_050);
+			log.error("Impossible to get Theme [name: " + name + "], " + ReturnCode.ERROR_050, e);
 		}
 		object.setObject(theme);
 		return object;
@@ -84,10 +84,10 @@ public class ThemeServiceImpl implements ThemeService {
                 }
         } catch (RuntimeException e) {
                 object.setCode(ReturnCode.ERROR_200);
-                log.error("Impossible to get all Theme " + ReturnCode.ERROR_200);
+                log.error("Impossible to get all Theme " + ReturnCode.ERROR_200, e);
         } catch (Exception e) {
                 object.setCode(ReturnCode.ERROR_050);
-                log.error("Impossible to get all Theme " + ReturnCode.ERROR_050);
+                log.error("Impossible to get all Theme " + ReturnCode.ERROR_050, e);
         }
         object.setObject(themes);
 
@@ -126,13 +126,13 @@ public class ThemeServiceImpl implements ThemeService {
             log.info("Theme successfully added");
         } catch (IllegalArgumentException e) {
             object.setCode(ReturnCode.ERROR_500);
-            log.error("Impossible to add Theme [name: " + name + "], " + ReturnCode.ERROR_500);
+            log.error("Impossible to add Theme [name: " + name + "], " + ReturnCode.ERROR_500, e);
         } catch (RuntimeException e) {
             object.setCode(ReturnCode.ERROR_200);
-            log.error("Impossible to add Theme [name: " + name + "], " + ReturnCode.ERROR_200);
+            log.error("Impossible to add Theme [name: " + name + "], " + ReturnCode.ERROR_200, e);
         } catch (Exception e) {
             object.setCode(ReturnCode.ERROR_050);
-            log.error("Impossible to add Theme [name: " + name + "], " + ReturnCode.ERROR_050);
+            log.error("Impossible to add Theme [name: " + name + "], " + ReturnCode.ERROR_050, e);
         }
 
         object.setObject(theme);
@@ -154,18 +154,18 @@ public class ThemeServiceImpl implements ThemeService {
     }    
     
     /**
-	 * Convert ThemeBean to Theme
-	 * 
-	 * @param bean
-	 * @return {@link Theme}
-	 */
-	private Theme getThemeByThemeBean(ThemeBean bean) {
-		Theme theme = null;
-		if(bean != null){
-                    theme = new Theme();
-			theme.setName(bean.getName());
-			theme.setId(bean.getId());
-		}
-		return theme;
-	}
+    * Convert ThemeBean to Theme
+    * 
+    * @param bean
+    * @return {@link Theme}
+    */
+   private Theme getThemeByThemeBean(ThemeBean bean) {
+           Theme theme = null;
+           if(bean != null){
+               theme = new Theme();
+                   theme.setName(bean.getName());
+                   theme.setId(bean.getId());
+           }
+           return theme;
+   }
 }
