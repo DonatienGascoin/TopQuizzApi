@@ -1,7 +1,9 @@
 package com.quizz.database.services.impl;
 
+import com.quizz.database.modeles.ReturnObject;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,10 @@ import com.quizz.database.repository.QuestionRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ *
+ * @author Romain Chazottier
+ */
 @Slf4j
 @Service
 public class QuestionServiceImpl implements QuestionService {
@@ -109,16 +115,20 @@ public class QuestionServiceImpl implements QuestionService {
 
 		return q;
 	}
-
-    @Override
-    public ReturnObject findById(Integer id) {
-       ReturnObject obj = new ReturnObject();
-       try{
-            obj.setObject(questionRepository.findById(id));
-       }catch(Exception e){
-           // TODO
-       }
-        
-        return obj;
-    }
+	@Override
+	public ReturnObject findById(Integer id) {
+		ReturnObject obj = new ReturnObject();
+		try{
+			obj.setObject(questionRepository.findById(id));
+		}catch(Exception e){
+			// TODO
+		}
+	
+	return obj;return obj;
+	}
+	
+	@Override
+	public ReturnObject getAllQuestionsByTheme(String theme) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
 }

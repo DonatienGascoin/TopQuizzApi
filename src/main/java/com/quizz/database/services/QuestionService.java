@@ -25,5 +25,7 @@ public interface QuestionService {
     
     public ReturnObject findById(Integer id);
     
-	public ReturnObject addQuestion(String pseudo, String label, String explanation);
+    public ReturnObject addQuestion(String pseudo, String label, String explanation);
+
+    public ReturnObject getAllQuestionsByTheme (String theme);
 }
