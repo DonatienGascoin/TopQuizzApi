@@ -1,10 +1,13 @@
 package com.quizz.database.services;
 
+import com.quizz.database.beans.QuestionBean;
+import com.quizz.database.datas.Visibility;
 import java.util.Collection;
 
 import com.quizz.database.modeles.Question;
 import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.modeles.User;
+import com.quizz.database.modeles.Quizz;
 
 /**
  * 
@@ -40,5 +43,9 @@ public interface AppService {
         public ReturnObject getThemeByName (String name);
         
         public ReturnObject getAllTheme ();
+        
+        public ReturnObject addQuizz(String name, Visibility visibility, String questions);
+        
+        public Question getQuestionByQuestionBean(QuestionBean bean);
 	
 }

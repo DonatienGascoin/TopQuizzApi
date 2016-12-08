@@ -13,6 +13,10 @@ public enum ReturnCode {
 	 * ObjectNotFound
 	 */
 	ERROR_100,
+        /**
+	 * QuestionNOtFound
+	 */
+	ERROR_150,
 	/**
 	 * Database Unreachable
 	 */

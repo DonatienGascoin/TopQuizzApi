@@ -1,5 +1,7 @@
 package com.quizz.database.services.impl;
 
+import com.quizz.database.beans.QuestionBean;
+import com.quizz.database.datas.Visibility;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,71 +10,106 @@ import org.springframework.stereotype.Service;
 import com.quizz.database.modeles.Question;
 import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.modeles.User;
+import com.quizz.database.repository.QuizzRepository;
+import com.quizz.database.repository.QuestionRepository;
 import com.quizz.database.services.AppService;
 import com.quizz.database.services.UserService;
 import com.quizz.database.services.ThemeService;
+import com.quizz.database.services.QuizzService;
+import com.quizz.database.services.QuestionService;
+import java.util.ArrayList;
+import org.apache.commons.lang3.StringUtils;
 
 @Service
 public class AppServiceImpl implements AppService {
+    
+    private static final String SEPARATOR = ",";
 	
-	@Autowired
-	private UserService userService;
+    @Autowired
+    private UserService userService;
+    
+    @Autowired
+    private ThemeService themeService;
+    
+    @Autowired
+    private QuizzService quizzService;
+    
+    @Autowired
+    private QuestionService questionService;
 
-	@Override
-	public ReturnObject getUser(String pseudo) {
-		return userService.getUser(pseudo);
-	}
+    @Override
+    public ReturnObject getUser(String pseudo) {
+            return userService.getUser(pseudo);
+    }
 
-	@Override
-	public ReturnObject addUser(String pseudo, String mail, String password) {
-		return userService.addUser(pseudo, mail, password);
-	}
+    @Override
+    public ReturnObject addUser(String pseudo, String mail, String password) {
+            return userService.addUser(pseudo, mail, password);
+    }
 
-	@Override
-	public ReturnObject editUser(String pseudo, String mail, String password, Collection<User> friends, Collection<Question> questions) {
-		return userService.editUser(pseudo, mail, password, friends, questions);
-	}
+    @Override
+    public ReturnObject editUser(String pseudo, String mail, String password, Collection<User> friends, Collection<Question> questions) {
+            return userService.editUser(pseudo, mail, password, friends, questions);
+    }
 
-	@Override
-	public ReturnObject deleteUser(String pseudo) {
-		return userService.deleteUser(pseudo);
-	}
+    @Override
+    public ReturnObject deleteUser(String pseudo) {
+            return userService.deleteUser(pseudo);
+    }
 
-	@Override
-	public ReturnObject getUserByMail(String mail) {
-		return userService.getUserByMail(mail);
-	}
+    @Override
+    public ReturnObject getUserByMail(String mail) {
+            return userService.getUserByMail(mail);
+    }
 
-	@Override
-	public ReturnObject changePassword(String password, String email) {
-		return userService.changePassword(password, email);
-	}
-	
-	public ReturnObject checkUserCredentials(String pseudo, String password) {
-		return userService.checkUserCredentials(pseudo, password);
-	}
+    @Override
+    public ReturnObject changePassword(String password, String email) {
+            return userService.changePassword(password, email);
+    }
+
+    @Override
+    public ReturnObject checkUserCredentials(String pseudo, String password) {
+            return userService.checkUserCredentials(pseudo, password);
+    }
+
+    @Override
+    public ReturnObject addTheme(String name) {
+            return themeService.addTheme(name);
+    }
+
+    @Override
+    public ReturnObject deleteTheme(int id) {
+            return themeService.deleteTheme(id);
+    }
+
+    @Override
+    public ReturnObject getThemeByName(String name) {
+        return themeService.getThemeByName(name);
+    }
+
+    @Override
+    public ReturnObject getAllTheme() {
+        return themeService.getAllTheme();
+    }
+
+
+    @Override
+    public Question getQuestionByQuestionBean(QuestionBean bean){
+        return questionService.getQuestionByQuestionBean(bean);
+    }
+    
+    @Override
+    public ReturnObject addQuizz(String name, Visibility visibility, String questions){
         
-        @Autowired
-	private ThemeService themeService;
+        String[] split = StringUtils.split(questions, SEPARATOR);
+        Collection<Question> questionList = new ArrayList<Question>();
         
-        @Override
-	public ReturnObject addTheme(String name) {
-		return themeService.addTheme(name);
-	}
-        
-        @Override
-        public ReturnObject deleteTheme(int id) {
-                return themeService.deleteTheme(id);
+        for (String split1 : split) {
+            ReturnObject obj = questionService.findById(Integer.parseInt(split1));
+            QuestionBean test = (QuestionBean) obj.getObject();
+            Question test2 = getQuestionByQuestionBean(test);
+            questionList.add(test2);
         }
-        
-        @Override
-        public ReturnObject getThemeByName(String name) {
-            return themeService.getThemeByName(name);
-        }
-        
-        @Override
-        public ReturnObject getAllTheme() {
-            return themeService.getAllTheme();
-        }
-
+        return quizzService.addQuizz(name,visibility, questionList);
+    }
 }
