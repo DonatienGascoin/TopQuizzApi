@@ -53,7 +53,7 @@ public class Question implements Serializable {
 			for (Response reponse : responses) {
 				responsesBean.add(reponse.convertToBean());
 			}
-			bean.setReponses(responsesBean);
+			bean.setResponses(responsesBean);
 		}
 
 		if (CollectionUtils.isNotEmpty(themes)) {
@@ -61,7 +61,7 @@ public class Question implements Serializable {
 			for (Theme theme : themes) {
 				themesBean.add(theme.convertToBean());
 			}
-			bean.setTheme(themesBean);
+			bean.setThemes(themesBean);
 		}
 
 		if (CollectionUtils.isNotEmpty(quizzs)) {
