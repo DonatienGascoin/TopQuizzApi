@@ -10,9 +10,13 @@ public enum ReturnCode {
 	 */
 	ERROR_050,
 	/**
-	 * ObjectNotFound
+	 * Object Not Found
 	 */
 	ERROR_100,
+	/**
+	 * Missing Parameters
+	 */
+	ERROR_150,
 	/**
 	 * Database Unreachable
 	 */
@@ -26,7 +30,7 @@ public enum ReturnCode {
 	 */
 	ERROR_350,
 	/**
-	 * IllegalArgumentException
+	 * Illegal Argument Exception
 	 */
 	ERROR_500,
 	/**

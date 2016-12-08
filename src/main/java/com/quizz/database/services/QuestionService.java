@@ -1,6 +1,9 @@
 package com.quizz.database.services;
 
+import java.util.Collection;
+
 import com.quizz.database.modeles.ReturnObject;
+import com.quizz.database.modeles.Theme;
 import com.quizz.database.repository.UserRepository;
 
 /**
@@ -15,5 +18,5 @@ import com.quizz.database.repository.UserRepository;
 
 public interface QuestionService {
 	
-	public ReturnObject addQuestion(String label, String pseudo, String explanation);
+	public ReturnObject addQuestion(String pseudo, String label, Collection<Theme> themes, String explanation);
 }

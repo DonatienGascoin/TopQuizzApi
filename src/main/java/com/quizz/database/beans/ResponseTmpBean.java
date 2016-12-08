@@ -33,4 +33,8 @@ public class ResponseTmpBean {
 		this.label = label;
 		this.isValide = isValide;
 	}
+	
+	public ResponseBean convertToResponseBean(int idQuestion){
+		return new ResponseBean(label, isValide, idQuestion);
+	}
 }

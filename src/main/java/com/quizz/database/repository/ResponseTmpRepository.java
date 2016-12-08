@@ -1,5 +1,7 @@
 package com.quizz.database.repository;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.repository.CrudRepository;
@@ -17,5 +19,6 @@ import com.quizz.database.beans.ResponseTmpBean;
 @Transactional
 @Component
 public interface ResponseTmpRepository extends CrudRepository<ResponseTmpBean, Integer>{
+	public List<ResponseTmpBean> findByKeyContaining(String key);
 
 }

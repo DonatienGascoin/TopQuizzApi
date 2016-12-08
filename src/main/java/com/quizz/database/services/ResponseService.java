@@ -13,5 +13,7 @@ import com.quizz.database.modeles.ReturnObject;
  */
 public interface ResponseService {
 
-	ReturnObject addResponse(String label, Boolean isValide, int idQuestion);
+	public ReturnObject addTmpResponse(String key, String label, Boolean isValide);
+
+	public ReturnObject linkTmpResponse(int idQuestion, String pseudo);
 }

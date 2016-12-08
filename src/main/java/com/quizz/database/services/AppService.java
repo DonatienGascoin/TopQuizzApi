@@ -3,10 +3,7 @@ package com.quizz.database.services;
 import java.util.Collection;
 
 import com.quizz.database.modeles.Question;
-import com.quizz.database.modeles.Quizz;
-import com.quizz.database.modeles.Response;
 import com.quizz.database.modeles.ReturnObject;
-import com.quizz.database.modeles.Theme;
 import com.quizz.database.modeles.User;
 
 /**
@@ -38,7 +35,7 @@ public interface AppService {
 	
 	public ReturnObject activeUser(String mail);
 	
-	public ReturnObject addQuestion(String label, String pseudo, String explanation);
+	public ReturnObject addQuestion(String pseudo, String label, String themes, String explanation);
 	
-	public ReturnObject addResponse(String label, Boolean isValide, int idQuestion);
+	public ReturnObject addTmpResponse(String number, String pseudo, String label, Boolean isValide);
 }

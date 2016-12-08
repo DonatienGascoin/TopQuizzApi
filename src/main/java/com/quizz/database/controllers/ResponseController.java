@@ -26,15 +26,39 @@ public class ResponseController {
 	public ResponseEntity<?> home() {
 		return ResponseEntity.badRequest().body("Response");
 	}
-	
+	/*
 	@RequestMapping(value = "/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<ReturnObject> addResponse(
+			@RequestParam(name = "pseudo") String pseudo,
 			@RequestParam(name = "label") String label,
 			@RequestParam(name = "isValide") Boolean isValide,
 			@RequestParam(name = "idQuestion") int idQuestion) {
 		ReturnObject object = new ReturnObject();
 		try {
-			object = appService.addResponse(label, isValide, idQuestion);
+			object = appService.addResponse(pseudo, label, isValide, idQuestion);
+		} catch (Exception e) {
+			log.error("Impossible to add Response [response: " + label + ", valide: " + isValide + "]", e);
+		}
+		return ResponseEntity.ok().body(object);
+	}
+	*/
+	/**
+	 * 
+	 * @param key: composed by: userId + question number (Ex: UserId: 1, question n°1: key = 11)
+	 * @param pseudo
+	 * @param label
+	 * @param isValide
+	 * @return {@link ReturnObject}
+	 */
+	@RequestMapping(value = "/addTmpResponse", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<ReturnObject> addTmpResponse(
+			@RequestParam(name = "number") String number,
+			@RequestParam(name = "pseudo") String pseudo,
+			@RequestParam(name = "label") String label,
+			@RequestParam(name = "isValide") Boolean isValide) {
+		ReturnObject object = new ReturnObject();
+		try {
+			object = appService.addTmpResponse(number, pseudo, label, isValide);
 		} catch (Exception e) {
 			log.error("Impossible to add Response [response: " + label + ", valide: " + isValide + "]", e);
 		}
