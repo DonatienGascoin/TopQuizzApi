@@ -24,12 +24,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @Table(name="Quizz")
-public class QuizzBean implements Serializable {
-
-	/**
-	 * Using for serialise object
-	 */
-	private static final long serialVersionUID = 1L;
+public class QuizzBean{
 
 	@Id
 	@GeneratedValue

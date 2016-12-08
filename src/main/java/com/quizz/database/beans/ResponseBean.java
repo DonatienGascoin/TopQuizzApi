@@ -14,24 +14,19 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name="Response")
-public class ResponseBean implements Serializable {
+@Table(name = "Response")
+public class ResponseBean {
 
-	/**
-	 * Using for serialise object
-	 */
-	private static final long serialVersionUID = 1L;
-	
 	@Id
 	@GeneratedValue
 	private int id;
-	
+
 	@Column(nullable = false)
 	private String label;
-	
+
 	@Column(nullable = false)
 	private Boolean isValide;
-	
+
 	@Column(nullable = false)
 	private int idQuestion;
 
