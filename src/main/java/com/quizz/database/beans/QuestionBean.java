@@ -24,12 +24,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @Table(name="Question")
-public class QuestionBean implements Serializable {
-
-	/**
-	 * Using for serialise object
-	 */
-	private static final long serialVersionUID = 1L;
+public class QuestionBean{
 
 	@Id
 	@GeneratedValue
@@ -43,11 +38,14 @@ public class QuestionBean implements Serializable {
 
 	@OneToMany(fetch=FetchType.LAZY)
 	@JoinColumn(name="idQuestion")
-	private Collection<ResponseBean> reponses;
+	private Collection<ResponseBean> responses;
 
 	@OneToMany(fetch=FetchType.LAZY)
 	@JoinColumn(name="idQuestion")
-	public Collection<ThemeBean> theme;
+	public Collection<ThemeBean> themes;
+	
+	@Column(name="explanation")
+	private String explanation;
 	
 	@ManyToMany(fetch=FetchType.LAZY)
 	@JoinTable(
@@ -59,4 +57,12 @@ public class QuestionBean implements Serializable {
 	)
 	public Collection<QuizzBean> quizzs;
 
+	public QuestionBean(String pseudo, String label, String explanation, Collection<ResponseBean> responses, Collection<ThemeBean> themes, Collection<QuizzBean> quizzs) {
+		this.pseudo = pseudo;
+		this.label = label;
+		this.explanation = explanation;
+		this.responses = responses;
+		this.themes = themes; 
+		this.quizzs = quizzs;
+	}
 }

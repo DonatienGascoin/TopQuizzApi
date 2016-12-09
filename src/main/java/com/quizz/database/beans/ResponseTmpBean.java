@@ -1,7 +1,5 @@
 package com.quizz.database.beans;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,12 +12,15 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name = "Response")
-public class ResponseBean {
+@Table(name = "ResponseTmp")
+public class ResponseTmpBean {
 
 	@Id
 	@GeneratedValue
 	private int id;
+
+	@Column(nullable = false, name="responseKey")
+	private String key;
 
 	@Column(nullable = false)
 	private String label;
@@ -27,12 +28,13 @@ public class ResponseBean {
 	@Column(nullable = false)
 	private Boolean isValide;
 
-	@Column(nullable = false)
-	private int idQuestion;
-
-	public ResponseBean(String label, Boolean isValide, int idQuestion) {
+	public ResponseTmpBean(String key, String label, Boolean isValide) {
+		this.key = key;
 		this.label = label;
 		this.isValide = isValide;
-		this.idQuestion = idQuestion;
+	}
+	
+	public ResponseBean convertToResponseBean(int idQuestion){
+		return new ResponseBean(label, isValide, idQuestion);
 	}
 }

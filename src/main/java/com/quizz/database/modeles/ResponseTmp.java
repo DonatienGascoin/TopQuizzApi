@@ -2,14 +2,14 @@ package com.quizz.database.modeles;
 
 import java.io.Serializable;
 
-import com.quizz.database.beans.ResponseBean;
+import com.quizz.database.beans.ResponseTmpBean;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class Response implements Serializable {
+public class ResponseTmp implements Serializable {
 
 	/**
 	 * Using for serialise object
@@ -18,31 +18,32 @@ public class Response implements Serializable {
 
 	private int id;
 	
+	private String key; 
+
 	private String label;
 	
 	private Boolean isValide;
 	
-	private int idQuestion; 
 	
-	public Response(int id, String label, Boolean isValide, int idQuestion) {
+	public ResponseTmp(int id, String key, String label, Boolean isValide) {
 		this.id= id;
+		this.key = key;
 		this.label = label;
 		this.isValide = isValide;
-		this.idQuestion = idQuestion;
 	}
 	
-	public Response(String label, Boolean isValide, int idQuestion) {
+	public ResponseTmp(String key, String label, Boolean isValide) {
+		this.key = key;
 		this.label = label;
 		this.isValide = isValide;
-		this.idQuestion = idQuestion;
 	}
 	
-	public ResponseBean convertToBean(){
-		ResponseBean bean = new ResponseBean();
+	public ResponseTmpBean convertToBean(){
+		ResponseTmpBean bean = new ResponseTmpBean();
 		bean.setId(this.id);
+		bean.setKey(this.key);
 		bean.setLabel(this.label);
 		bean.setIsValide(this.isValide);
-		bean.setIdQuestion(this.idQuestion);
 		return bean;
 	}
 }

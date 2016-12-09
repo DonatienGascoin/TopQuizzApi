@@ -31,6 +31,15 @@ public class Question implements Serializable {
 	public Collection<Theme> themes;
 
 	public Collection<Quizz> quizzs;
+	
+	private String explanation;
+	
+	public Question(String label, String pseudo, String explanation) {
+		int id;
+		this.pseudo = pseudo;
+		this.label = label;
+		this.explanation = explanation;
+	}
 
 	public QuestionBean convertToBean() {
 		QuestionBean bean = new QuestionBean();
@@ -44,7 +53,7 @@ public class Question implements Serializable {
 			for (Response reponse : responses) {
 				responsesBean.add(reponse.convertToBean());
 			}
-			bean.setReponses(responsesBean);
+			bean.setResponses(responsesBean);
 		}
 
 		if (CollectionUtils.isNotEmpty(themes)) {
@@ -52,7 +61,7 @@ public class Question implements Serializable {
 			for (Theme theme : themes) {
 				themesBean.add(theme.convertToBean());
 			}
-			bean.setTheme(themesBean);
+			bean.setThemes(themesBean);
 		}
 
 		if (CollectionUtils.isNotEmpty(quizzs)) {
@@ -64,6 +73,7 @@ public class Question implements Serializable {
 		}
 
 
+		bean.setExplanation(this.explanation);
 		return bean;
 	}
 }

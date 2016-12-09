@@ -34,4 +34,8 @@ public interface AppService {
 	public ReturnObject checkUserCredentials(String pseudo, String password);
 	
 	public ReturnObject activeUser(String mail);
+	
+	public ReturnObject addQuestion(String pseudo, String label, String themes, String explanation);
+	
+	public ReturnObject addTmpResponse(String number, String pseudo, String label, Boolean isValide);
 }

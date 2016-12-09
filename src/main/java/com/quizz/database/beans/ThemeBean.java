@@ -12,18 +12,13 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name="Theme")
+@Table(name = "Theme")
 public class ThemeBean {
-
-	/**
-	 * Using for serialise object
-	 */
-	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue
 	private int id;
-	
+
 	@Column(nullable = false)
 	private String name;
 }
