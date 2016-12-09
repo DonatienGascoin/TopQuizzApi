@@ -12,7 +12,7 @@ import com.quizz.database.beans.QuizzBean;
  */
 @Transactional
 @Component
-public interface QuizzRepository extends CrudRepository<QuizzBean, String>{
+public interface QuizzRepository extends CrudRepository<QuizzBean, Integer> {
 	QuizzBean findById(Integer id);
 	
 	QuizzBean findByName(String name);

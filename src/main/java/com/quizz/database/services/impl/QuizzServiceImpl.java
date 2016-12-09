@@ -169,5 +169,18 @@ public class QuizzServiceImpl implements QuizzService {
 		
 		return quizz;
 	}
+	
+	@Override
+	public ReturnObject deleteQuizzById(Integer id) {
+		log.info("Delete Quiz [id: " + id + "]");
+		ReturnObject object = new ReturnObject();
+		try {
+			quizzRepository.delete(id);
+			object.setCode(ReturnCode.ERROR_000);
+		} catch (IllegalArgumentException e) {
+			object.setCode(ReturnCode.ERROR_100);
+		}
+		return object;
+	}
 
 }

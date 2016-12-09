@@ -68,4 +68,9 @@ public class AppServiceImpl implements AppService {
 	public ReturnObject activeUser(String mail) {
 		return userService.activeUser(mail);
 	}
+	
+	@Override
+	public ReturnObject deleteQuizzById(Integer id) {
+		return quizzService.deleteQuizzById(id);
+	}
 }

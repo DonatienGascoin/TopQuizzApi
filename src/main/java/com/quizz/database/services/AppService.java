@@ -38,4 +38,6 @@ public interface AppService {
 	public ReturnObject getQuizzByName(String name);
 	
 	public ReturnObject activeUser(String mail);
+	
+	public ReturnObject deleteQuizzById(Integer id);
 }

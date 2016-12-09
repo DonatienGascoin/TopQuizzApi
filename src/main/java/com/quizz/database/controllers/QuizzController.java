@@ -49,4 +49,15 @@ public class QuizzController {
 		}
 		return ResponseEntity.ok().body(object);
 	}
+	
+	@RequestMapping(value = "/deleteQuizzById", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<ReturnObject> deleteQuizzById(@RequestParam(name = "id") Integer id) {
+		ReturnObject object = null;
+		try {
+			object = appService.deleteQuizzById(id);
+		} catch (Exception e) {
+			log.error("Impossible to delete quizz by id [integer: " + id + "]", e);
+		}
+		return ResponseEntity.ok().body(object);
+	}
 }
