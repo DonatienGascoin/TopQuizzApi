@@ -15,6 +15,7 @@ import com.quizz.database.modeles.User;
 import com.quizz.database.services.AppService;
 import com.quizz.database.services.QuestionService;
 import com.quizz.database.services.ResponseService;
+import com.quizz.database.services.ThemeService;
 import com.quizz.database.services.UserService;
 
 @Service
@@ -28,6 +29,9 @@ public class AppServiceImpl implements AppService {
 
 	@Autowired
 	private ResponseService responseService;
+	
+	@Autowired
+	private ThemeService themeService;
 	
 	private static final int LITTLESTRINGLIMIT = 50;
 	
@@ -74,6 +78,10 @@ public class AppServiceImpl implements AppService {
 	@Override
 	public ReturnObject activeUser(String mail) {
 		return userService.activeUser(mail);
+	}
+	
+	public ReturnObject getAllThemes() {
+		return themeService.getAllThemes();
 	}
 
 	@Override
