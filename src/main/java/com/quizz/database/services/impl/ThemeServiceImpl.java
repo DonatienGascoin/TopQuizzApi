@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.quizz.database.beans.ResponseTmpBean;
 import com.quizz.database.beans.ThemeBean;
 import com.quizz.database.datas.ReturnCode;
 import com.quizz.database.modeles.ReturnObject;
@@ -116,7 +115,7 @@ public class ThemeServiceImpl implements ThemeService {
             
             // Save method was automatically managed by CrudRepository
             ThemeBean themeBean = themeRepository.save(t);
-            theme = new Theme(themeBean.getId(), themeBean.getName());
+            theme = getThemeByThemeBean(themeBean);
 
             object.setCode(ReturnCode.ERROR_000);
             log.info("Theme successfully added");
