@@ -24,7 +24,7 @@ public class ThemeServiceImpl implements ThemeService {
 	
 	@Override
 	public ReturnObject getAllThemes() {
-		log.info("Get all User");
+		log.info("Get all Themes");
 		ReturnObject object = new ReturnObject();
 		List<Theme> themes = new ArrayList<Theme>();
 		Boolean isInList;
@@ -48,13 +48,13 @@ public class ThemeServiceImpl implements ThemeService {
 			object.setCode(ReturnCode.ERROR_000);
 		} catch (IllegalArgumentException e) {
 			object.setCode(ReturnCode.ERROR_500);
-			log.error("Impossible to get all User " + ReturnCode.ERROR_500);
+			log.error("Impossible to get all Themes " + ReturnCode.ERROR_500);
 		} catch (RuntimeException e) {
 			object.setCode(ReturnCode.ERROR_200);
-			log.error("Impossible to get all User " + ReturnCode.ERROR_200);
+			log.error("Impossible to get all Themes " + ReturnCode.ERROR_200);
 		} catch (Exception e) {
 			object.setCode(ReturnCode.ERROR_050);
-			log.error("Impossible to get all User " + ReturnCode.ERROR_050);
+			log.error("Impossible to get all Themes " + ReturnCode.ERROR_050);
 		}
 		object.setObject(themes);
 
