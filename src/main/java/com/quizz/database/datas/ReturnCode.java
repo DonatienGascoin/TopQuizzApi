@@ -30,6 +30,10 @@ public enum ReturnCode {
 	 */
 	ERROR_350,
 	/**
+     * Theme already exist
+     */
+    ERROR_400,
+	/**
 	 * Illegal Argument Exception
 	 */
 	ERROR_500,

@@ -31,17 +31,12 @@ public class QuestionServiceImpl implements QuestionService {
 	private QuestionRepository questionRepository;
 
 	@Override
-	public ReturnObject addQuestion(String pseudo, String label, Collection<Theme> themes, String explanation) {
+	public ReturnObject addQuestion(String pseudo, String label, String explanation) {
 		log.info("Add question [pseudo: " + pseudo + ", question: " + label + "]");
 		ReturnObject object = new ReturnObject();
 
-		try {
-			Collection<ThemeBean> themesBean = new ArrayList<ThemeBean>();
-			for(Theme t: themes){
-				themesBean.add(t.convertToBean());
-			}
-			
-			QuestionBean q = new QuestionBean(pseudo, label, explanation, null, themesBean, null);
+		try {			
+			QuestionBean q = new QuestionBean(pseudo, label, explanation, null, null, null);
 
 			// Save method was automatically managed by CrudRepository
 			QuestionBean questionBean = questionRepository.save(q);

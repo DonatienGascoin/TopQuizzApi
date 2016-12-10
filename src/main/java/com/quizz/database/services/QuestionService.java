@@ -18,5 +18,5 @@ import com.quizz.database.repository.UserRepository;
 
 public interface QuestionService {
 	
-	public ReturnObject addQuestion(String pseudo, String label, Collection<Theme> themes, String explanation);
+	public ReturnObject addQuestion(String pseudo, String label, String explanation);
 }
