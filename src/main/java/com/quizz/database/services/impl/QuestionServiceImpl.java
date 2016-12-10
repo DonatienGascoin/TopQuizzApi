@@ -11,7 +11,6 @@ import com.quizz.database.beans.QuestionBean;
 import com.quizz.database.beans.QuizzBean;
 import com.quizz.database.beans.ResponseBean;
 import com.quizz.database.beans.ThemeBean;
-import com.quizz.database.beans.UserBean;
 import com.quizz.database.datas.ReturnCode;
 import com.quizz.database.datas.Visibility;
 import com.quizz.database.modeles.Question;
@@ -19,7 +18,6 @@ import com.quizz.database.modeles.Quizz;
 import com.quizz.database.modeles.Response;
 import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.modeles.Theme;
-import com.quizz.database.modeles.User;
 import com.quizz.database.services.QuestionService;
 import com.quizz.database.repository.QuestionRepository;
 

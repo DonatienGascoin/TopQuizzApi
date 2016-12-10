@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import com.quizz.database.beans.ResponseBean;
 import com.quizz.database.beans.ResponseTmpBean;
 import com.quizz.database.datas.ReturnCode;
-import com.quizz.database.modeles.Response;
 import com.quizz.database.modeles.ResponseTmp;
 import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.repository.ResponseRepository;
