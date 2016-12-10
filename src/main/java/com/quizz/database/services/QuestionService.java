@@ -1,9 +1,6 @@
 package com.quizz.database.services;
 
-import java.util.Collection;
-
 import com.quizz.database.modeles.ReturnObject;
-import com.quizz.database.modeles.Theme;
 import com.quizz.database.repository.UserRepository;
 
 /**

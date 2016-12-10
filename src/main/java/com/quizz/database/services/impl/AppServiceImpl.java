@@ -1,6 +1,5 @@
 package com.quizz.database.services.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.commons.lang3.StringUtils;
@@ -134,7 +133,7 @@ public class AppServiceImpl implements AppService {
 			// Add themes
 			if(ReturnCode.ERROR_000.equals(obj.getCode()) && obj.getObject() != null){
 				String[] split = StringUtils.split(themes, SEPARATOR);
-				for(String str: split){
+				for(String str : split){
 					themeService.addThemeWithIdQuestion(str, ((Question)obj.getObject()).getId());
 				}
 			}

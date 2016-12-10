@@ -130,14 +130,12 @@ public class ThemeServiceImpl implements ThemeService {
             object.setCode(ReturnCode.ERROR_050);
             log.error("Impossible to add Theme [name: " + name + "], " + ReturnCode.ERROR_050, e);
         }
-
         object.setObject(theme);
         return object;
     }
 	
 	public ReturnObject addThemeWithIdQuestion(String name, int idQuestion){
-
-        log.info("Add theme [name: " + name + "]");
+        log.info("Add theme [name: " + name + " idQuestion : "+ idQuestion + "]");
 
         ReturnObject object = new ReturnObject();
         
@@ -147,31 +145,23 @@ public class ThemeServiceImpl implements ThemeService {
         
         // The theme does not exist
         ThemeBean t = theme.convertToBean();
-        try {
-            // Test if name was already used
-            if (themeRepository.findByName(name) != null) {
-                log.info("Theme [name: " + name + "] already exist");
-                object.setCode(ReturnCode.ERROR_400);
-                return object;
-            }
-            
+        try {            
             // Save method was automatically managed by CrudRepository
             ThemeBean themeBean = themeRepository.save(t);
             theme = new Theme(themeBean.getId(), themeBean.getName(), themeBean.getIdQuestion());
 
             object.setCode(ReturnCode.ERROR_000);
-            log.info("Theme successfully added");
+            log.info("Theme successfully added" + "[name: " + name + " idQuestion : "+ idQuestion + "]");
         } catch (IllegalArgumentException e) {
             object.setCode(ReturnCode.ERROR_500);
-            log.error("Impossible to add Theme [name: " + name + "], " + ReturnCode.ERROR_500, e);
+            log.error("Impossible to add Theme [name: " + name + " idQuestion : "+ idQuestion + "], " + ReturnCode.ERROR_500, e);
         } catch (RuntimeException e) {
             object.setCode(ReturnCode.ERROR_200);
-            log.error("Impossible to add Theme [name: " + name + "], " + ReturnCode.ERROR_200, e);
+            log.error("Impossible to add Theme [name: " + name + " idQuestion : "+ idQuestion + "], " + ReturnCode.ERROR_200, e);
         } catch (Exception e) {
             object.setCode(ReturnCode.ERROR_050);
-            log.error("Impossible to add Theme [name: " + name + "], " + ReturnCode.ERROR_050, e);
+            log.error("Impossible to add Theme [name: " + name + " idQuestion : "+ idQuestion + "], " + ReturnCode.ERROR_050, e);
         }
-
         object.setObject(theme);
         return object;
     }
