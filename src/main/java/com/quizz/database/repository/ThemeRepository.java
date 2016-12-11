@@ -18,8 +18,8 @@ import com.quizz.database.beans.ThemeBean;
 @Transactional
 @Component
 public interface ThemeRepository extends CrudRepository<ThemeBean, Integer>{
-	
-	List<ThemeBean >findAll();
+
+	List<ThemeBean> findAll();
 	
 	ThemeBean findByName(String name);
 }

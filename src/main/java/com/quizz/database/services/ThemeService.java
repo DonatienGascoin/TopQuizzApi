@@ -11,7 +11,7 @@ import com.quizz.database.modeles.ReturnObject;
  * 
  */
 public interface ThemeService {
-	
+
 	public ReturnObject getThemeByName(String name);
 
 	public ReturnObject getAllThemes();
@@ -19,4 +19,6 @@ public interface ThemeService {
 	public ReturnObject addTheme(String name);
 
 	public ReturnObject deleteTheme(int id);
+	
+	public ReturnObject addThemeWithIdQuestion(String name, int idQuestion);
 }

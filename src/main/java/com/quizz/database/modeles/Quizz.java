@@ -8,7 +8,6 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import com.quizz.database.beans.QuestionBean;
 import com.quizz.database.beans.QuizzBean;
-import com.quizz.database.datas.Visibility;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

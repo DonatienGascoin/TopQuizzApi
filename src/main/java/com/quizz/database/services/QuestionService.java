@@ -5,12 +5,10 @@
  */
 package com.quizz.database.services;
 
-import java.util.Collection;
-
 import com.quizz.database.beans.QuestionBean;
 import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.modeles.Question;
-import com.quizz.database.modeles.Theme;
+import com.quizz.database.repository.UserRepository;
 
 /**
  * 
@@ -27,6 +25,5 @@ public interface QuestionService {
     
     public ReturnObject findById(Integer id);
     
-    public ReturnObject addQuestion(String pseudo, String label, Collection<Theme> themes, String explanation);
-    
+	public ReturnObject addQuestion(String pseudo, String label, String explanation);
 }

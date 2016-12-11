@@ -34,12 +34,6 @@ public interface AppService {
 	public ReturnObject changePassword(String password, String email);
 	
 	public ReturnObject checkUserCredentials(String pseudo, String password);
-        
-    public ReturnObject addTheme(String name);
-    
-    public ReturnObject deleteTheme (int id);
-    
-    public ReturnObject getThemeByName (String name);
     
     public ReturnObject addQuizz(String name, Visibility visibility, String questions);
     
@@ -52,4 +46,10 @@ public interface AppService {
 	public ReturnObject addTmpResponse(String number, String pseudo, String label, Boolean isValide);
 	
 	public ReturnObject getAllThemes();
+	
+	public ReturnObject addTheme(String name);
+    
+    public ReturnObject deleteTheme(int id);
+    
+    public ReturnObject getThemeByName (String name);
 }

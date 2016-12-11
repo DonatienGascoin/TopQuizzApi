@@ -1,8 +1,6 @@
 package com.quizz.database.controllers;
 
-import com.quizz.database.datas.ReturnCode;
 import com.quizz.database.datas.Visibility;
-import com.quizz.database.modeles.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

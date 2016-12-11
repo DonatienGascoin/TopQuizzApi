@@ -1,6 +1,5 @@
 package com.quizz.database.beans;
 
-import java.io.Serializable;
 import java.util.Collection;
 
 import javax.persistence.Column;
@@ -12,10 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.springframework.context.annotation.Lazy;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

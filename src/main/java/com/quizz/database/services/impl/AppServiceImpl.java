@@ -1,6 +1,5 @@
 package com.quizz.database.services.impl;
 
-
 import com.quizz.database.beans.QuestionBean;
 import com.quizz.database.datas.Visibility;
 
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import com.quizz.database.datas.ReturnCode;
 import com.quizz.database.modeles.Question;
 import com.quizz.database.modeles.ReturnObject;
-import com.quizz.database.modeles.Theme;
 import com.quizz.database.modeles.User;
 import com.quizz.database.services.AppService;
 import com.quizz.database.services.QuestionService;
@@ -65,27 +63,36 @@ public class AppServiceImpl implements AppService {
 		return userService.editUser(pseudo, mail, password, active, friends, questions);
 	}
 
-    @Override
-    public ReturnObject deleteUser(String pseudo) {
-            return userService.deleteUser(pseudo);
-    }
+	@Override
+	public ReturnObject deleteUser(String pseudo) {
+		return userService.deleteUser(pseudo);
+	}
 
-    @Override
-    public ReturnObject getUserByMail(String mail) {
-            return userService.getUserByMail(mail);
-    }
+	@Override
+	public ReturnObject getUserByMail(String mail) {
+		return userService.getUserByMail(mail);
+	}
 
-    @Override
-    public ReturnObject changePassword(String password, String email) {
-            return userService.changePassword(password, email);
-    }
+	@Override
+	public ReturnObject changePassword(String password, String email) {
+		return userService.changePassword(password, email);
+	}
 
-    @Override
-    public ReturnObject checkUserCredentials(String pseudo, String password) {
-            return userService.checkUserCredentials(pseudo, password);
-    }
+	@Override
+	public ReturnObject checkUserCredentials(String pseudo, String password) {
+		return userService.checkUserCredentials(pseudo, password);
+	}
 
-    @Override
+	@Override
+	public ReturnObject activeUser(String mail) {
+		return userService.activeUser(mail);
+	}
+	
+	public ReturnObject getAllThemes() {
+		return themeService.getAllThemes();
+	}
+	
+	@Override
     public ReturnObject addTheme(String name) {
             return themeService.addTheme(name);
     }
@@ -98,11 +105,6 @@ public class AppServiceImpl implements AppService {
     @Override
     public ReturnObject getThemeByName(String name) {
         return themeService.getThemeByName(name);
-    }
-
-    @Override
-    public ReturnObject getAllThemes() {
-        return themeService.getAllThemes();
     }
 
 
@@ -156,25 +158,23 @@ public class AppServiceImpl implements AppService {
 		}
 		obj = userService.getUser(pseudo);
 		if (obj.getObject() != null) {
-			Collection<Theme> t = new ArrayList<Theme>();
-			String[] split = StringUtils.split(themes, SEPARATOR);
-			for(String str: split){
-				t.add(new Theme(Integer.parseInt(str)));
-			}
 			//Add question
-			 obj = questionService.addQuestion(pseudo, label, t, explanation);
+			obj = questionService.addQuestion(pseudo, label, explanation);
 			 
-			 if(ReturnCode.ERROR_000.equals(obj.getCode()) && obj.getObject() != null){
-				 responseService.linkTmpResponse(((Question)obj.getObject()).getId(), pseudo);
-			 }
+			// Add themes
+			if(ReturnCode.ERROR_000.equals(obj.getCode()) && obj.getObject() != null){
+				String[] split = StringUtils.split(themes, SEPARATOR);
+				for(String str : split){
+					themeService.addThemeWithIdQuestion(str, ((Question)obj.getObject()).getId());
+				}
+			}
+			
+			// Add responses
+			if(ReturnCode.ERROR_000.equals(obj.getCode()) && obj.getObject() != null){
+				responseService.linkTmpResponse(((Question)obj.getObject()).getId(), pseudo);
+			}
 		}
 		obj.setCode(ReturnCode.ERROR_100);
-				
 		return obj;
-	}
-
-	@Override
-	public ReturnObject activeUser(String mail) {
-		return userService.activeUser(mail);
 	}
 }
