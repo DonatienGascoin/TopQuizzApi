@@ -40,4 +40,10 @@ public interface AppService {
 	public ReturnObject addTmpResponse(String number, String pseudo, String label, Boolean isValide);
 	
 	public ReturnObject getAllThemes();
+	
+	public ReturnObject addTheme(String name);
+    
+    public ReturnObject deleteTheme(int id);
+    
+    public ReturnObject getThemeByName (String name);
 }

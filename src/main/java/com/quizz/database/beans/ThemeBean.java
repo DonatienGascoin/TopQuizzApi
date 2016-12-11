@@ -21,4 +21,12 @@ public class ThemeBean {
 
 	@Column(nullable = false)
 	private String name;
+	
+	@Column(nullable = false)
+	private int idQuestion;
+	
+	public ThemeBean(String name, int idQuestion) {
+		this.name = name;
+		this.idQuestion = idQuestion;
+	}
 }

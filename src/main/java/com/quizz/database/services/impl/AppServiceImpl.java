@@ -1,6 +1,5 @@
 package com.quizz.database.services.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.commons.lang3.StringUtils;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.quizz.database.datas.ReturnCode;
 import com.quizz.database.modeles.Question;
 import com.quizz.database.modeles.ReturnObject;
-import com.quizz.database.modeles.Theme;
 import com.quizz.database.modeles.User;
 import com.quizz.database.services.AppService;
 import com.quizz.database.services.QuestionService;
@@ -83,6 +81,21 @@ public class AppServiceImpl implements AppService {
 	public ReturnObject getAllThemes() {
 		return themeService.getAllThemes();
 	}
+	
+	@Override
+    public ReturnObject addTheme(String name) {
+            return themeService.addTheme(name);
+    }
+
+    @Override
+    public ReturnObject deleteTheme(int id) {
+            return themeService.deleteTheme(id);
+    }
+
+    @Override
+    public ReturnObject getThemeByName(String name) {
+        return themeService.getThemeByName(name);
+    }
 
 	@Override
 	public ReturnObject addTmpResponse(String number, String pseudo, String label, Boolean isValide) {
@@ -114,20 +127,23 @@ public class AppServiceImpl implements AppService {
 		}
 		obj = userService.getUser(pseudo);
 		if (obj.getObject() != null) {
-			Collection<Theme> t = new ArrayList<Theme>();
-			String[] split = StringUtils.split(themes, SEPARATOR);
-			for(String str: split){
-				t.add(new Theme(Integer.parseInt(str)));
-			}
 			//Add question
-			 obj = questionService.addQuestion(pseudo, label, t, explanation);
+			obj = questionService.addQuestion(pseudo, label, explanation);
 			 
-			 if(ReturnCode.ERROR_000.equals(obj.getCode()) && obj.getObject() != null){
-				 responseService.linkTmpResponse(((Question)obj.getObject()).getId(), pseudo);
-			 }
+			// Add themes
+			if(ReturnCode.ERROR_000.equals(obj.getCode()) && obj.getObject() != null){
+				String[] split = StringUtils.split(themes, SEPARATOR);
+				for(String str : split){
+					themeService.addThemeWithIdQuestion(str, ((Question)obj.getObject()).getId());
+				}
+			}
+			
+			// Add responses
+			if(ReturnCode.ERROR_000.equals(obj.getCode()) && obj.getObject() != null){
+				responseService.linkTmpResponse(((Question)obj.getObject()).getId(), pseudo);
+			}
 		}
 		obj.setCode(ReturnCode.ERROR_100);
-				
 		return obj;
 	}
 }
