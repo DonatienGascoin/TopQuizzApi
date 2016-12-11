@@ -20,13 +20,8 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name="User")
-public class UserBean implements Serializable {
-
-	/**
-	 * Using for serialise object
-	 */
-	private static final long serialVersionUID = 1L;
+@Table(name = "User")
+public class UserBean {
 
 	@Id
 	@Column()
@@ -38,20 +33,24 @@ public class UserBean implements Serializable {
 	@Column(nullable = false, unique = true)
 	private String mail;
 
+	@Column(nullable = false)
+	private Boolean active;
+
 	@Column
-	@ManyToMany(fetch=FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "Friend", joinColumns = @JoinColumn(name = "Pseudo", referencedColumnName = "pseudo"), inverseJoinColumns = @JoinColumn(name = "Pseudo2", referencedColumnName = "pseudo"))
 	private java.util.Collection<UserBean> friends;
 
 	@Column
-	@OneToMany(fetch=FetchType.LAZY)
+	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn
 	private java.util.Collection<QuestionBean> question;
 
-	public UserBean(String pseudo, String password, String mail) {
+	public UserBean(String pseudo, String password, String mail, Boolean active) {
 		this.pseudo = pseudo;
 		this.password = password;
 		this.mail = mail;
+		this.active = active;
 	}
 
 }

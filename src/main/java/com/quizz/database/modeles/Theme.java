@@ -16,10 +16,16 @@ public class Theme implements Serializable {
 	private int id;
 
 	private String name;
-        
-        public Theme (int id, String name) {
+
+	public Theme(int id) {
+		super();
 		this.id = id;
-                this.name = name;
+	}
+
+	public Theme(int id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
 	}
 	
 	public ThemeBean convertToBean(){
@@ -29,4 +35,5 @@ public class Theme implements Serializable {
 		
 		return bean;
 	}
+
 }

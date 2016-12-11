@@ -1,29 +1,38 @@
 package com.quizz.database.services.impl;
 
+
 import com.quizz.database.beans.QuestionBean;
 import com.quizz.database.datas.Visibility;
+
+import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.quizz.database.datas.ReturnCode;
 import com.quizz.database.modeles.Question;
 import com.quizz.database.modeles.ReturnObject;
+import com.quizz.database.modeles.Theme;
 import com.quizz.database.modeles.User;
-import com.quizz.database.repository.QuizzRepository;
-import com.quizz.database.repository.QuestionRepository;
 import com.quizz.database.services.AppService;
-import com.quizz.database.services.UserService;
-import com.quizz.database.services.ThemeService;
-import com.quizz.database.services.QuizzService;
 import com.quizz.database.services.QuestionService;
-import java.util.ArrayList;
-import org.apache.commons.lang3.StringUtils;
+import com.quizz.database.services.ResponseService;
+import com.quizz.database.services.ThemeService;
+import com.quizz.database.services.UserService;
+import com.quizz.database.services.QuizzService;
 
 @Service
 public class AppServiceImpl implements AppService {
     
-    private static final String SEPARATOR = ",";
+    private static final String SEPARATOR_QUIZZ = ",";
+    
+	private static final int LITTLESTRINGLIMIT = 50;
+	
+	private static final int BIGSTRINGLIMIT = 50;
+	
+	private static final String SEPARATOR = "|";
 	
     @Autowired
     private UserService userService;
@@ -36,6 +45,9 @@ public class AppServiceImpl implements AppService {
     
     @Autowired
     private QuestionService questionService;
+    
+    @Autowired
+    private ResponseService responseService;
 
     @Override
     public ReturnObject getUser(String pseudo) {
@@ -48,9 +60,10 @@ public class AppServiceImpl implements AppService {
     }
 
     @Override
-    public ReturnObject editUser(String pseudo, String mail, String password, Collection<User> friends, Collection<Question> questions) {
-            return userService.editUser(pseudo, mail, password, friends, questions);
-    }
+    public ReturnObject editUser(String pseudo, String mail, String password, Boolean active, Collection<User> friends,
+			Collection<Question> questions) {
+		return userService.editUser(pseudo, mail, password, active, friends, questions);
+	}
 
     @Override
     public ReturnObject deleteUser(String pseudo) {
@@ -88,8 +101,8 @@ public class AppServiceImpl implements AppService {
     }
 
     @Override
-    public ReturnObject getAllTheme() {
-        return themeService.getAllTheme();
+    public ReturnObject getAllThemes() {
+        return themeService.getAllThemes();
     }
 
 
@@ -101,7 +114,7 @@ public class AppServiceImpl implements AppService {
     @Override
     public ReturnObject addQuizz(String name, Visibility visibility, String questions){
         
-        String[] split = StringUtils.split(questions, SEPARATOR);
+        String[] split = StringUtils.split(questions, SEPARATOR_QUIZZ);
         Collection<Question> questionList = new ArrayList<Question>();
         
         for (String split1 : split) {
@@ -112,4 +125,56 @@ public class AppServiceImpl implements AppService {
         }
         return quizzService.addQuizz(name,visibility, questionList);
     }
+
+	@Override
+	public ReturnObject addTmpResponse(String number, String pseudo, String label, Boolean isValide) {
+		ReturnObject obj = new ReturnObject();
+		if(StringUtils.isEmpty(number) || StringUtils.isEmpty(pseudo) || StringUtils.isEmpty(label)){
+			obj.setCode(ReturnCode.ERROR_150);
+			return obj;
+		}
+		if(label.length() > LITTLESTRINGLIMIT || pseudo.length() > LITTLESTRINGLIMIT ){
+			obj.setCode(ReturnCode.ERROR_500);
+		}
+		obj = userService.getUser(pseudo);
+		if (obj.getObject() != null) {
+			return responseService.addTmpResponse(pseudo + SEPARATOR + number, label, isValide);
+		}
+		obj.setCode(ReturnCode.ERROR_100);
+		return obj;
+	}
+
+	@Override
+	public ReturnObject addQuestion(String pseudo, String label, String themes, String explanation) {
+		ReturnObject obj = new ReturnObject();
+		if (StringUtils.isEmpty(pseudo) || StringUtils.isEmpty(label) || StringUtils.isEmpty(themes) || StringUtils.isEmpty(explanation)) {
+			obj.setCode(ReturnCode.ERROR_150);
+			return obj;
+		}
+		if(explanation.length() > BIGSTRINGLIMIT || label.length() > LITTLESTRINGLIMIT){
+			obj.setCode(ReturnCode.ERROR_500);
+		}
+		obj = userService.getUser(pseudo);
+		if (obj.getObject() != null) {
+			Collection<Theme> t = new ArrayList<Theme>();
+			String[] split = StringUtils.split(themes, SEPARATOR);
+			for(String str: split){
+				t.add(new Theme(Integer.parseInt(str)));
+			}
+			//Add question
+			 obj = questionService.addQuestion(pseudo, label, t, explanation);
+			 
+			 if(ReturnCode.ERROR_000.equals(obj.getCode()) && obj.getObject() != null){
+				 responseService.linkTmpResponse(((Question)obj.getObject()).getId(), pseudo);
+			 }
+		}
+		obj.setCode(ReturnCode.ERROR_100);
+				
+		return obj;
+	}
+
+	@Override
+	public ReturnObject activeUser(String mail) {
+		return userService.activeUser(mail);
+	}
 }

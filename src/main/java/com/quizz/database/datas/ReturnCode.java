@@ -10,7 +10,7 @@ public enum ReturnCode {
 	 */
 	ERROR_050,
 	/**
-	 * ObjectNotFound
+	 * Object Not Found
 	 */
 	ERROR_100,
         /**
@@ -18,7 +18,7 @@ public enum ReturnCode {
 	 */
 	ERROR_150,
 	/**
-	 * Database Unreachable
+	 * Missing Parameters
 	 */
 	ERROR_200,
 	/**
@@ -32,9 +32,13 @@ public enum ReturnCode {
         /**
          * Theme already exist
          */
-        ERROR_400,
+    ERROR_400,
 	/**
-	 * IllegalArgumentException
+	 * Illegal Argument Exception
 	 */
-	ERROR_500;
+	ERROR_500,
+	/**
+	 * User inactive
+	 */
+	ERROR_650;
 }

@@ -10,7 +10,7 @@ import org.springframework.data.repository.CrudRepository;
 
 /**
  *
- * @author romai
+ * @author romain
  */
 public interface QuestionRepository extends CrudRepository<QuestionBean, Integer>{
     

@@ -6,6 +6,9 @@ import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +19,6 @@ import com.quizz.database.modeles.Theme;
 import com.quizz.database.repository.ThemeRepository;
 import com.quizz.database.repository.UserRepository;
 import com.quizz.database.services.ThemeService;
-
-import lombok.extern.slf4j.Slf4j;
-import sun.invoke.empty.Empty;
 
 @Slf4j
 @Service
@@ -63,37 +63,44 @@ public class ThemeServiceImpl implements ThemeService {
     * 
     * @return {@link Theme}
     */
-    public ReturnObject getAllTheme(){
-        log.info("Get all Theme");
-        ReturnObject object = new ReturnObject();
-        List<Theme> themes = new ArrayList<Theme>();
-        try {
-                List<ThemeBean> findAll = themeRepository.findAll();
-                for (ThemeBean themeBean : findAll) {
-                        Theme theme = new Theme();
+    @Override
+	public ReturnObject getAllThemes() {
+		log.info("Get all Themes");
+		ReturnObject object = new ReturnObject();
+		List<Theme> themes = new ArrayList<Theme>();
+		Boolean isInList;
+		try {
+			List<ThemeBean> findAll = themeRepository.findAll();
+			for (ThemeBean themeBean : findAll) {
+				Theme theme = new Theme();
 
-                        theme.setName(themeBean.getName());
-                        theme.setId(themeBean.getId());
+				theme.setId(themeBean.getId());
+				theme.setName(themeBean.getName());
+				isInList = false;
+				for(Theme t : themes) {
+					if(t.getName().equals(theme.getName())) {
+						isInList = true;
+					}
+				}
+				if(!isInList) {
+					themes.add(theme);
+				}
+			}
+			object.setCode(ReturnCode.ERROR_000);
+		} catch (IllegalArgumentException e) {
+			object.setCode(ReturnCode.ERROR_500);
+			log.error("Impossible to get all Themes " + ReturnCode.ERROR_500);
+		} catch (RuntimeException e) {
+			object.setCode(ReturnCode.ERROR_200);
+			log.error("Impossible to get all Themes " + ReturnCode.ERROR_200);
+		} catch (Exception e) {
+			object.setCode(ReturnCode.ERROR_050);
+			log.error("Impossible to get all Themes " + ReturnCode.ERROR_050);
+		}
+		object.setObject(themes);
 
-                        themes.add(theme);
-                }
-                if (themes.isEmpty()){
-                    object.setCode(ReturnCode.ERROR_100);
-                }else{
-                    object.setCode(ReturnCode.ERROR_000);
-                }
-        } catch (RuntimeException e) {
-                object.setCode(ReturnCode.ERROR_200);
-                log.error("Impossible to get all Theme " + ReturnCode.ERROR_200, e);
-        } catch (Exception e) {
-                object.setCode(ReturnCode.ERROR_050);
-                log.error("Impossible to get all Theme " + ReturnCode.ERROR_050, e);
-        }
-        object.setObject(themes);
-
-        return object;
-
-    }
+		return object;
+	}
 
     public ReturnObject addTheme(String name){
 

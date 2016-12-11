@@ -1,12 +1,6 @@
 package com.quizz.database.services;
 
-import java.util.Collection;
-
-import com.quizz.database.modeles.Question;
 import com.quizz.database.modeles.ReturnObject;
-import com.quizz.database.modeles.User;
-import com.quizz.database.repository.UserRepository;
-
 /**
  * 
  * {@link ThemeService} will validate data and call {@link ThemeRepository} 
@@ -20,10 +14,9 @@ public interface ThemeService {
 	
 	public ReturnObject getThemeByName(String name);
 
-	public ReturnObject getAllTheme();
+	public ReturnObject getAllThemes();
 
 	public ReturnObject addTheme(String name);
 
 	public ReturnObject deleteTheme(int id);
-	
 }
