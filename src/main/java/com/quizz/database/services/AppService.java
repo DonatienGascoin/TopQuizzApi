@@ -1,5 +1,7 @@
 package com.quizz.database.services;
 
+import com.quizz.database.beans.QuestionBean;
+import com.quizz.database.datas.Visibility;
 import java.util.Collection;
 
 import com.quizz.database.modeles.Question;
@@ -32,6 +34,10 @@ public interface AppService {
 	public ReturnObject changePassword(String password, String email);
 	
 	public ReturnObject checkUserCredentials(String pseudo, String password);
+    
+    public ReturnObject addQuizz(String name, Visibility visibility, String questions);
+    
+    public Question getQuestionByQuestionBean(QuestionBean bean);
 	
 	public ReturnObject activeUser(String mail);
 	

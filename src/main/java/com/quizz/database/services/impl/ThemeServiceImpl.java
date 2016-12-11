@@ -18,10 +18,10 @@ import com.quizz.database.services.ThemeService;
 @Slf4j
 @Service
 public class ThemeServiceImpl implements ThemeService {
-
-	@Autowired
-	private ThemeRepository themeRepository;
-	
+    
+    @Autowired
+    private ThemeRepository themeRepository;
+    
 	/**
     * Return name, id, question (id)
     * 
@@ -35,11 +35,11 @@ public class ThemeServiceImpl implements ThemeService {
 		try {
 			ThemeBean findByName = themeRepository.findByName(name);
 			theme = getThemeByThemeBean(findByName);
-                        if (theme == null){
-                            object.setCode(ReturnCode.ERROR_100);
-                        }else {
-                            object.setCode(ReturnCode.ERROR_000);
-                        }
+                if (theme == null){
+                    object.setCode(ReturnCode.ERROR_100);
+                }else {
+                    object.setCode(ReturnCode.ERROR_000);
+                }
 		} catch (IllegalArgumentException e) {
 			object.setCode(ReturnCode.ERROR_500);
 			log.error("Impossible to get Theme [name: " + name + "], " + ReturnCode.ERROR_500, e);

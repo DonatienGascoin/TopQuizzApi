@@ -7,19 +7,19 @@ import javax.transaction.Transactional;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 
-import com.quizz.database.beans.ThemeBean;
+import com.quizz.database.beans.QuizzBean;
 
 /**
  * 
-<<<<<<< HEAD
- * @author Donatien
+ * @author Romain
  *
  */
 @Transactional
 @Component
-public interface ThemeRepository extends CrudRepository<ThemeBean, Integer>{
-
-	List<ThemeBean> findAll();
+public interface QuizzRepository extends CrudRepository<QuizzBean, Integer>{
 	
-	ThemeBean findByName(String name);
+	List<QuizzBean >findAll();
+	
+	QuizzBean findByName(String name);
+	
 }

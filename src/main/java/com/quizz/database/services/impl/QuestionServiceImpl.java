@@ -61,7 +61,8 @@ public class QuestionServiceImpl implements QuestionService {
 		return object;
 	}
 
-	private Question getQuestionByQuestionBean(QuestionBean bean) {
+	@Override
+	public Question getQuestionByQuestionBean(QuestionBean bean) {
 		Question q = new Question();
 		if (bean != null) {
 			q.setId(bean.getId());
@@ -74,7 +75,7 @@ public class QuestionServiceImpl implements QuestionService {
 				for (QuizzBean quizzB : bean.getQuizzs()) {
 					Quizz qu = new Quizz();
 					qu.setId(quizzB.getId());
-					qu.setIsVisible(Visibility.valueOf(quizzB.getIsVisible()));
+					qu.setIsVisible((Visibility.valueOf(quizzB.getIsVisible())).toString());
 					qu.setName(quizzB.getName());
 					
 					if(CollectionUtils.isNotEmpty(quizzB.getQuestions())){
@@ -108,4 +109,16 @@ public class QuestionServiceImpl implements QuestionService {
 
 		return q;
 	}
+
+    @Override
+    public ReturnObject findById(Integer id) {
+       ReturnObject obj = new ReturnObject();
+       try{
+            obj.setObject(questionRepository.findById(id));
+       }catch(Exception e){
+           // TODO
+       }
+        
+        return obj;
+    }
 }

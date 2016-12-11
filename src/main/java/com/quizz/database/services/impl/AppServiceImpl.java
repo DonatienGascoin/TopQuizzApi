@@ -1,5 +1,9 @@
 package com.quizz.database.services.impl;
 
+import com.quizz.database.beans.QuestionBean;
+import com.quizz.database.datas.Visibility;
+
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.commons.lang3.StringUtils;
@@ -15,40 +19,46 @@ import com.quizz.database.services.QuestionService;
 import com.quizz.database.services.ResponseService;
 import com.quizz.database.services.ThemeService;
 import com.quizz.database.services.UserService;
+import com.quizz.database.services.QuizzService;
 
 @Service
 public class AppServiceImpl implements AppService {
-
-	@Autowired
-	private UserService userService;
-
-	@Autowired
-	private QuestionService questionService;
-
-	@Autowired
-	private ResponseService responseService;
-	
-	@Autowired
-	private ThemeService themeService;
-	
+    
+    private static final String SEPARATOR_QUIZZ = ",";
+    
 	private static final int LITTLESTRINGLIMIT = 50;
 	
 	private static final int BIGSTRINGLIMIT = 50;
 	
 	private static final String SEPARATOR = "|";
+	
+    @Autowired
+    private UserService userService;
+    
+    @Autowired
+    private ThemeService themeService;
+    
+    @Autowired
+    private QuizzService quizzService;
+    
+    @Autowired
+    private QuestionService questionService;
+    
+    @Autowired
+    private ResponseService responseService;
 
-	@Override
-	public ReturnObject getUser(String pseudo) {
-		return userService.getUser(pseudo);
-	}
+    @Override
+    public ReturnObject getUser(String pseudo) {
+            return userService.getUser(pseudo);
+    }
 
-	@Override
-	public ReturnObject addUser(String pseudo, String mail, String password) {
-		return userService.addUser(pseudo, mail, password);
-	}
+    @Override
+    public ReturnObject addUser(String pseudo, String mail, String password) {
+            return userService.addUser(pseudo, mail, password);
+    }
 
-	@Override
-	public ReturnObject editUser(String pseudo, String mail, String password, Boolean active, Collection<User> friends,
+    @Override
+    public ReturnObject editUser(String pseudo, String mail, String password, Boolean active, Collection<User> friends,
 			Collection<Question> questions) {
 		return userService.editUser(pseudo, mail, password, active, friends, questions);
 	}
@@ -95,6 +105,27 @@ public class AppServiceImpl implements AppService {
     @Override
     public ReturnObject getThemeByName(String name) {
         return themeService.getThemeByName(name);
+    }
+
+
+    @Override
+    public Question getQuestionByQuestionBean(QuestionBean bean){
+        return questionService.getQuestionByQuestionBean(bean);
+    }
+    
+    @Override
+    public ReturnObject addQuizz(String name, Visibility visibility, String questions){
+        
+        String[] split = StringUtils.split(questions, SEPARATOR_QUIZZ);
+        Collection<Question> questionList = new ArrayList<Question>();
+        
+        for (String split1 : split) {
+            ReturnObject obj = questionService.findById(Integer.parseInt(split1));
+            QuestionBean test = (QuestionBean) obj.getObject();
+            Question test2 = getQuestionByQuestionBean(test);
+            questionList.add(test2);
+        }
+        return quizzService.addQuizz(name,visibility, questionList);
     }
 
 	@Override

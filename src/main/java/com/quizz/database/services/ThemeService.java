@@ -1,18 +1,17 @@
 package com.quizz.database.services;
 
 import com.quizz.database.modeles.ReturnObject;
-
 /**
  * 
  * {@link ThemeService} will validate data and call {@link ThemeRepository} 
  * 
- * @author Louis Paret
+ * @author Romain Chazottier
  * @version 1.0
- * @since 05/12/2016
+ * @since 25/11/2016
  * 
  */
-
 public interface ThemeService {
+
 	public ReturnObject getThemeByName(String name);
 
 	public ReturnObject getAllThemes();
