@@ -55,10 +55,8 @@ public class QuestionBean implements Serializable {
 	@ManyToMany(fetch=FetchType.LAZY)
 	@JoinTable(
 		name="Quizz_Question",
-				joinColumns=
-					@JoinColumn(name="Quizz", referencedColumnName="id"),
-				inverseJoinColumns=
-					@JoinColumn(name="Question", referencedColumnName="id")
+		joinColumns=@JoinColumn(name="Question", referencedColumnName="id"),
+		inverseJoinColumns=@JoinColumn(name="Quizz", referencedColumnName="id")
 	)
 	public Collection<QuizzBean> quizzs;
 

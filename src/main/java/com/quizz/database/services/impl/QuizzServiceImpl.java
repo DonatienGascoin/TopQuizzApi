@@ -58,7 +58,6 @@ public class QuizzServiceImpl implements QuizzService {
 			// Recovers Quizz associated with user questions
 			for (QuestionBean qBean : new ArrayList<QuestionBean>(userBean.getQuestion())) {
 				questionBean = questionRepository.findById(qBean.getId());
-				
 				for (QuizzBean quizzBean : new ArrayList<QuizzBean>(questionBean.getQuizzs())) {
 					if (!checkIfQuizzInList(listQuizzes, quizzBean.getId())) {
 						listQuizzes.add(getQuizzByQuizzBean(quizzBean));
@@ -111,9 +110,7 @@ public class QuizzServiceImpl implements QuizzService {
 		for (Quizz qB : lQuizzes) {
 			if (qB.getId() == idQuizz) {
 				return true;
-			} else {
-				return false;
-			}
+			} 
 		}
 		return false;
 	}
@@ -130,7 +127,7 @@ public class QuizzServiceImpl implements QuizzService {
 		quizz.setName(bean.getName());
 		Visibility vis = null;
 		for (Visibility v : Visibility.values()) {
-			if (v.getId() == bean.getId()) {
+			if (v.getId() == Integer.parseInt(bean.getIsVisible())) {
 				vis = v;
 			}
 		}
