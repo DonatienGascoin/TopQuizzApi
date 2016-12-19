@@ -23,6 +23,6 @@ public interface ThemeRepository extends CrudRepository<ThemeBean, Integer>{
 	public List<ThemeBean> findAll();
 	
 	public List<ThemeBean> findByIdQuestion(int idQuestion);
-	ThemeBean findByName(String name);
+	
+	public ThemeBean findByName(String name);
 }
-

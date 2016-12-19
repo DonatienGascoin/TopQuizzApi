@@ -203,22 +203,22 @@ public class ThemeServiceImpl implements ThemeService {
 
 	@Override
 	public ReturnObject getAllThemesByUser(Collection<Question> questions) {
+		log.info("Get all themes for user");
 		ReturnObject object = new ReturnObject();
 		try {
-			Set<Theme> listTheme = new TreeSet<Theme>();
+			ThemeSet listTheme = new ThemeSet();
 			if (CollectionUtils.isNotEmpty(questions)) {
 				for (Question question : questions) {
 					Collection<ThemeBean> tmp = themeRepository.findByIdQuestion(question.getId());
 					for (ThemeBean themeBean : tmp) {
-
-						listTheme.add(getThemeByThemeBean(themeBean));
+						listTheme.addToSet(getThemeByThemeBean(themeBean));
 					}
 				}
 				object.setObject(listTheme);
 				object.setCode(ReturnCode.ERROR_000);
 			} else {
 				object.setCode(ReturnCode.ERROR_100);
-				log.info("This user dont have theme");
+				log.info("This user dont have theme, " + ReturnCode.ERROR_100);
 			}
 
 		} catch (Exception e) {
@@ -226,5 +226,22 @@ public class ThemeServiceImpl implements ThemeService {
 		}
 
 		return object;
+	}
+	
+	
+	private class ThemeSet extends TreeSet<Theme>{
+		
+		
+		public void addToSet(Theme theme){
+			boolean isPossible = true;
+			for(Theme t: this){
+				if(t.getName().equals(theme.getName())){
+					isPossible = false;
+				}
+			}
+			if(isPossible){
+				this.add(theme);
+			}
+		}
 	}
 }
