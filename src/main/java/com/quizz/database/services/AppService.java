@@ -7,6 +7,9 @@ import java.util.Collection;
 import com.quizz.database.modeles.Question;
 import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.modeles.User;
+import java.util.List;
+
+import com.quizz.database.services.QuizzService;
 
 /**
  * 
@@ -30,8 +33,10 @@ public interface AppService {
 	public ReturnObject editUser(String pseudo, String mail, String password, Boolean active, Collection<User> friends, Collection<Question> questions);
 	
 	public ReturnObject deleteUser(String pseudo);
-	
+
 	public ReturnObject changePassword(String password, String email);
+	
+	public ReturnObject getAllThemesByUser(String pseudo);
 	
 	public ReturnObject checkUserCredentials(String pseudo, String password);
     
@@ -53,3 +58,4 @@ public interface AppService {
     
     public ReturnObject getThemeByName (String name);
 }
+

@@ -1,8 +1,5 @@
 package com.quizz.database.services.impl;
 
-import com.quizz.database.beans.QuestionBean;
-import com.quizz.database.datas.Visibility;
-
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -10,16 +7,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.quizz.database.beans.QuestionBean;
 import com.quizz.database.datas.ReturnCode;
+import com.quizz.database.datas.Visibility;
 import com.quizz.database.modeles.Question;
 import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.modeles.User;
 import com.quizz.database.services.AppService;
 import com.quizz.database.services.QuestionService;
+import com.quizz.database.services.QuizzService;
 import com.quizz.database.services.ResponseService;
 import com.quizz.database.services.ThemeService;
 import com.quizz.database.services.UserService;
-import com.quizz.database.services.QuizzService;
 
 @Service
 public class AppServiceImpl implements AppService {
@@ -58,8 +57,7 @@ public class AppServiceImpl implements AppService {
     }
 
     @Override
-    public ReturnObject editUser(String pseudo, String mail, String password, Boolean active, Collection<User> friends,
-			Collection<Question> questions) {
+	public ReturnObject editUser(String pseudo, String mail, String password, Boolean active, Collection<User> friends, Collection<Question> questions) {
 		return userService.editUser(pseudo, mail, password, active, friends, questions);
 	}
 
@@ -71,6 +69,16 @@ public class AppServiceImpl implements AppService {
 	@Override
 	public ReturnObject getUserByMail(String mail) {
 		return userService.getUserByMail(mail);
+	}
+
+	@Override
+	public ReturnObject getAllThemesByUser(String pseudo) {
+		ReturnObject obj = userService.getUser(pseudo);
+		if (obj.getObject() != null) {
+			return themeService.getAllThemesByUser((Collection<Question>) ((User) obj.getObject()).getQuestions());
+		}
+		obj.setCode(ReturnCode.ERROR_100);
+		return obj;
 	}
 
 	@Override

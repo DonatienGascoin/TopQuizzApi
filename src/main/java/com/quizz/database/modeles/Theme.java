@@ -4,21 +4,22 @@ import java.io.Serializable;
 
 import com.quizz.database.beans.ThemeBean;
 
+import antlr.StringUtils;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class Theme implements Serializable {
+public class Theme implements Serializable, Comparable<Theme> {
 	
 	private static final long serialVersionUID = 1L;
 
 	private int id;
 
 	private String name;
-	
-	private int idQuestion;
 
+	private Integer idQuestion;
+	
 	public Theme(String str, int idQuestion) {
 		super();
 		this.name = str;
@@ -44,6 +45,17 @@ public class Theme implements Serializable {
 		bean.setName(this.name);
 		bean.setIdQuestion(this.idQuestion);
 		return bean;
+	}
+
+	@Override
+	public int compareTo(Theme t) {
+		final int BEFORE = -1;
+	    final int EQUAL = 0;
+	    final int AFTER = 1;
+	    if(this.id == t.id){
+	    	return EQUAL;
+	    }
+		return (this.id < t.id)? BEFORE: AFTER;
 	}
 
 }

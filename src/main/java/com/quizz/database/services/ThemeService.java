@@ -1,5 +1,8 @@
 package com.quizz.database.services;
 
+import java.util.Collection;
+
+import com.quizz.database.modeles.Question;
 import com.quizz.database.modeles.ReturnObject;
 /**
  * 
@@ -21,4 +24,6 @@ public interface ThemeService {
 	public ReturnObject deleteTheme(int id);
 	
 	public ReturnObject addThemeWithIdQuestion(String name, int idQuestion);
+	
+	public ReturnObject getAllThemesByUser(Collection<Question> questions);
 }

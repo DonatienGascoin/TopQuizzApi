@@ -75,4 +75,15 @@ public class ThemeController {
 		}
 		return ResponseEntity.ok().body(object);
 	}
+	
+	@RequestMapping(value = "/getAllByUser", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<ReturnObject> getAllThemesByUser(@RequestParam(name = "pseudo") String pseudo) {
+		ReturnObject object = new ReturnObject();
+		try {
+			object = appService.getAllThemesByUser(pseudo);
+		} catch (Exception e) {
+			log.error("Impossible to get all Theme for user [" + pseudo + "]");
+		}
+		return ResponseEntity.ok().body(object);
+	}
 }
