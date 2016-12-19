@@ -16,4 +16,6 @@ public interface QuizzService {
 	public ReturnObject getAllQuizzesByPseudo(String pseudo);
 
 	public ReturnObject getQuizzByName(String name);
+
+	public ReturnObject deleteQuizzById(Integer id);
 }

@@ -90,6 +90,11 @@ public class AppServiceImpl implements AppService {
 	}
 
 	@Override
+	public ReturnObject deleteQuizzById(Integer id) {
+		return quizzService.deleteQuizzById(id);
+	}
+		
+	@Override
 	public ReturnObject addTmpResponse(String number, String pseudo, String label, Boolean isValide) {
 		ReturnObject obj = new ReturnObject();
 		if(StringUtils.isEmpty(number) || StringUtils.isEmpty(pseudo) || StringUtils.isEmpty(label)){
