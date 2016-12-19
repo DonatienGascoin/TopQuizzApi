@@ -21,7 +21,7 @@ import com.quizz.database.services.ThemeService;
 import com.quizz.database.services.UserService;
 
 @Service
-public class AppServiceImpl implements AppService {
+public class AppServiceImpl implements AppService {	
     
     private static final String SEPARATOR_QUIZZ = ",";
     
@@ -92,6 +92,16 @@ public class AppServiceImpl implements AppService {
 	}
 
 	@Override
+	public ReturnObject getAllQuizzesByPseudo(String pseudo) {
+		return quizzService.getAllQuizzesByPseudo(pseudo);
+	}
+
+	@Override
+	public ReturnObject getQuizzByName(String name) {
+		return quizzService.getQuizzByName(name);
+	}
+
+	@Override
 	public ReturnObject activeUser(String mail) {
 		return userService.activeUser(mail);
 	}
@@ -136,6 +146,11 @@ public class AppServiceImpl implements AppService {
         return quizzService.addQuizz(name,visibility, questionList);
     }
 
+	@Override
+	public ReturnObject deleteQuizzById(Integer id) {
+		return quizzService.deleteQuizzById(id);
+	}
+		
 	@Override
 	public ReturnObject addTmpResponse(String number, String pseudo, String label, Boolean isValide) {
 		ReturnObject obj = new ReturnObject();

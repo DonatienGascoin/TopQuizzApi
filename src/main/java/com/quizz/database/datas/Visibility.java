@@ -4,13 +4,23 @@ public enum Visibility {
 	/**
 	 * Only you can access to your quizzs
 	 */
-	PRIVATE,
+	PRIVATE(2),
 	/**
 	 * Only friends of quizz creator can access to your quizzs
 	 */
-	PROTECTED,
+	PROTECTED(1),
 	/**
 	 * Everything can access to your quizzs
 	 */
-	PUBLIC;
+	PUBLIC(0);
+	
+	private Integer id;
+	
+	private Visibility(Integer id) {
+		this.id = id;
+	}
+	
+	public Integer getId() {
+		return this.id;
+	}
 }
