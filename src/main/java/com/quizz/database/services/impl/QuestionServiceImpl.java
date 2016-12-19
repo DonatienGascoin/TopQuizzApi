@@ -75,7 +75,7 @@ public class QuestionServiceImpl implements QuestionService {
 				for (QuizzBean quizzB : bean.getQuizzs()) {
 					Quizz qu = new Quizz();
 					qu.setId(quizzB.getId());
-					qu.setIsVisible((Visibility.valueOf(quizzB.getIsVisible())).toString());
+					qu.setIsVisible((Visibility.valueOf(quizzB.getIsVisible())));
 					qu.setName(quizzB.getName());
 					
 					if(CollectionUtils.isNotEmpty(quizzB.getQuestions())){

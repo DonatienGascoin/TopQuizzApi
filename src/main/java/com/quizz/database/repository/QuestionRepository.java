@@ -9,10 +9,10 @@ import com.quizz.database.beans.QuestionBean;
 import org.springframework.data.repository.CrudRepository;
 
 /**
- *
- * @author romain
+ * @author Maxence Royer
+ * @author Romain
+ * 
  */
 public interface QuestionRepository extends CrudRepository<QuestionBean, Integer>{
-    
-    QuestionBean findById(int id);
+	QuestionBean findById(Integer id);
 }

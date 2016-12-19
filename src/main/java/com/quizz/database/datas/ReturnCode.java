@@ -38,6 +38,10 @@ public enum ReturnCode {
 	 */
 	ERROR_500,
 	/**
+	 * Exception
+	 */
+	ERROR_600,
+	/**
 	 * User inactive
 	 */
 	ERROR_650,

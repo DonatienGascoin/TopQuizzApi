@@ -31,6 +31,9 @@ public class QuestionBean{
 
 	@Column(nullable = false)
 	private String label;
+	
+	@Column(nullable = false)
+	private String explanation;
 
 	@OneToMany(fetch=FetchType.LAZY)
 	@JoinColumn(name="idQuestion")
@@ -40,16 +43,11 @@ public class QuestionBean{
 	@JoinColumn(name="idQuestion")
 	public Collection<ThemeBean> themes;
 	
-	@Column(name="explanation")
-	private String explanation;
-	
 	@ManyToMany(fetch=FetchType.LAZY)
 	@JoinTable(
 		name="Quizz_Question",
-				joinColumns=
-					@JoinColumn(name="Quizz", referencedColumnName="id"),
-				inverseJoinColumns=
-					@JoinColumn(name="Question", referencedColumnName="id")
+		joinColumns=@JoinColumn(name="Question", referencedColumnName="id"),
+		inverseJoinColumns=@JoinColumn(name="Quizz", referencedColumnName="id")
 	)
 	public Collection<QuizzBean> quizzs;
 

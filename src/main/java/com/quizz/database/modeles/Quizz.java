@@ -8,6 +8,7 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import com.quizz.database.beans.QuestionBean;
 import com.quizz.database.beans.QuizzBean;
+import com.quizz.database.datas.Visibility;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,18 +23,18 @@ public class Quizz implements Serializable {
 
 	private String name;
 
-	private String isVisible;
+	private Visibility isVisible;
 
 	public Collection<Question> questions;
 
-        public Quizz (int id, String name, String isVisible, Collection<Question> questions) {
+        public Quizz (int id, String name, Visibility isVisible, Collection<Question> questions) {
             this.id = id;
             this.name = name;
             this.isVisible = isVisible;
             this.questions = questions;
 	}
 
-        public Quizz (String name, String isVisible, Collection<Question> questions) {
+        public Quizz (String name, Visibility isVisible, Collection<Question> questions) {
             this.name = name;
             this.isVisible = isVisible;
             this.questions = questions;
@@ -44,7 +45,7 @@ public class Quizz implements Serializable {
 
 		bean.setId(this.id);
 		bean.setName(this.name);
-		bean.setIsVisible(this.isVisible);
+		bean.setIsVisible(this.isVisible.name());
 
 		if (CollectionUtils.isNotEmpty(questions)) {
 			Collection<QuestionBean> questionsBean = new ArrayList<QuestionBean>();

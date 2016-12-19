@@ -45,8 +45,14 @@ public class UserServiceImpl implements UserService {
 		try {
 			UserBean tmp = userRepository.findOne(pseudo);
 			result = getUserByUserBean(tmp);
-			object.setCode(ReturnCode.ERROR_000);
-			log.info("Get User [pseudo: " + pseudo + "]");
+			
+			if (result != null) {
+				object.setCode(ReturnCode.ERROR_000);
+				log.info("Get User [pseudo: " + pseudo + "]");
+			} else {
+				object.setCode(ReturnCode.ERROR_100);
+				log.error("User not found [pseudo: " + pseudo + "], " + ReturnCode.ERROR_100);
+			}
 		} catch (IllegalArgumentException e) {
 			object.setCode(ReturnCode.ERROR_100);
 			log.error("User not found [pseudo: " + pseudo + "], " + ReturnCode.ERROR_100);
@@ -64,10 +70,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ReturnObject checkUserCredentials(String pseudo, String password) {
 		ReturnObject object = new ReturnObject();
-		UserBean tmp = new UserBean();
+		User result = new User();
 		try {
-			tmp = userRepository.findByPseudoAndPassword(pseudo, password);
-			if(tmp == null){
+			UserBean tmp = userRepository.findByPseudoAndPassword(pseudo, password);
+			result = getUserByUserBean(tmp);
+			if(tmp == null || result == null){
 				object.setCode(ReturnCode.ERROR_100);
 			} else {
 				if(tmp.getActive()) {
@@ -83,7 +90,7 @@ public class UserServiceImpl implements UserService {
 			object.setCode(ReturnCode.ERROR_100);
 			log.error("User not found [pseudo: " + pseudo + "], password: *****" + ReturnCode.ERROR_100);
 		}
-		object.setObject(getUserByUserBean(tmp));
+		object.setObject(result);
 		return object;
 	}
 
@@ -93,7 +100,7 @@ public class UserServiceImpl implements UserService {
 		ReturnObject object = new ReturnObject();
 		List<User> users = new ArrayList<User>();
 		try {
-			List<UserBean> findAll = userRepository.findAll();
+			List<UserBean> findAll = (List<UserBean>) userRepository.findAll();
 			for (UserBean userBean : findAll) {
 				User user = new User();
 

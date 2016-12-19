@@ -25,14 +25,14 @@ public class Question implements Serializable {
 	private String label;
 
 	private String pseudo;
+	
+	private String explanation;
 
 	private Collection<Response> responses;
 
 	public Collection<Theme> themes;
 
 	public Collection<Quizz> quizzs;
-	
-	private String explanation;
 	
 	public Question(String label, String pseudo, String explanation) {
 		int id;
