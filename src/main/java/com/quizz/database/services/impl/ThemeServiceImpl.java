@@ -3,19 +3,22 @@ package com.quizz.database.services.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.quizz.database.beans.QuestionBean;
 import com.quizz.database.beans.ThemeBean;
 import com.quizz.database.datas.ReturnCode;
 import com.quizz.database.modeles.Question;
 import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.modeles.Theme;
+import com.quizz.database.repository.QuestionRepository;
 import com.quizz.database.repository.ThemeRepository;
+import com.quizz.database.services.QuestionService;
 import com.quizz.database.services.ThemeService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +29,14 @@ public class ThemeServiceImpl implements ThemeService {
 
 	@Autowired
 	private ThemeRepository themeRepository;
+	
+	@Autowired 
+	private QuestionRepository questionRepository;
+	
+	@Autowired
+	private QuestionService questionService;
+	
+	private static final String SEPARATOR = "|";
 
 	/**
 	 * Return name, id, question (id)
@@ -38,8 +49,8 @@ public class ThemeServiceImpl implements ThemeService {
 		ReturnObject object = new ReturnObject();
 		Theme theme = null;
 		try {
-			ThemeBean findByName = themeRepository.findByName(name);
-			theme = getThemeByThemeBean(findByName);
+			List<ThemeBean> findByName = themeRepository.findByName(name);
+			theme = getThemeByThemeBean(findByName.get(0));
 			if (theme == null) {
 				object.setCode(ReturnCode.ERROR_100);
 			} else {
@@ -243,5 +254,46 @@ public class ThemeServiceImpl implements ThemeService {
 				this.add(theme);
 			}
 		}
+	}
+	
+	@Override
+	public ReturnObject getQuestionsByThemes(String theme, String pseudo) {
+		log.info("Get questions by name");
+		ReturnObject object = new ReturnObject();
+
+		String[] listTheme = StringUtils.split(theme, SEPARATOR);
+		try {
+			List<Question> listQuestions = new ArrayList<Question>();
+			for (String th : listTheme) {
+				object.setCode(ReturnCode.ERROR_000);
+				List<ThemeBean> listThemeBean = (List<ThemeBean>) themeRepository.findByName(th);
+				if (listThemeBean.isEmpty()) {
+					object.setCode(ReturnCode.ERROR_100);
+					log.error("This theme doesn't exist or doesn't have question [theme: " + th + "], " + ReturnCode.ERROR_100);
+					break;
+				} else {
+					for (ThemeBean tb : listThemeBean) {
+						QuestionBean qB = questionRepository.findById(tb.getIdQuestion());
+						if (qB.getPseudo().equals(pseudo)) {
+							qB.setQuizzs(null);
+							qB.setResponses(null);
+							listQuestions.add(questionService.getQuestionByQuestionBean(qB));
+						}
+					}
+					if(listQuestions.isEmpty()) {
+						object.setCode(ReturnCode.ERROR_100);
+						log.error("This user doesn't have question in this theme [theme: " + th + ", pseudo: " + pseudo + "], " + ReturnCode.ERROR_100);
+					}
+					object.setObject(listQuestions);
+				}
+			}
+			if (object.getCode() != ReturnCode.ERROR_000){
+				object.setObject(null);
+			}
+		} catch (Exception e) {
+			object.setCode(ReturnCode.ERROR_600);
+			log.error("An exception has occured when calling getQuestionsByThemes [theme: " + theme + "], " + ReturnCode.ERROR_600);
+		}
+		return object;
 	}
 }

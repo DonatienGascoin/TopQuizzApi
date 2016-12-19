@@ -17,6 +17,11 @@ import com.quizz.database.services.AppService;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ *
+ * @author Romain
+ */
+
 @Slf4j
 @RestController
 @RequestMapping(value = "/theme")
@@ -83,6 +88,17 @@ public class ThemeController {
 			object = appService.getAllThemesByUser(pseudo);
 		} catch (Exception e) {
 			log.error("Impossible to get all Theme for user [" + pseudo + "]");
+		}
+		return ResponseEntity.ok().body(object);
+	}
+	
+	@RequestMapping(value = "/getQuestionsByThemes", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<ReturnObject> getQuestionsByName(@RequestParam(name = "theme") String theme, @RequestParam(name = "pseudo") String pseudo) {
+		ReturnObject object = null;
+		try {
+			object = appService.getQuestionsByThemes(theme, pseudo);
+		} catch (Exception e) {
+			log.error("Impossible to get all questions for theme [theme: " + theme + "]", e);
 		}
 		return ResponseEntity.ok().body(object);
 	}

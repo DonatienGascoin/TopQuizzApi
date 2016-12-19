@@ -59,6 +59,8 @@ public interface AppService {
         public ReturnObject getAllQuestionsByTheme (String theme);
 	
 	public ReturnObject getAllThemes();
+        
+        public ReturnObject getQuestionsByThemes (String theme, String pseudo);
 	
 	public ReturnObject addTheme(String name);
     

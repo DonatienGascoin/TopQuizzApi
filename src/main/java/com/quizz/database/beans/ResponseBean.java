@@ -24,8 +24,8 @@ public class ResponseBean {
 
 	@Column(nullable = false)
 	private Boolean isValide;
-
-	@Column(nullable = false)
+        
+        @Column(nullable = false)
 	private int idQuestion;
 
 	public ResponseBean(String label, Boolean isValide, int idQuestion) {

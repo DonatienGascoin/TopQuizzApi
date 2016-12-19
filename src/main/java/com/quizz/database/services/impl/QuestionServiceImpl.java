@@ -1,9 +1,7 @@
 package com.quizz.database.services.impl;
 
-import com.quizz.database.modeles.ReturnObject;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +18,8 @@ import com.quizz.database.modeles.Quizz;
 import com.quizz.database.modeles.Response;
 import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.modeles.Theme;
-import com.quizz.database.services.QuestionService;
 import com.quizz.database.repository.QuestionRepository;
+import com.quizz.database.services.QuestionService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,7 +39,7 @@ public class QuestionServiceImpl implements QuestionService {
 		log.info("Add question [pseudo: " + pseudo + ", question: " + label + "]");
 		ReturnObject object = new ReturnObject();
 
-		try {			
+		try {
 			QuestionBean q = new QuestionBean(pseudo, label, explanation, null, null, null);
 
 			// Save method was automatically managed by CrudRepository
@@ -52,22 +50,21 @@ public class QuestionServiceImpl implements QuestionService {
 				log.info("Question successfully added");
 			} else {
 				object.setCode(ReturnCode.ERROR_050);
-				log.error("Impossible to add Question [pseudo: " + pseudo + ", question: [label:" + label + ",pseudo:"
-						+ pseudo + ",explanation:" + explanation + "]], " + ReturnCode.ERROR_050);
+				log.error("Impossible to add Question [pseudo: " + pseudo + ", question: [label:" + label + ",pseudo:" + pseudo + ",explanation:"
+						+ explanation + "]], " + ReturnCode.ERROR_050);
 			}
 		} catch (RuntimeException e) {
 			object.setCode(ReturnCode.ERROR_200);
-			log.error("Impossible to add Question [pseudo: " + pseudo + ", question: [label:" + label + ",pseudo:"
-					+ pseudo + ",explanation:" + explanation + "]], " + ReturnCode.ERROR_200);
+			log.error("Impossible to add Question [pseudo: " + pseudo + ", question: [label:" + label + ",pseudo:" + pseudo + ",explanation:"
+					+ explanation + "]], " + ReturnCode.ERROR_200);
 		} catch (Exception e) {
 			object.setCode(ReturnCode.ERROR_050);
-			log.error("Impossible to add Question [pseudo: " + pseudo + ", question: [label:" + label + ",pseudo:"
-					+ pseudo + ",explanation:" + explanation + "]], " + ReturnCode.ERROR_050);
+			log.error("Impossible to add Question [pseudo: " + pseudo + ", question: [label:" + label + ",pseudo:" + pseudo + ",explanation:"
+					+ explanation + "]], " + ReturnCode.ERROR_050);
 		}
 		return object;
 	}
 
-	@Override
 	public Question getQuestionByQuestionBean(QuestionBean bean) {
 		Question q = new Question();
 		if (bean != null) {
@@ -81,40 +78,53 @@ public class QuestionServiceImpl implements QuestionService {
 				for (QuizzBean quizzB : bean.getQuizzs()) {
 					Quizz qu = new Quizz();
 					qu.setId(quizzB.getId());
-					qu.setIsVisible((Visibility.valueOf(quizzB.getIsVisible())));
+					Visibility vis = null;
+                    for (Visibility v : Visibility.values()) {
+                            if (v.getId() == Integer.parseInt(quizzB.getIsVisible())) {
+                                    vis = v;
+                            }
+                    }
+					qu.setIsVisible(vis);           
 					qu.setName(quizzB.getName());
 					
-					if(CollectionUtils.isNotEmpty(quizzB.getQuestions())){
+					/**if(CollectionUtils.isNotEmpty(quizzB.getQuestions())){
 						Collection<Question> questions2 = new ArrayList<Question>();
 						for (QuestionBean question2: quizzB.getQuestions()) {
 							questions2.add(getQuestionByQuestionBean(question2));
 						}
 						qu.setQuestions(questions2);
 					}
-					quizzs.add(qu);
+					quizzs.add(qu);**/
 				}
 				q.setQuizzs(quizzs);
 			}
-
 			if (CollectionUtils.isNotEmpty(bean.getResponses())) {
 				Collection<Response> responses = new ArrayList<Response>();
 				for(ResponseBean responseB: bean.getResponses()){
-					responses.add(new Response(responseB.getId(), responseB.getLabel(), responseB.getIsValide(), responseB.getIdQuestion()));
+					Response r = new Response();
+                    r.setId(responseB.getId());
+                    r.setLabel(responseB.getLabel());
+                    r.setIsValide(responseB.getIsValide());
+                    r.setIdQuestion(responseB.getIdQuestion()); 
+					responses.add(r);
 				}
 				q.setResponses(responses);
 			}
-
 			if (CollectionUtils.isNotEmpty(bean.getThemes())) {
 				Collection<Theme> themes = new ArrayList<Theme>();
 				for(ThemeBean themeB: bean.getThemes()){
-					themes.add(new Theme(themeB.getId(), themeB.getName()));
+					Theme t = new Theme();
+					t.setId(themeB.getId());
+					t.setName(themeB.getName());
+					t.setIdQuestion(themeB.getIdQuestion());
+					themes.add(t);
 				}
 				q.setThemes(themes);
 			}
 		}
-
 		return q;
 	}
+
 	@Override
 	public ReturnObject findById(Integer id) {
 		ReturnObject obj = new ReturnObject();
@@ -123,10 +133,9 @@ public class QuestionServiceImpl implements QuestionService {
 		}catch(Exception e){
 			// TODO
 		}
-	
-	return obj;return obj;
+		return obj;
 	}
-	
+
 	@Override
 	public ReturnObject getAllQuestionsByTheme(String theme) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

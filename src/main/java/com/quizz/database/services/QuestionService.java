@@ -28,4 +28,5 @@ public interface QuestionService {
     public ReturnObject addQuestion(String pseudo, String label, String explanation);
 
     public ReturnObject getAllQuestionsByTheme (String theme);
+    
 }
