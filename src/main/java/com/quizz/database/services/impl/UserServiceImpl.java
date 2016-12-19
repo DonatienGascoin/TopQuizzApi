@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
 		ReturnObject object = new ReturnObject();
 		List<User> users = new ArrayList<User>();
 		try {
-			List<UserBean> findAll = userRepository.findAll();
+			List<UserBean> findAll = (List<UserBean>) userRepository.findAll();
 			for (UserBean userBean : findAll) {
 				User user = new User();
 

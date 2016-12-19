@@ -50,8 +50,8 @@ public class QuizzServiceImpl implements QuizzService {
 		log.info("Get all quizzes by pseudo");
 		ReturnObject object = new ReturnObject();
 		
-		List<Quizz> listQuizzes = new ArrayList<Quizz>();
 		try {
+			List<Quizz> listQuizzes = new ArrayList<Quizz>();
 			UserBean userBean = userRepository.findByQuestionPseudo(pseudo);
 			QuestionBean questionBean;
 			
@@ -64,12 +64,16 @@ public class QuizzServiceImpl implements QuizzService {
 					}
 				}
 			} 
-			object.setObject(listQuizzes);
-			object.setCode(ReturnCode.ERROR_000);
+			if (listQuizzes == null || listQuizzes.size() == 0) {
+				object.setCode(ReturnCode.ERROR_050);
+			} else {
+				object.setObject(listQuizzes);
+				object.setCode(ReturnCode.ERROR_000);
+			}
 		}
 		catch(Exception e) {
-			object.setCode(ReturnCode.ERROR_600);
-			log.error("An exception has occured when calling getAllQuizzesByPseudo [pseudo: " + pseudo + "], " + ReturnCode.ERROR_600);
+			object.setCode(ReturnCode.ERROR_050);
+			log.error("An exception has occured when calling getAllQuizzesByPseudo [pseudo: " + pseudo + "], " + ReturnCode.ERROR_050);
 		}
 		
 		return object;
@@ -88,12 +92,16 @@ public class QuizzServiceImpl implements QuizzService {
 		
 		try {
 			QuizzBean quizzBean = quizzRepository.findByName(name);
-			object.setObject(getQuizzByQuizzBean(quizzBean));
-			object.setCode(ReturnCode.ERROR_000);
+			if (quizzBean == null) {
+				object.setCode(ReturnCode.ERROR_050);
+			} else {
+				object.setObject(getQuizzByQuizzBean(quizzBean));
+				object.setCode(ReturnCode.ERROR_000);
+			}
 		}
 		catch(Exception e) {
-			object.setCode(ReturnCode.ERROR_600);
-			log.error("An exception has occured when calling getQuizzByName [name: " + name + "], " + ReturnCode.ERROR_600);
+			object.setCode(ReturnCode.ERROR_050);
+			log.error("An exception has occured when calling getQuizzByName [name: " + name + "], " + ReturnCode.ERROR_050);
 		}
 		
 		return object;
@@ -134,33 +142,39 @@ public class QuizzServiceImpl implements QuizzService {
 		quizz.setIsVisible(vis);
 		
 		Collection<Question> questions = new ArrayList<Question>();
-		for (QuestionBean question : bean.getQuestions()) {
-			Question q = new Question();
-			q.setId(question.getId());
-			q.setPseudo(question.getPseudo());
-			q.setLabel(question.getLabel());
-			q.setExplanation(question.getExplanation());
-			
-			Collection<Theme> themes = new ArrayList<Theme>();
-			for (ThemeBean theme : new ArrayList<ThemeBean>(question.getThemes())) {
-				Theme t = new Theme();
-				t.setId(theme.getId());
-				t.setName(theme.getName());
-				themes.add(t);
+		if (bean.getQuestions() != null) {
+			for (QuestionBean question : bean.getQuestions()) {
+				Question q = new Question();
+				q.setId(question.getId());
+				q.setPseudo(question.getPseudo());
+				q.setLabel(question.getLabel());
+				q.setExplanation(question.getExplanation());
+				
+				if (question.getThemes() != null) {
+					Collection<Theme> themes = new ArrayList<Theme>();
+					for (ThemeBean theme : new ArrayList<ThemeBean>(question.getThemes())) {
+						Theme t = new Theme();
+						t.setId(theme.getId());
+						t.setName(theme.getName());
+						themes.add(t);
+					}
+					q.setThemes(themes);
+				}
+				
+				if (question.getResponses() != null) {
+					Collection<Response> responses = new ArrayList<Response>();
+					for (ResponseBean response : new ArrayList<ResponseBean>(question.getResponses())) {
+						Response r = new Response();
+						r.setId(response.getId());
+						r.setIsValide(response.getIsValide());
+						r.setLabel(response.getLabel());
+						responses.add(r);
+					}
+					q.setResponses(responses);
+				}
+				
+				questions.add(q);
 			}
-			q.setThemes(themes);
-			
-			Collection<Response> responses = new ArrayList<Response>();
-			for (ResponseBean response : new ArrayList<ResponseBean>(question.getResponses())) {
-				Response r = new Response();
-				r.setId(response.getId());
-				r.setIsValide(response.getIsValide());
-				r.setLabel(response.getLabel());
-				responses.add(r);
-			}
-			q.setResponses(responses);
-			
-			questions.add(q);
 		}
 		quizz.setQuestions(questions);
 		

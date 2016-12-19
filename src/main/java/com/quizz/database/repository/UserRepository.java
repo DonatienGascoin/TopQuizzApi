@@ -18,8 +18,6 @@ import com.quizz.database.beans.UserBean;
 @Component
 public interface UserRepository extends CrudRepository<UserBean, String>{
 	
-	List<UserBean> findAll();
-	
 	UserBean findByMail(String mail);
 	
 	UserBean findByPseudoAndPassword(String pseudo, String password);

@@ -1,5 +1,6 @@
 package com.quizz.database.controllers;
 
+import com.quizz.database.datas.ReturnCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,9 @@ public class QuizzController {
 		ReturnObject object = null;
 		try {
 			object = appService.getAllQuizzesByPseudo(pseudo);
+			if (object == null) {
+				object.setCode(ReturnCode.ERROR_050);
+			}
 		} catch (Exception e) {
 			log.error("Impossible to get all quizzes for user [pseudo: " + pseudo + "]", e);
 		}
@@ -44,6 +48,9 @@ public class QuizzController {
 		ReturnObject object = null;
 		try {
 			object = appService.getQuizzByName(name);
+			if (object == null) {
+				object.setCode(ReturnCode.ERROR_050);
+			}
 		} catch (Exception e) {
 			log.error("Impossible to get quizz by name [name: " + name + "]", e);
 		}
@@ -55,6 +62,9 @@ public class QuizzController {
 		ReturnObject object = null;
 		try {
 			object = appService.deleteQuizzById(id);
+			if (object == null) {
+				object.setCode(ReturnCode.ERROR_050);
+			}
 		} catch (Exception e) {
 			log.error("Impossible to delete quizz by id [integer: " + id + "]", e);
 		}
