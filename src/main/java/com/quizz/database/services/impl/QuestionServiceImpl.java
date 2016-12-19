@@ -11,7 +11,6 @@ import com.quizz.database.beans.QuestionBean;
 import com.quizz.database.beans.QuizzBean;
 import com.quizz.database.beans.ResponseBean;
 import com.quizz.database.beans.ThemeBean;
-import com.quizz.database.beans.UserBean;
 import com.quizz.database.datas.ReturnCode;
 import com.quizz.database.datas.Visibility;
 import com.quizz.database.modeles.Question;
@@ -19,7 +18,6 @@ import com.quizz.database.modeles.Quizz;
 import com.quizz.database.modeles.Response;
 import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.modeles.Theme;
-import com.quizz.database.modeles.User;
 import com.quizz.database.services.QuestionService;
 import com.quizz.database.repository.QuestionRepository;
 
@@ -33,17 +31,12 @@ public class QuestionServiceImpl implements QuestionService {
 	private QuestionRepository questionRepository;
 
 	@Override
-	public ReturnObject addQuestion(String pseudo, String label, Collection<Theme> themes, String explanation) {
+	public ReturnObject addQuestion(String pseudo, String label, String explanation) {
 		log.info("Add question [pseudo: " + pseudo + ", question: " + label + "]");
 		ReturnObject object = new ReturnObject();
 
-		try {
-			Collection<ThemeBean> themesBean = new ArrayList<ThemeBean>();
-			for(Theme t: themes){
-				themesBean.add(t.convertToBean());
-			}
-			
-			QuestionBean q = new QuestionBean(pseudo, label, explanation, null, themesBean, null);
+		try {			
+			QuestionBean q = new QuestionBean(pseudo, label, explanation, null, null, null);
 
 			// Save method was automatically managed by CrudRepository
 			QuestionBean questionBean = questionRepository.save(q);
@@ -68,7 +61,8 @@ public class QuestionServiceImpl implements QuestionService {
 		return object;
 	}
 
-	private Question getQuestionByQuestionBean(QuestionBean bean) {
+	@Override
+	public Question getQuestionByQuestionBean(QuestionBean bean) {
 		Question q = new Question();
 		if (bean != null) {
 			q.setId(bean.getId());
@@ -81,7 +75,7 @@ public class QuestionServiceImpl implements QuestionService {
 				for (QuizzBean quizzB : bean.getQuizzs()) {
 					Quizz qu = new Quizz();
 					qu.setId(quizzB.getId());
-					qu.setIsVisible(Visibility.valueOf(quizzB.getIsVisible()));
+					qu.setIsVisible((Visibility.valueOf(quizzB.getIsVisible())));
 					qu.setName(quizzB.getName());
 					
 					if(CollectionUtils.isNotEmpty(quizzB.getQuestions())){
@@ -115,4 +109,16 @@ public class QuestionServiceImpl implements QuestionService {
 
 		return q;
 	}
+
+    @Override
+    public ReturnObject findById(Integer id) {
+       ReturnObject obj = new ReturnObject();
+       try{
+            obj.setObject(questionRepository.findById(id));
+       }catch(Exception e){
+           // TODO
+       }
+        
+        return obj;
+    }
 }

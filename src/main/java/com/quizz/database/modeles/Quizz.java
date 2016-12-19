@@ -27,17 +27,30 @@ public class Quizz implements Serializable {
 
 	public Collection<Question> questions;
 
+        public Quizz (int id, String name, Visibility isVisible, Collection<Question> questions) {
+            this.id = id;
+            this.name = name;
+            this.isVisible = isVisible;
+            this.questions = questions;
+	}
+
+        public Quizz (String name, Visibility isVisible, Collection<Question> questions) {
+            this.name = name;
+            this.isVisible = isVisible;
+            this.questions = questions;
+	}
+	
 	public QuizzBean convertToBean() {
 		QuizzBean bean = new QuizzBean();
 
 		bean.setId(this.id);
 		bean.setName(this.name);
-		bean.setIsVisible(this.isVisible.toString());
+		bean.setIsVisible(this.isVisible.name());
 
 		if (CollectionUtils.isNotEmpty(questions)) {
 			Collection<QuestionBean> questionsBean = new ArrayList<QuestionBean>();
 			for (Question question : questions) {
-				question.convertToBean();
+				questionsBean.add(question.convertToBean());
 			}
 			bean.setQuestions(questionsBean);
 		}

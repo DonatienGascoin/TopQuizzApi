@@ -1,6 +1,9 @@
 package com.quizz.database.services;
 
 import com.quizz.database.modeles.ReturnObject;
+import com.quizz.database.datas.Visibility;
+import com.quizz.database.modeles.Question;
+import java.util.Collection;
 
 /**
  * 
@@ -11,7 +14,10 @@ import com.quizz.database.modeles.ReturnObject;
  * @since 12/11/2016
  * 
  */
+
 public interface QuizzService {
+    
+    public ReturnObject addQuizz(String name, Visibility visibility, Collection<Question> questions);
 
 	public ReturnObject getAllQuizzesByPseudo(String pseudo);
 

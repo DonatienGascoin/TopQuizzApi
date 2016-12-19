@@ -1,5 +1,7 @@
 package com.quizz.database.services;
 
+import com.quizz.database.beans.QuestionBean;
+import com.quizz.database.datas.Visibility;
 import java.util.Collection;
 
 import com.quizz.database.modeles.Question;
@@ -9,7 +11,7 @@ import com.quizz.database.modeles.User;
 /**
  * 
  * This class make transition between different service:
- * Ex: {@link AppService} will check in {@link UserService} if the User exist, and take all associated quizz in {@link QuizzService}
+ * Ex: {@link AppService} will check in {@link UserService} if the User exist, and take all associated quizz in {@link AppService}
  * 
  * @author Donatien Gascoin
  * @version 1.0
@@ -32,6 +34,10 @@ public interface AppService {
 	public ReturnObject changePassword(String password, String email);
 	
 	public ReturnObject checkUserCredentials(String pseudo, String password);
+    
+    public ReturnObject addQuizz(String name, Visibility visibility, String questions);
+    
+    public Question getQuestionByQuestionBean(QuestionBean bean);
 	
 	public ReturnObject activeUser(String mail);
 	
@@ -44,4 +50,12 @@ public interface AppService {
 	public ReturnObject addQuestion(String pseudo, String label, String themes, String explanation);
 	
 	public ReturnObject addTmpResponse(String number, String pseudo, String label, Boolean isValide);
+	
+	public ReturnObject getAllThemes();
+	
+	public ReturnObject addTheme(String name);
+    
+    public ReturnObject deleteTheme(int id);
+    
+    public ReturnObject getThemeByName (String name);
 }

@@ -13,12 +13,12 @@ public enum ReturnCode {
 	 * Object Not Found
 	 */
 	ERROR_100,
-	/**
-	 * Missing Parameters
+        /**
+	 * QuestionNOtFound
 	 */
 	ERROR_150,
 	/**
-	 * Database Unreachable
+	 * Missing Parameters
 	 */
 	ERROR_200,
 	/**
@@ -29,6 +29,10 @@ public enum ReturnCode {
 	 * Email already exist
 	 */
 	ERROR_350,
+    /**
+     * Theme already exist
+     */
+    ERROR_400,
 	/**
 	 * Illegal Argument Exception
 	 */
