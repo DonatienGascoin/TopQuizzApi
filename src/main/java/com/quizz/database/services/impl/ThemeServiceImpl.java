@@ -3,7 +3,6 @@ package com.quizz.database.services.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -231,7 +230,8 @@ public class ThemeServiceImpl implements ThemeService {
 	
 	private class ThemeSet extends TreeSet<Theme>{
 		
-		
+		private static final long serialVersionUID = 1L;
+
 		public void addToSet(Theme theme){
 			boolean isPossible = true;
 			for(Theme t: this){

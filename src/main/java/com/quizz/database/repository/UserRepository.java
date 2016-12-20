@@ -1,7 +1,5 @@
 package com.quizz.database.repository;
 
-import java.util.List;
-
 import javax.transaction.Transactional;
 
 import org.springframework.data.repository.CrudRepository;
