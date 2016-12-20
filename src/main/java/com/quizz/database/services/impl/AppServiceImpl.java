@@ -17,6 +17,7 @@ import com.quizz.database.services.AppService;
 import com.quizz.database.services.QuestionService;
 import com.quizz.database.services.QuizzService;
 import com.quizz.database.services.ResponseService;
+import com.quizz.database.services.StatisticService;
 import com.quizz.database.services.ThemeService;
 import com.quizz.database.services.UserService;
 
@@ -45,6 +46,9 @@ public class AppServiceImpl implements AppService {
     
     @Autowired
     private ResponseService responseService;
+    
+    @Autowired
+    private StatisticService statisticService;
 
     @Override
     public ReturnObject getUser(String pseudo) {
@@ -196,6 +200,26 @@ public class AppServiceImpl implements AppService {
 			if(ReturnCode.ERROR_000.equals(obj.getCode()) && obj.getObject() != null){
 				responseService.linkTmpResponse(((Question)obj.getObject()).getId(), pseudo);
 			}
+		}
+		obj.setCode(ReturnCode.ERROR_100);
+		return obj;
+	}
+
+	@Override
+	public ReturnObject getTenLastScoreForQuizz(String pseudo, Integer quizzId) {
+		ReturnObject obj = userService.getUser(pseudo);
+		if (obj.getObject() != null) {
+			return statisticService.getTenLastScoreForQuizz(pseudo, quizzId);
+		}
+		obj.setCode(ReturnCode.ERROR_100);
+		return obj;
+	}
+
+	@Override
+	public ReturnObject addScoreForQuizz(String pseudo, Integer quizzId, String quizzName, Integer nbRightAnswers, Integer nbQuestions) {
+		ReturnObject obj = userService.getUser(pseudo);
+		if (obj.getObject() != null) {
+			return statisticService.addScoreForQuizz(pseudo, quizzId, quizzName, nbRightAnswers, nbQuestions);
 		}
 		obj.setCode(ReturnCode.ERROR_100);
 		return obj;

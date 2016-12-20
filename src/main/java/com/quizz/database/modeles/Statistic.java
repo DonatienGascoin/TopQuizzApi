@@ -23,6 +23,8 @@ public class Statistic implements Serializable {
 
 	private Integer quizzId;
 
+	private String quizzName;
+
 	private Integer nbRightAnswers;
 	
 	private Integer nbQuestions;
@@ -40,6 +42,6 @@ public class Statistic implements Serializable {
 	}
 	
 	public StatisticBean convertToBean(){
-		return new StatisticBean(this.id, this.pseudo, this.quizzId, this.nbRightAnswers, this.nbQuestions, this.date);
+		return new StatisticBean(this.id, this.pseudo, this.quizzId, this.quizzName, this.nbRightAnswers, this.nbQuestions, this.date);
 	}
 }

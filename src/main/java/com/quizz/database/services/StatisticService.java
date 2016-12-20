@@ -14,4 +14,8 @@ import com.quizz.database.repository.StatisticRepository;
  */
 public interface StatisticService {
 
+	ReturnObject getTenLastScoreForQuizz(String pseudo, Integer quizzId);
+
+	ReturnObject addScoreForQuizz(String pseudo, Integer quizzId, String quizzName, Integer nbRightAnswers, Integer nbQuestions);
+
 }

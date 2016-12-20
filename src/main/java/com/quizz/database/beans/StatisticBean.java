@@ -27,6 +27,9 @@ public class StatisticBean {
 	@Column(nullable = false)
 	private Integer quizzId;
 
+	@Column(nullable = false, name="quizz_name")
+	private String quizzName;
+
 	@Column()
 	private Integer nbRightAnswers;
 	
@@ -36,21 +39,23 @@ public class StatisticBean {
 	@Column()
 	private Date date;
 
-	public StatisticBean(int id, String pseudo, Integer quizzId, Integer nbRightAnswers, Integer nbAnswers, Date date) {
+	public StatisticBean(int id, String pseudo, Integer quizzId, String quizzName, Integer nbRightAnswers, Integer nbAnswers, Date date) {
 		this.id = id;
 		this.pseudo = pseudo;
 		this.quizzId = quizzId;
 		this.nbRightAnswers = nbRightAnswers;
 		this.nbQuestions = nbAnswers;
 		this.date = date;
+		this.quizzName = quizzName;
 	}
 
-	public StatisticBean(String pseudo, Integer quizzId, Integer nbRightAnswers, Integer nbAnswers, Date date) {
+	public StatisticBean(String pseudo, Integer quizzId, String quizzName, Integer nbRightAnswers, Integer nbAnswers, Date date) {
 		this.pseudo = pseudo;
 		this.quizzId = quizzId;
 		this.nbRightAnswers = nbRightAnswers;
 		this.nbQuestions = nbAnswers;
 		this.date = date;
+		this.quizzName = quizzName;
 	}
 	
 	
