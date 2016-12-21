@@ -23,4 +23,14 @@ public enum Visibility {
 	public Integer getId() {
 		return this.id;
 	}
+	
+	public Visibility getVisibility(Integer id) {
+		if(id==0) {
+			return Visibility.PUBLIC;
+		} else if (id==1) {
+			return Visibility.PROTECTED;
+		} else {
+			return Visibility.PRIVATE;
+		}
+	}
 }

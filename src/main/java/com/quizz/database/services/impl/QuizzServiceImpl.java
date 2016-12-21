@@ -42,22 +42,13 @@ public class QuizzServiceImpl implements QuizzService {
     
     @Override
     public ReturnObject addQuizz(String name, Visibility visibility, Collection<Question> questions){
-
         log.info("Add quizz [name: " + name + "]");
-
         ReturnObject object = new ReturnObject();
-        
         Quizz quizz = new Quizz(name, visibility, questions);
+        
         // The quizz does not exist
         QuizzBean q = quizz.convertToBean();
-        try {
-            // Test if name was already used
-            if (quizzRepository.findByName(name) != null) {
-                log.info("Quizz [name: " + name + "] already exist");
-                object.setCode(ReturnCode.ERROR_400);
-                return object;
-            }
-            
+        try {            
             for (Question item : questions) {
                 if (!questionRepository.exists(item.getId())){
                     log.info("Question [id: " + item.getId() + "] doesn't exist");
@@ -65,14 +56,12 @@ public class QuizzServiceImpl implements QuizzService {
                     return object;
                 }
             }
-            
             // Save method was automatically managed by CrudRepository
             QuizzBean quizzBean = quizzRepository.save(q);
-            quizz = new Quizz(quizzBean.getId(), quizzBean.getName(), Visibility.valueOf(quizzBean.getIsVisible()), questions);
+            quizz = new Quizz(quizzBean.getId(), quizzBean.getName(), visibility.getVisibility(Integer.parseInt(quizzBean.getIsVisible())) , questions);
 
             object.setCode(ReturnCode.ERROR_000);
-            log.info("Quizz successfully added");
-            
+            log.info("Quizz successfully added");       
         } catch (IllegalArgumentException e) {
             object.setCode(ReturnCode.ERROR_500);
             log.error("Impossible to add Quizz [name: " + name + "], " + ReturnCode.ERROR_500, e);
@@ -83,7 +72,6 @@ public class QuizzServiceImpl implements QuizzService {
             object.setCode(ReturnCode.ERROR_050);
             log.error("Impossible to add Quizz [name: " + name + "], " + ReturnCode.ERROR_050, e);
         }
-
         object.setObject(quizz);
         return object;
     }
