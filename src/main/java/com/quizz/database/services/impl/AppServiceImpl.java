@@ -19,6 +19,8 @@ import com.quizz.database.services.QuizzService;
 import com.quizz.database.services.ResponseService;
 import com.quizz.database.services.ThemeService;
 import com.quizz.database.services.UserService;
+import com.quizz.database.services.QuestionService;
+import com.quizz.database.services.ThemeService;
 
 @Service
 public class AppServiceImpl implements AppService {	
@@ -101,7 +103,16 @@ public class AppServiceImpl implements AppService {
 		return quizzService.getQuizzByName(name);
 	}
 
-	@Override
+        @Override
+        public ReturnObject getAllQuestionsByTheme(String theme){
+            return questionService.getAllQuestionsByTheme(theme);
+        }
+        
+        @Override
+        public ReturnObject getQuestionsByThemes (String theme, String pseudo){
+            return themeService.getQuestionsByThemes(theme, pseudo); 
+        }
+        
 	public ReturnObject activeUser(String mail) {
 		return userService.activeUser(mail);
 	}

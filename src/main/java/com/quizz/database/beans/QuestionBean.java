@@ -13,6 +13,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.LazyCollection;
+import org.springframework.context.annotation.Lazy;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -51,7 +54,7 @@ public class QuestionBean{
 	)
 	public Collection<QuizzBean> quizzs;
 
-	public QuestionBean(String pseudo, String label, String explanation, Collection<ResponseBean> responses, Collection<ThemeBean> themes, Collection<QuizzBean> quizzs) {
+        public QuestionBean(String pseudo, String label, String explanation, Collection<ResponseBean> responses, Collection<ThemeBean> themes, Collection<QuizzBean> quizzs) {
 		this.pseudo = pseudo;
 		this.label = label;
 		this.explanation = explanation;

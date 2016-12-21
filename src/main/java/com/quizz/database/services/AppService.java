@@ -55,8 +55,12 @@ public interface AppService {
 	public ReturnObject addQuestion(String pseudo, String label, String themes, String explanation);
 	
 	public ReturnObject addTmpResponse(String number, String pseudo, String label, Boolean isValide);
+        
+        public ReturnObject getAllQuestionsByTheme (String theme);
 	
 	public ReturnObject getAllThemes();
+        
+        public ReturnObject getQuestionsByThemes (String theme, String pseudo);
 	
 	public ReturnObject addTheme(String name);
     

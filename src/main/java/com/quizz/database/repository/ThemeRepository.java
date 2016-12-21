@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 
 import com.quizz.database.beans.ThemeBean;
+import java.util.List;
 
 /**
  * 
@@ -24,5 +25,5 @@ public interface ThemeRepository extends CrudRepository<ThemeBean, Integer>{
 	
 	public List<ThemeBean> findByIdQuestion(int idQuestion);
 	
-	public ThemeBean findByName(String name);
+	public List<ThemeBean> findByName(String name);
 }
