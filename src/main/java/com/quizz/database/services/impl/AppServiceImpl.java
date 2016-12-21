@@ -103,15 +103,15 @@ public class AppServiceImpl implements AppService {
 		return quizzService.getQuizzByName(name);
 	}
 
-        @Override
-        public ReturnObject getAllQuestionsByTheme(String theme){
-            return questionService.getAllQuestionsByTheme(theme);
-        }
-        
-        @Override
-        public ReturnObject getQuestionsByThemes (String theme, String pseudo){
-            return themeService.getQuestionsByThemes(theme, pseudo); 
-        }
+    @Override
+    public ReturnObject getAllQuestionsByTheme(String theme){
+        return questionService.getAllQuestionsByTheme(theme);
+    }
+    
+    @Override
+    public ReturnObject getQuestionsByThemes (String theme, String pseudo){
+        return themeService.getQuestionsByThemes(theme, pseudo); 
+    }
         
 	public ReturnObject activeUser(String mail) {
 		return userService.activeUser(mail);
@@ -154,6 +154,7 @@ public class AppServiceImpl implements AppService {
             Question test2 = getQuestionByQuestionBean(test);
             questionList.add(test2);
         }
+        
         return quizzService.addQuizz(name,visibility, questionList);
     }
 
