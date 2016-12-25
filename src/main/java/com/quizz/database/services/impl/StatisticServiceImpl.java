@@ -36,9 +36,9 @@ public class StatisticServiceImpl implements StatisticService {
 
 		try {
 			List<Statistic> statistics = new ArrayList<Statistic>();
-			Collection<StatisticBean> byPseudoAndAndQuizzIdOrderByDateDesc = statisticRepository.findTop10ByPseudoAndAndQuizzIdOrderByDateDesc(pseudo, quizzId);
-			if (CollectionUtils.isNotEmpty(byPseudoAndAndQuizzIdOrderByDateDesc)) {
-				for (StatisticBean statisticBean : byPseudoAndAndQuizzIdOrderByDateDesc) {
+			Collection<StatisticBean> statisticBeans = statisticRepository.findTop10ByPseudoAndAndQuizzIdOrderByDateAsc(pseudo, quizzId);
+			if (CollectionUtils.isNotEmpty(statisticBeans)) {
+				for (StatisticBean statisticBean : statisticBeans) {
 					statistics.add(getStatisticToStatisticBean(statisticBean));
 				}
 				object.setObject(statistics);

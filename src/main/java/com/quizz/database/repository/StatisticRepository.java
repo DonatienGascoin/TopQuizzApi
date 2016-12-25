@@ -20,6 +20,6 @@ import com.quizz.database.beans.StatisticBean;
 @Transactional
 @Component
 public interface StatisticRepository extends CrudRepository<StatisticBean, Integer>{
-	public Collection<StatisticBean> findTop10ByPseudoAndAndQuizzIdOrderByDateDesc(String pseudo, int quizzId);
+	public Collection<StatisticBean> findTop10ByPseudoAndAndQuizzIdOrderByDateAsc(String pseudo, int quizzId);
 
 }
