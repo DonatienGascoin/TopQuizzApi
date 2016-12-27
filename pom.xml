@@ -4,7 +4,7 @@
 
 	<groupId>com.quizz.database</groupId>
 	<artifactId>Quizz.database</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
 	<name>Quizz.database</name>
@@ -37,6 +37,8 @@
 			<artifactId>commons-collections4</artifactId>
 			<version>4.0</version>
 		</dependency>
+		
+
 
 		<!-- Lombok: Create getters/setters -->
 		<dependency>
