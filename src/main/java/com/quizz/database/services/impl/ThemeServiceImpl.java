@@ -242,7 +242,8 @@ public class ThemeServiceImpl implements ThemeService {
 	
 	private class ThemeSet extends TreeSet<Theme>{
 		
-		
+		private static final long serialVersionUID = 1L;
+
 		public void addToSet(Theme theme){
 			boolean isPossible = true;
 			for(Theme t: this){

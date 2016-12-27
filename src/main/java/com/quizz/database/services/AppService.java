@@ -1,15 +1,12 @@
 package com.quizz.database.services;
 
-import com.quizz.database.beans.QuestionBean;
-import com.quizz.database.datas.Visibility;
 import java.util.Collection;
 
+import com.quizz.database.beans.QuestionBean;
+import com.quizz.database.datas.Visibility;
 import com.quizz.database.modeles.Question;
 import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.modeles.User;
-import java.util.List;
-
-import com.quizz.database.services.QuizzService;
 
 /**
  * 
@@ -67,5 +64,9 @@ public interface AppService {
     public ReturnObject deleteTheme(int id);
     
     public ReturnObject getThemeByName (String name);
+
+	public ReturnObject getTenLastScoreForQuizz(String pseudo, Integer quizzId);
+
+	public ReturnObject addScoreForQuizz(String pseudo, Integer quizzId, String quizzName, Integer nbRightAnswers, Integer nbQuestions);
 }
 
