@@ -29,13 +29,13 @@ public class ThemeServiceImpl implements ThemeService {
 
 	@Autowired
 	private ThemeRepository themeRepository;
-	
-	@Autowired 
+
+	@Autowired
 	private QuestionRepository questionRepository;
-	
+
 	@Autowired
 	private QuestionService questionService;
-	
+
 	private static final String SEPARATOR = "|";
 
 	/**
@@ -163,19 +163,27 @@ public class ThemeServiceImpl implements ThemeService {
 		try {
 			// Save method was automatically managed by CrudRepository
 			ThemeBean themeBean = themeRepository.save(t);
-			theme = new Theme(themeBean.getId(), themeBean.getName(), themeBean.getIdQuestion());
+			if (themeBean != null) {
+				theme = new Theme(themeBean);
+				object.setCode(ReturnCode.ERROR_000);
+				log.info("Theme successfully added" + "[name: " + name + " idQuestion : " + idQuestion + "]");
+			} else {
+				object.setCode(ReturnCode.ERROR_000);
+				log.info("Impossible to add Theme [name: " + name + " idQuestion : " + idQuestion + "]");
+			}
 
-			object.setCode(ReturnCode.ERROR_000);
-			log.info("Theme successfully added" + "[name: " + name + " idQuestion : " + idQuestion + "]");
 		} catch (IllegalArgumentException e) {
 			object.setCode(ReturnCode.ERROR_500);
-			log.error("Impossible to add Theme [name: " + name + " idQuestion : " + idQuestion + "], " + ReturnCode.ERROR_500, e);
+			log.error("Impossible to add Theme [name: " + name + " idQuestion : " + idQuestion + "], "
+					+ ReturnCode.ERROR_500, e);
 		} catch (RuntimeException e) {
 			object.setCode(ReturnCode.ERROR_200);
-			log.error("Impossible to add Theme [name: " + name + " idQuestion : " + idQuestion + "], " + ReturnCode.ERROR_200, e);
+			log.error("Impossible to add Theme [name: " + name + " idQuestion : " + idQuestion + "], "
+					+ ReturnCode.ERROR_200, e);
 		} catch (Exception e) {
 			object.setCode(ReturnCode.ERROR_050);
-			log.error("Impossible to add Theme [name: " + name + " idQuestion : " + idQuestion + "], " + ReturnCode.ERROR_050, e);
+			log.error("Impossible to add Theme [name: " + name + " idQuestion : " + idQuestion + "], "
+					+ ReturnCode.ERROR_050, e);
 		}
 		object.setObject(theme);
 		return object;
@@ -238,25 +246,24 @@ public class ThemeServiceImpl implements ThemeService {
 
 		return object;
 	}
-	
-	
-	private class ThemeSet extends TreeSet<Theme>{
-		
+
+	private class ThemeSet extends TreeSet<Theme> {
+
 		private static final long serialVersionUID = 1L;
 
-		public void addToSet(Theme theme){
+		public void addToSet(Theme theme) {
 			boolean isPossible = true;
-			for(Theme t: this){
-				if(t.getName().equals(theme.getName())){
+			for (Theme t : this) {
+				if (t.getName().equals(theme.getName())) {
 					isPossible = false;
 				}
 			}
-			if(isPossible){
+			if (isPossible) {
 				this.add(theme);
 			}
 		}
 	}
-	
+
 	@Override
 	public ReturnObject getQuestionsByThemes(String theme, String pseudo) {
 		log.info("Get questions by name");
@@ -270,30 +277,47 @@ public class ThemeServiceImpl implements ThemeService {
 				List<ThemeBean> listThemeBean = (List<ThemeBean>) themeRepository.findByName(th);
 				if (listThemeBean.isEmpty()) {
 					object.setCode(ReturnCode.ERROR_100);
-					log.error("This theme doesn't exist or doesn't have question [theme: " + th + "], " + ReturnCode.ERROR_100);
+					log.error("This theme doesn't exist or doesn't have question [theme: " + th + "], "
+							+ ReturnCode.ERROR_100);
 					break;
 				} else {
 					for (ThemeBean tb : listThemeBean) {
-						QuestionBean qB = questionRepository.findById(tb.getIdQuestion());
+						QuestionBean qB = questionRepository.findOne(tb.getIdQuestion());
 						if (qB.getPseudo().equals(pseudo)) {
 							qB.setQuizzs(null);
 							qB.setResponses(null);
 							listQuestions.add(questionService.getQuestionByQuestionBean(qB));
 						}
 					}
-					if(listQuestions.isEmpty()) {
+					if (listQuestions.isEmpty()) {
 						object.setCode(ReturnCode.ERROR_100);
-						log.error("This user doesn't have question in this theme [theme: " + th + ", pseudo: " + pseudo + "], " + ReturnCode.ERROR_100);
+						log.error("This user doesn't have question in this theme [theme: " + th + ", pseudo: " + pseudo
+								+ "], " + ReturnCode.ERROR_100);
 					}
 					object.setObject(listQuestions);
 				}
 			}
-			if (object.getCode() != ReturnCode.ERROR_000){
+			if (object.getCode() != ReturnCode.ERROR_000) {
 				object.setObject(null);
 			}
 		} catch (Exception e) {
 			object.setCode(ReturnCode.ERROR_600);
-			log.error("An exception has occured when calling getQuestionsByThemes [theme: " + theme + "], " + ReturnCode.ERROR_600);
+			log.error("An exception has occured when calling getQuestionsByThemes [theme: " + theme + "], "
+					+ ReturnCode.ERROR_600);
+		}
+		return object;
+	}
+
+	@Override
+	public ReturnObject deleteTheme(int id, String name) {
+		log.info("Delete Theme [id: " + id + ", name: " + name + "]");
+
+		ReturnObject object = new ReturnObject();
+		try {
+			themeRepository.deleteByidQuestionAndName(id, name);
+			object.setCode(ReturnCode.ERROR_000);
+		} catch (IllegalArgumentException e) {
+			object.setCode(ReturnCode.ERROR_100);
 		}
 		return object;
 	}

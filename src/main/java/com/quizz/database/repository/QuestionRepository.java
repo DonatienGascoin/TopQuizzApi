@@ -14,5 +14,4 @@ import org.springframework.data.repository.CrudRepository;
  * 
  */
 public interface QuestionRepository extends CrudRepository<QuestionBean, Integer>{
-	QuestionBean findById(Integer id);
 }

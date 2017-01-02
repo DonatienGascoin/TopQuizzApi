@@ -1,6 +1,7 @@
 package com.quizz.database.services;
 
 import com.quizz.database.modeles.ReturnObject;
+import com.quizz.database.beans.QuestionBean;
 import com.quizz.database.datas.Visibility;
 import com.quizz.database.modeles.Question;
 import java.util.Collection;
@@ -19,9 +20,9 @@ public interface QuizzService {
     
     public ReturnObject addQuizz(String name, Visibility visibility, Collection<Question> questions);
 
-	public ReturnObject getAllQuizzesByPseudo(String pseudo);
-
 	public ReturnObject getQuizzByName(String name);
 
 	public ReturnObject deleteQuizzById(Integer id);
+
+	ReturnObject getAllQuizzesByQuestionBean(Collection<QuestionBean> questions);
 }

@@ -24,4 +24,6 @@ public interface ThemeRepository extends CrudRepository<ThemeBean, Integer>{
 	public List<ThemeBean> findByIdQuestion(int idQuestion);
 	
 	public List<ThemeBean> findByName(String name);
+	
+	public void deleteByidQuestionAndName(Integer idQuestion, String name);
 }

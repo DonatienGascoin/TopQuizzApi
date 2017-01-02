@@ -2,6 +2,7 @@ package com.quizz.database.services.impl;
 
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,12 +61,17 @@ public class ResponseServiceImpl implements ResponseService {
 		try {
 			List<ResponseTmpBean> findByKey = responseTmpRepository.findByKeyContaining(pseudo);
 
-			for (ResponseTmpBean responseTmpBean : findByKey) {
-				ResponseBean responseBean = responseTmpBean.convertToResponseBean(idQuestion);
-				responseRepository.save(responseBean);
-				responseTmpRepository.delete(responseTmpBean);
+			if(CollectionUtils.isNotEmpty(findByKey)){
+				for (ResponseTmpBean responseTmpBean : findByKey) {
+					ResponseBean responseBean = responseTmpBean.convertToResponseBean(idQuestion);
+					responseRepository.save(responseBean);
+					responseTmpRepository.delete(responseTmpBean);
+				}
+				obj.setCode(ReturnCode.ERROR_000);
+			}else{
+				log.error("There are not TmpResponse associated [pseudo: "+ pseudo + ", idQuestion: "+idQuestion + "]");
+				obj.setCode(ReturnCode.ERROR_175);
 			}
-			obj.setCode(ReturnCode.ERROR_000);
 		} catch (IllegalArgumentException e) {
 			obj.setCode(ReturnCode.ERROR_500);
 			log.error("Impossible to delete ResponseTmpBean [id: " + idQuestion + "], " + ReturnCode.ERROR_500);

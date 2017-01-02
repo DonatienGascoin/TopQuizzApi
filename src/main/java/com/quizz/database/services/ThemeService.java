@@ -28,6 +28,8 @@ public interface ThemeService {
 	public ReturnObject addTheme(String name);
 
 	public ReturnObject deleteTheme(int id);
+
+	public ReturnObject deleteTheme(int id, String name);
 	
 	public ReturnObject addThemeWithIdQuestion(String name, int idQuestion);
 	
