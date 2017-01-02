@@ -20,6 +20,12 @@ public class Theme implements Serializable, Comparable<Theme> {
 
 	private Integer idQuestion;
 	
+	public Theme(ThemeBean tb) {
+		this.id = tb.getId();
+		this.name = tb.getName();
+		this.idQuestion = tb.getIdQuestion();
+	}
+
 	public Theme(String str, int idQuestion) {
 		super();
 		this.name = str;
@@ -57,5 +63,6 @@ public class Theme implements Serializable, Comparable<Theme> {
 	    }
 		return (this.id < t.id)? BEFORE: AFTER;
 	}
+
 
 }

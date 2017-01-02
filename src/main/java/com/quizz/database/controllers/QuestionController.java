@@ -1,9 +1,6 @@
 package com.quizz.database.controllers;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,17 +50,6 @@ public class QuestionController {
 			if(object.getCode() != null){
 				object.setCode(ReturnCode.ERROR_050);
 			}
-		}
-		return ResponseEntity.ok().body(object);
-	}
-	
-	@RequestMapping(value = "/getAllQuestionsByTheme", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<ReturnObject> getAllQuestionsByTheme(@RequestParam(name = "theme") String theme) {
-		ReturnObject object = null;
-		try {
-			object = appService.getAllQuestionsByTheme(theme);
-		} catch (Exception e) {
-			log.error("Impossible to get all questions for theme [theme: " + theme + "]", e);
 		}
 		return ResponseEntity.ok().body(object);
 	}
