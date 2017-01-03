@@ -2,6 +2,7 @@ package com.quizz.database.services.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -9,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.quizz.database.beans.QuestionBean;
+import com.quizz.database.beans.UserBean;
 import com.quizz.database.datas.ReturnCode;
 import com.quizz.database.datas.Visibility;
 import com.quizz.database.modeles.Question;
 import com.quizz.database.modeles.Quizz;
 import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.modeles.User;
+import com.quizz.database.repository.UserRepository;
 import com.quizz.database.services.AppService;
 import com.quizz.database.services.QuestionService;
 import com.quizz.database.services.QuizzService;
@@ -22,6 +25,7 @@ import com.quizz.database.services.ResponseService;
 import com.quizz.database.services.StatisticService;
 import com.quizz.database.services.ThemeService;
 import com.quizz.database.services.UserService;
+import com.quizz.database.services.FriendsService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,12 +45,18 @@ public class AppServiceImpl implements AppService {
 	private UserService userService;
 
 	@Autowired
+    private UserRepository userRepository;
+    
+    @Autowired
 	private ThemeService themeService;
 
 	@Autowired
 	private QuizzService quizzService;
 
 	@Autowired
+    private FriendsService friendsService;
+    
+    @Autowired
 	private QuestionService questionService;
 
 	@Autowired
@@ -124,6 +134,35 @@ public class AppServiceImpl implements AppService {
 	@Override
 	public ReturnObject getQuizzByName(String name) {
 		return quizzService.getQuizzByName(name);
+	}
+	
+	@Override
+	public ReturnObject getAllFriendsByPseudo(String pseudo) {
+		ReturnObject object = new ReturnObject();
+		UserBean userBean = userRepository.findOne(pseudo);
+		if (userBean == null) {
+			object.setCode(ReturnCode.ERROR_050);
+		} else {
+			List<User> list = (List<User>) ((ReturnObject) friendsService.getAllFriendsByPseudo(userBean)).getObject();
+			List<Quizz> lQuizz;
+			
+			if (list == null || list.size() == 0) {
+				object.setCode(ReturnCode.ERROR_050);
+			} else {
+				for (User user : list) {
+					user.setQuestions(null); 	// We don't want this information because it's in quiz
+					user.setFriends(null); 		// We don't want this information either
+					lQuizz = ((List<Quizz>) ((ReturnObject) getAllQuizzesByPseudo(user.getPseudo())).getObject());
+					if (lQuizz !=  null) {
+						user.setQuizz(lQuizz);
+					}
+				}
+				object.setObject(list);
+				object.setCode(ReturnCode.ERROR_000);
+			}
+		}		
+		
+		return object;
 	}
 
 	@Override

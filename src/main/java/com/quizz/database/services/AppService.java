@@ -69,4 +69,6 @@ public interface AppService {
 
 	public ReturnObject addScoreForQuizz(String pseudo, Integer quizzId, String quizzName, Integer nbRightAnswers,
 			Integer nbQuestions);
+	public ReturnObject getAllFriendsByPseudo(String pseudo);
+	
 }

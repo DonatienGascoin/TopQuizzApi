@@ -311,7 +311,7 @@ public class UserServiceImpl implements UserService {
 	 * @param bean {@link UserBean}
 	 * @return {@link User}
 	 */
-	private User getUserByUserBean(UserBean bean) {
+	protected static User getUserByUserBean(UserBean bean) {
 		User user = new User();
 		if(bean != null){	
 			user.setMail(bean.getMail());
