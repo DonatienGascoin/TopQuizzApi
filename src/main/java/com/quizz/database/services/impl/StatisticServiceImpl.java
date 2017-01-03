@@ -2,8 +2,12 @@ package com.quizz.database.services.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,17 +39,18 @@ public class StatisticServiceImpl implements StatisticService {
 		ReturnObject object = new ReturnObject();
 
 		try {
-			List<Statistic> statistics = new ArrayList<Statistic>();
-			Collection<StatisticBean> statisticBeans = statisticRepository.findTop10ByPseudoAndAndQuizzIdOrderByDateAsc(pseudo, quizzId);
+			Set<Statistic> statistics = new TreeSet<Statistic>();
+			Collection<StatisticBean> statisticBeans = statisticRepository.findTop10ByPseudoAndAndQuizzIdOrderByDateDesc(pseudo, quizzId);
 			if (CollectionUtils.isNotEmpty(statisticBeans)) {
 				for (StatisticBean statisticBean : statisticBeans) {
 					statistics.add(getStatisticToStatisticBean(statisticBean));
 				}
+				
 				object.setObject(statistics);
-				object.setCode(ReturnCode.ERROR_000);
 			}else{
-				object.setCode(ReturnCode.ERROR_100);
+				object.setObject(statistics);
 			}
+			object.setCode(ReturnCode.ERROR_000);
 		} catch (RuntimeException e) {
 			object.setCode(ReturnCode.ERROR_200);
 			log.error("Impossible to get Statistic [pseudo: " + pseudo + ",quizzId: " + quizzId + "], " + ReturnCode.ERROR_050);
@@ -59,7 +64,7 @@ public class StatisticServiceImpl implements StatisticService {
 	@Override
 	public ReturnObject addScoreForQuizz(String pseudo, Integer quizzId, String quizzName, Integer nbRightAnswers, Integer nbQuestions) {
 		log.info("Add statistic for  [pseudo: " + pseudo + "quizz Id: " + quizzId + "]");
-
+		
 		ReturnObject object = new ReturnObject();
 
 

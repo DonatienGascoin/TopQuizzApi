@@ -113,7 +113,7 @@ public class QuizzServiceImpl implements QuizzService {
 	 */
 	@Override
 	public ReturnObject getQuizzByName(String name) {
-		log.info("Get quizz by name");
+		log.info("Get quizz by name [name: " + name + "]");
 		ReturnObject object = new ReturnObject();
 
 		try {

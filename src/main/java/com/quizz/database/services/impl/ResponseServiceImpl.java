@@ -42,7 +42,8 @@ public class ResponseServiceImpl implements ResponseService {
 				log.info("Response succesfully created");
 			} else {
 				object.setCode(ReturnCode.ERROR_050);
-				log.error("Impossible to add ResponseTmp [key: " + key + ", responseTmp: [label:" + label + "]], " + ReturnCode.ERROR_050);
+				log.error("Impossible to add ResponseTmp [key: " + key + ", responseTmp: [label:" + label + "]], "
+						+ ReturnCode.ERROR_050);
 			}
 		} catch (RuntimeException e) {
 			object.setCode(ReturnCode.ERROR_200);
@@ -56,20 +57,23 @@ public class ResponseServiceImpl implements ResponseService {
 
 	@Override
 	public ReturnObject linkTmpResponse(int idQuestion, String pseudo) {
+		log.info("linkTmpResponse [idQuestion: " + idQuestion + ", pseudo: " + pseudo + "]");
 		ReturnObject obj = new ReturnObject();
 
 		try {
 			List<ResponseTmpBean> findByKey = responseTmpRepository.findByKeyContaining(pseudo);
 
-			if(CollectionUtils.isNotEmpty(findByKey)){
+			if (CollectionUtils.isNotEmpty(findByKey)) {
 				for (ResponseTmpBean responseTmpBean : findByKey) {
 					ResponseBean responseBean = responseTmpBean.convertToResponseBean(idQuestion);
 					responseRepository.save(responseBean);
 					responseTmpRepository.delete(responseTmpBean);
 				}
+				log.info("link ok"); 
 				obj.setCode(ReturnCode.ERROR_000);
-			}else{
-				log.error("There are not TmpResponse associated [pseudo: "+ pseudo + ", idQuestion: "+idQuestion + "]");
+			} else {
+				log.error("There are not TmpResponse associated [pseudo: " + pseudo + ", idQuestion: " + idQuestion
+						+ "]");
 				obj.setCode(ReturnCode.ERROR_175);
 			}
 		} catch (IllegalArgumentException e) {

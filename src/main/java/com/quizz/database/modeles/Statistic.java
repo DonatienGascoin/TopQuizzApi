@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class Statistic implements Serializable {
+public class Statistic implements Serializable, Comparable<Statistic> {
 
 	/**
 	 * Using for serialise object
@@ -26,9 +26,9 @@ public class Statistic implements Serializable {
 	private String quizzName;
 
 	private Integer nbRightAnswers;
-	
+
 	private Integer nbQuestions;
-	
+
 	private Date date;
 
 	public Statistic(int id, String pseudo, Integer quizzId, Integer rightAnswers, Integer nbAnswers, Date date) {
@@ -40,8 +40,19 @@ public class Statistic implements Serializable {
 		this.nbQuestions = nbAnswers;
 		this.date = date;
 	}
-	
-	public StatisticBean convertToBean(){
-		return new StatisticBean(this.id, this.pseudo, this.quizzId, this.quizzName, this.nbRightAnswers, this.nbQuestions, this.date);
+
+	public StatisticBean convertToBean() {
+		return new StatisticBean(this.id, this.pseudo, this.quizzId, this.quizzName, this.nbRightAnswers,
+				this.nbQuestions, this.date);
+	}
+
+	@Override
+	public int compareTo(Statistic o) {
+		if (this.getId() == o.getId()) {
+			return 0;
+		} else if (this.getId() > o.getId()) {
+			return 1;
+		}
+		return -1;
 	}
 }
