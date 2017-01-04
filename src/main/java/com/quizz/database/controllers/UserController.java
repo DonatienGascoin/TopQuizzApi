@@ -95,5 +95,17 @@ public class UserController {
 			log.error("Impossible to active User [mail: " + mail + "]", e);
 		}
 		return ResponseEntity.ok().body(object);
-	}
+	}	
+	
+	@RequestMapping(value = "/searchUserByPseudo", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<ReturnObject> searchUserByPseudo(@RequestParam(name = "pseudo") String pseudo) {
+		ReturnObject object = new ReturnObject();
+		try {
+			object = appService.searchUserByPseudo(pseudo);
+		} catch (Exception e) {
+			log.error("Impossible to search User [pseudo: " + pseudo + "]", e);
+		}
+		return ResponseEntity.ok().body(object);
+	}	
+	
 }
