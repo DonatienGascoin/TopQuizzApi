@@ -71,4 +71,8 @@ public interface AppService {
 			Integer nbQuestions);
 	public ReturnObject getAllFriendsByPseudo(String pseudo);
 	
+	public ReturnObject addFriendbyPseudo(String pseudo, String friendPseudo);
+	
+	public ReturnObject deleteFriend(String pseudo, String friendPseudo);
+	
 }

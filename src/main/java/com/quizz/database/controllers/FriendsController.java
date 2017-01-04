@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.quizz.database.datas.ReturnCode;
 import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.services.AppService;
 
@@ -42,6 +41,30 @@ public class FriendsController {
 		}
 		return ResponseEntity.ok().body(object);
 	}
+	
+	@RequestMapping(value = "/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<ReturnObject> addFriendbyPseudo(@RequestParam(name = "pseudo") String pseudo, @RequestParam(name = "friendPseudo") String friendPseudo) {
+		ReturnObject object = new ReturnObject();
+		try {
+			object = appService.addFriendbyPseudo(pseudo, friendPseudo);
+		} catch (Exception e) {
+			log.error("Impossible to add Friend [friendPseudo: " + friendPseudo + "to pseudo" + pseudo + "]", e);
+		}
+		return ResponseEntity.ok().body(object);
+	}
+	
+	@RequestMapping(value = "/delete", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<ReturnObject> deleteFriend(@RequestParam(name = "pseudo") String pseudo, @RequestParam(name = "friendPseudo") String friendPseudo) {
+		ReturnObject object = new ReturnObject();
+		try {
+			object = appService.deleteFriend(pseudo, friendPseudo);
+		} catch (Exception e) {
+			log.error("Impossible to delete Friend [friendPseudo: " + friendPseudo + "to pseudo" + pseudo + "]", e);
+		}
+		return ResponseEntity.ok().body(object);
+	}
+	
+	
 	
 }
 

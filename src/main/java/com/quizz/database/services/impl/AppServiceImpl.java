@@ -316,4 +316,16 @@ public class AppServiceImpl implements AppService {
 		obj.setCode(ReturnCode.ERROR_100);
 		return obj;
 	}
+
+	@Override
+	public ReturnObject addFriendbyPseudo(String pseudo, String friendPseudo) {
+		return friendsService.addFriendbyPseudo(pseudo, friendPseudo);
+	}
+
+	@Override
+	public ReturnObject deleteFriend(String pseudo, String friendPseudo) {
+		return friendsService.deleteFriend(pseudo, friendPseudo);
+	}
+	
+	
 }
