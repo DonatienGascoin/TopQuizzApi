@@ -69,11 +69,12 @@ public interface AppService {
 
 	public ReturnObject addScoreForQuizz(String pseudo, Integer quizzId, String quizzName, Integer nbRightAnswers,
 			Integer nbQuestions);
+
 	public ReturnObject getAllFriendsByPseudo(String pseudo);
-	
+
 	public ReturnObject addFriendbyPseudo(String pseudo, String friendPseudo);
-	
+
 	public ReturnObject deleteFriend(String pseudo, String friendPseudo);
-	
-	public ReturnObject searchUserByPseudo(String pseudo);	
+
+	public ReturnObject searchUserByPartialPseudo(String pseudo);
 }

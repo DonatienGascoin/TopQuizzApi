@@ -101,7 +101,7 @@ public class UserController {
 	public ResponseEntity<ReturnObject> searchUserByPseudo(@RequestParam(name = "pseudo") String pseudo) {
 		ReturnObject object = new ReturnObject();
 		try {
-			object = appService.searchUserByPseudo(pseudo);
+			object = appService.searchUserByPartialPseudo(pseudo);
 		} catch (Exception e) {
 			log.error("Impossible to search User [pseudo: " + pseudo + "]", e);
 		}

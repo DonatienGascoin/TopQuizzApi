@@ -10,14 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.quizz.database.beans.QuestionBean;
-import com.quizz.database.beans.UserBean;
 import com.quizz.database.datas.ReturnCode;
 import com.quizz.database.datas.Visibility;
 import com.quizz.database.modeles.Question;
 import com.quizz.database.modeles.Quizz;
 import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.modeles.User;
-import com.quizz.database.repository.UserRepository;
 import com.quizz.database.services.AppService;
 import com.quizz.database.services.QuestionService;
 import com.quizz.database.services.QuizzService;
@@ -42,14 +40,14 @@ public class AppServiceImpl implements AppService {
 
 	@Autowired
 	private UserService userService;
-    
-    @Autowired
+
+	@Autowired
 	private ThemeService themeService;
 
 	@Autowired
 	private QuizzService quizzService;
-    
-    @Autowired
+
+	@Autowired
 	private QuestionService questionService;
 
 	@Autowired
@@ -279,31 +277,38 @@ public class AppServiceImpl implements AppService {
 		}
 		obj.setCode(ReturnCode.ERROR_100);
 		return obj;
-	}	
-	
+	}
+
 	@Override
 	public ReturnObject getAllFriendsByPseudo(String pseudo) {
 		log.info("Get all friens by pseudo. [pseudo" + pseudo + "] ");
 		ReturnObject object = new ReturnObject();
-		User user = (User)userService.getUser(pseudo).getObject();
-		if (user == null) {
+		if (((User) object.getObject()).getPseudo() != null) {
 			object.setCode(ReturnCode.ERROR_100);
 			return object;
 		}
-		List<User> friendList = (List<User>) (userService.getAllFriendsByPseudo(user).getObject());
-		List<User> friendWithoutBeanList = new ArrayList<User>();
-		List<Quizz> lQuizz;
-		for (User friendBean : friendList) {
-			friendBean.setQuestions(null); 		// We don't want this information because it's in quiz
-			friendBean.setFriends(null); 		// We don't want this information either
-			lQuizz = ((List<Quizz>) ((ReturnObject)getAllQuizzesByPseudo(user.getPseudo())).getObject());
-			if (lQuizz !=  null) {
-				friendBean.setQuizz(lQuizz);
+		User user = (User) object.getObject();
+		List<User> friendList = new ArrayList<User>();
+		if (CollectionUtils.isNotEmpty(friendList)) {
+			for (User friend : user.getFriends()) {
+				friend.setQuestions(null); // We don't want this information
+											// because it's in quiz
+				friend.setFriends(null); // We don't want this information
+											// either
+				object = getAllQuizzesByPseudo(user.getPseudo());
+				if (object.getCode() == ReturnCode.ERROR_000) {
+					object.setCode(ReturnCode.ERROR_100);
+					return object;
+				}
+				List<Quizz> lQuizz = ((List<Quizz>) object.getObject());
+				if (CollectionUtils.isNotEmpty(lQuizz)) {
+					friend.setQuizz(lQuizz);
+					friendList.add(friend);
+				}
 			}
-			friendWithoutBeanList.add(friendBean);
+			object.setObject(friendList);
+			object.setCode(ReturnCode.ERROR_000);
 		}
-		object.setObject(friendWithoutBeanList);
-		object.setCode(ReturnCode.ERROR_000);
 		return object;
 	}
 
@@ -311,38 +316,43 @@ public class AppServiceImpl implements AppService {
 	public ReturnObject addFriendbyPseudo(String pseudo, String friendPseudo) {
 		log.info(" add a friend. [friendPseudo: " + friendPseudo + " pseudo" + pseudo + "] ");
 		ReturnObject object = new ReturnObject();
-		User user1 = (User)userService.getUser(pseudo).getObject();
-		User user2 = (User)userService.getUser(friendPseudo).getObject();
-		if (user1 == null || user2==null ){
+		object = userService.getUser(pseudo);
+		User user1 = (User) object.getObject();
+		if (user1 == null) {
 			object.setCode(ReturnCode.ERROR_100);
+			return object;
 		}
-		object.setObject(userService.addFriendbyPseudo(user1, user2));
-		return object;
+		object = userService.getUser(friendPseudo);
+		User user2 = (User) object.getObject();
+		if (user2 == null) {
+			object.setCode(ReturnCode.ERROR_100);
+			return object;
+		}
+		return userService.addFriendbyPseudo(user1, user2);
 	}
 
 	@Override
 	public ReturnObject deleteFriend(String pseudo, String friendPseudo) {
 		log.info(" delete a friend. [friendPseudo: " + friendPseudo + " pseudo" + pseudo + "] ");
 		ReturnObject object = new ReturnObject();
-		ReturnObject tmp = userService.getUser(pseudo);
-		User u1 = (User) tmp.getObject();
-		if (u1 == null){
+		object = userService.getUser(pseudo);
+		User u1 = (User) object.getObject();
+		if (u1 == null) {
 			object.setCode(ReturnCode.ERROR_100);
 			return object;
 		}
-		tmp = userService.getUser(friendPseudo);
-		User u2 = (User) tmp.getObject();
-		if (u2 == null){
+		object = userService.getUser(friendPseudo);
+		User u2 = (User) object.getObject();
+		if (u2 == null) {
 			object.setCode(ReturnCode.ERROR_100);
 			return object;
 		}
-		
-		object = userService.deleteFriend(u1, u2);
-		return object;
+		return userService.deleteFriend(u1, u2);
 	}
-	
+
 	@Override
-	public ReturnObject searchUserByPseudo(String pseudo) {
-		return userService.searchUserByPseudo(pseudo);
-	}	
+	public ReturnObject searchUserByPartialPseudo(String pseudo) {
+		log.info(" search User By Partial Pseudo. [pseudo" + pseudo + "] ");
+		return userService.searchUserByPartialPseudo(pseudo);
+	}
 }

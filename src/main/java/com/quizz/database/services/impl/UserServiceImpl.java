@@ -2,6 +2,7 @@ package com.quizz.database.services.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -10,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.quizz.database.beans.QuestionBean;
-import com.quizz.database.beans.ResponseTmpBean;
 import com.quizz.database.beans.UserBean;
 import com.quizz.database.datas.ReturnCode;
 import com.quizz.database.modeles.Question;
@@ -380,14 +380,24 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ReturnObject searchUserByPseudo(String pseudo) {
-		log.info("Search User by pseudo [pseudo: " + pseudo + "]");
+	public ReturnObject searchUserByPartialPseudo(String partialPseudo) {
+		log.info("Search User by pseudo [pseudo: " + partialPseudo + "]");
 		ReturnObject object = new ReturnObject();
-		/*
-		 * User user = null; TODO List<ResponseTmpBean> userList = new
-		 * ArrayList<ResponseTmpBean>() ; userList =
-		 */
-
+		Iterable<UserBean> userb = userRepository.findAll();
+		Iterator<UserBean> itUser = userb.iterator();
+		while(itUser.hasNext()){
+			UserBean element = itUser.next();
+			if(element.getPseudo().contains(partialPseudo)){
+				UserBean userB = userRepository.findOne(element.getPseudo());
+				if (userB == null) {
+					object.setCode(ReturnCode.ERROR_100);
+					return object;
+				}
+				//TODO
+			}			
+			itUser = (Iterator<UserBean>) itUser.next();
+		}
+		
 		return object;
 	}
 
@@ -404,7 +414,7 @@ public class UserServiceImpl implements UserService {
 			}
 			object.setObject(listFriends);
 			object.setCode(ReturnCode.ERROR_000);
-			
+
 		} catch (Exception e) {
 			object.setCode(ReturnCode.ERROR_050);
 			log.error("An exception has occured when calling getAllFriendsByPseudo, " + ReturnCode.ERROR_050);
@@ -427,10 +437,10 @@ public class UserServiceImpl implements UserService {
 			// The friend was add here
 			user1.getFriends().add(user2);
 			userRepository.save(user1.convertToBean());
-			
+
 			user2.getFriends().add(user1);
 			userRepository.save(user2.convertToBean());
-			
+
 			object.setCode(ReturnCode.ERROR_000);
 			log.info("Friend successfully added");
 		} catch (IllegalArgumentException e) {
@@ -456,10 +466,10 @@ public class UserServiceImpl implements UserService {
 				// users are already friends
 				user1.getFriends().remove(user2);
 				userRepository.save(user1.convertToBean());
-				
+
 				user2.getFriends().remove(user1);
 				userRepository.save(user2.convertToBean());
-				
+
 				object.setCode(ReturnCode.ERROR_000);
 			} else {
 				object.setCode(ReturnCode.ERROR_300);
