@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.quizz.database.beans.QuestionBean;
+import com.quizz.database.beans.UserBean;
 import com.quizz.database.datas.ReturnCode;
 import com.quizz.database.datas.Visibility;
 import com.quizz.database.modeles.Question;
@@ -59,6 +60,10 @@ public class AppServiceImpl implements AppService {
 	@Override
 	public ReturnObject getUser(String pseudo) {
 		return userService.getUser(pseudo);
+	}
+	
+	public UserBean getUserBean(String pseudo) {
+		return userService.getUserBean(pseudo);
 	}
 
 	@Override
@@ -281,9 +286,10 @@ public class AppServiceImpl implements AppService {
 
 	@Override
 	public ReturnObject getAllFriendsByPseudo(String pseudo) {
-		log.info("Get all friens by pseudo. [pseudo" + pseudo + "] ");
+		log.info("Get all friends by pseudo. [pseudo" + pseudo + "] ");
 		ReturnObject object = new ReturnObject();
-		if (((User) object.getObject()).getPseudo() != null) {
+		object = userService.getUser(pseudo);
+		if (object.getCode() != ReturnCode.ERROR_000) {
 			object.setCode(ReturnCode.ERROR_100);
 			return object;
 		}
@@ -316,14 +322,14 @@ public class AppServiceImpl implements AppService {
 	public ReturnObject addFriendbyPseudo(String pseudo, String friendPseudo) {
 		log.info(" add a friend. [friendPseudo: " + friendPseudo + " pseudo" + pseudo + "] ");
 		ReturnObject object = new ReturnObject();
-		object = userService.getUser(pseudo);
-		User user1 = (User) object.getObject();
+		UserBean user1 = userService.getUserBean(pseudo);
+		object.setObject(user1);
 		if (user1 == null) {
 			object.setCode(ReturnCode.ERROR_100);
 			return object;
 		}
-		object = userService.getUser(friendPseudo);
-		User user2 = (User) object.getObject();
+		UserBean user2 = userService.getUserBean(friendPseudo);
+		object.setObject(user2);
 		if (user2 == null) {
 			object.setCode(ReturnCode.ERROR_100);
 			return object;
@@ -335,19 +341,19 @@ public class AppServiceImpl implements AppService {
 	public ReturnObject deleteFriend(String pseudo, String friendPseudo) {
 		log.info(" delete a friend. [friendPseudo: " + friendPseudo + " pseudo" + pseudo + "] ");
 		ReturnObject object = new ReturnObject();
-		object = userService.getUser(pseudo);
-		User u1 = (User) object.getObject();
-		if (u1 == null) {
+		UserBean user1 = userService.getUserBean(pseudo);
+		object.setObject(user1);
+		if (user1 == null) {
 			object.setCode(ReturnCode.ERROR_100);
 			return object;
 		}
-		object = userService.getUser(friendPseudo);
-		User u2 = (User) object.getObject();
-		if (u2 == null) {
+		UserBean user2 = userService.getUserBean(friendPseudo);
+		object.setObject(user2);
+		if (user2 == null) {
 			object.setCode(ReturnCode.ERROR_100);
 			return object;
 		}
-		return userService.deleteFriend(u1, u2);
+		return userService.deleteFriend(user1, user2);
 	}
 
 	@Override

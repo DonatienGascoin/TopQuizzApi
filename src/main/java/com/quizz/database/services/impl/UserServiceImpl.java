@@ -62,6 +62,31 @@ public class UserServiceImpl implements UserService {
 
 		return object;
 	}
+	
+	/**
+	 * Return pseudo, mail, friend (pseudo), question (id)
+	 * 
+	 * Warning: password was not test
+	 * 
+	 * @return {@link User}
+	 */
+	@Override
+	public UserBean getUserBean(String pseudo) {
+
+		UserBean result = new UserBean();
+		try {
+			result = userRepository.findOne(pseudo);
+
+			if (result != null) {
+				log.info("Get UserBean [pseudo: " + pseudo + "]");
+			} else {
+				log.error("UserBean not found [pseudo: " + pseudo + "]");
+			}
+		} catch (IllegalArgumentException e) {
+			log.error("User not found [pseudo: " + pseudo + "]");
+		}
+		return result;
+	}
 
 	/**
 	 * Return pseudo and mail
@@ -402,28 +427,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ReturnObject getAllFriendsByPseudo(User user) {
-		log.info("Get all friends by pseudo");
-		ReturnObject object = new ReturnObject();
-		try {
-			List<User> listFriends = new ArrayList<User>();
-
-			// Recovers Users associated with user questions
-			for (User friend : new ArrayList<User>(user.getFriends())) {
-				listFriends.add(friend);
-			}
-			object.setObject(listFriends);
-			object.setCode(ReturnCode.ERROR_000);
-
-		} catch (Exception e) {
-			object.setCode(ReturnCode.ERROR_050);
-			log.error("An exception has occured when calling getAllFriendsByPseudo, " + ReturnCode.ERROR_050);
-		}
-		return object;
-	}
-
-	@Override
-	public ReturnObject addFriendbyPseudo(User user1, User user2) {
+	public ReturnObject addFriendbyPseudo(UserBean user1, UserBean user2) {
 		log.info("Add friend ");
 		ReturnObject object = new ReturnObject();
 
@@ -436,10 +440,10 @@ public class UserServiceImpl implements UserService {
 		try {
 			// The friend was add here
 			user1.getFriends().add(user2);
-			userRepository.save(user1.convertToBean());
+			userRepository.save(user1);
 
 			user2.getFriends().add(user1);
-			userRepository.save(user2.convertToBean());
+			userRepository.save(user2);
 
 			object.setCode(ReturnCode.ERROR_000);
 			log.info("Friend successfully added");
@@ -458,17 +462,17 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ReturnObject deleteFriend(User user1, User user2) {
+	public ReturnObject deleteFriend(UserBean user1, UserBean user2) {
 		log.info("Delete Friend [pseudo1: " + user1.getPseudo() + ", pseudo 2: " + user2.getPseudo() + "]");
 		ReturnObject object = new ReturnObject();
 		try {
 			if (user1.getFriends().contains(user2) || user2.getFriends().contains(user1)) {
 				// users are already friends
 				user1.getFriends().remove(user2);
-				userRepository.save(user1.convertToBean());
+				userRepository.save(user1);
 
 				user2.getFriends().remove(user1);
-				userRepository.save(user2.convertToBean());
+				userRepository.save(user2);
 
 				object.setCode(ReturnCode.ERROR_000);
 			} else {

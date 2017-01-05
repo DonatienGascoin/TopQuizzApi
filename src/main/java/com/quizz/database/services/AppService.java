@@ -3,6 +3,7 @@ package com.quizz.database.services;
 import java.util.Collection;
 
 import com.quizz.database.beans.QuestionBean;
+import com.quizz.database.beans.UserBean;
 import com.quizz.database.datas.Visibility;
 import com.quizz.database.modeles.Question;
 import com.quizz.database.modeles.ReturnObject;
@@ -23,6 +24,8 @@ import com.quizz.database.modeles.User;
 public interface AppService {
 
 	public ReturnObject getUser(String pseudo);
+	
+	public UserBean getUserBean(String pseudo);
 
 	public ReturnObject getUserByMail(String mail);
 
