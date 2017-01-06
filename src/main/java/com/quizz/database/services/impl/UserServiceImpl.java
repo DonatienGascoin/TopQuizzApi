@@ -2,6 +2,7 @@ package com.quizz.database.services.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -45,8 +46,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			UserBean tmp = userRepository.findOne(pseudo);
 			result = getUserByUserBean(tmp);
-			
-			if (result != null) {
+			if (result.getPseudo() != null) {
 				object.setCode(ReturnCode.ERROR_000);
 				log.info("Get User [pseudo: " + pseudo + "]");
 			} else {
@@ -58,8 +58,32 @@ public class UserServiceImpl implements UserService {
 			log.error("User not found [pseudo: " + pseudo + "], " + ReturnCode.ERROR_100);
 		}
 		object.setObject(result);
-
 		return object;
+	}
+	
+	/**
+	 * Return pseudo, mail, friend (pseudo), question (id)
+	 * 
+	 * Warning: password was not test
+	 * 
+	 * @return {@link User}
+	 */
+	@Override
+	public UserBean getUserBean(String pseudo) {
+
+		UserBean result = new UserBean();
+		try {
+			result = userRepository.findOne(pseudo);
+
+			if (result != null) {
+				log.info("Get UserBean [pseudo: " + pseudo + "]");
+			} else {
+				log.error("UserBean not found [pseudo: " + pseudo + "]");
+			}
+		} catch (IllegalArgumentException e) {
+			log.error("User not found [pseudo: " + pseudo + "]");
+		}
+		return result;
 	}
 
 	/**
@@ -74,10 +98,10 @@ public class UserServiceImpl implements UserService {
 		try {
 			UserBean tmp = userRepository.findByPseudoAndPassword(pseudo, password);
 			result = getUserByUserBean(tmp);
-			if(tmp == null || result == null){
+			if (tmp == null || result == null) {
 				object.setCode(ReturnCode.ERROR_100);
 			} else {
-				if(tmp.getActive()) {
+				if (tmp.getActive()) {
 					object.setCode(ReturnCode.ERROR_000);
 					log.info("Credentials are great [pseudo: " + pseudo + "]");
 				} else {
@@ -148,7 +172,7 @@ public class UserServiceImpl implements UserService {
 
 		ReturnObject object = new ReturnObject();
 		User user = new User();
-		//Create empty user in case of existing pseudo or mail
+		// Create empty user in case of existing pseudo or mail
 		object.setObject(user);
 		// Test if pseudo or email was already used
 		if (userRepository.exists(pseudo)) {
@@ -198,7 +222,7 @@ public class UserServiceImpl implements UserService {
 		if (StringUtils.isNotBlank(password)) {
 			u.setPassword(password);
 		}
-		
+
 		u.setActive(active);
 
 		if (CollectionUtils.isNotEmpty(friends)) {
@@ -260,9 +284,9 @@ public class UserServiceImpl implements UserService {
 		try {
 			UserBean findByMail = userRepository.findByMail(mail);
 			user = getUserByUserBean(findByMail);
-			if(StringUtils.isNotBlank(user.getMail())){
+			if (StringUtils.isNotBlank(user.getMail())) {
 				object.setCode(ReturnCode.ERROR_000);
-			}else{				
+			} else {
 				log.error("User not found [mail: " + mail + "], " + ReturnCode.ERROR_100);
 				object.setCode(ReturnCode.ERROR_100);
 			}
@@ -289,7 +313,8 @@ public class UserServiceImpl implements UserService {
 			object = getUserByMail(mail);
 			user = (User) object.getObject();
 			if (StringUtils.isNotBlank(password)) {
-				object = editUser(user.getPseudo(), user.getMail(), password, user.getActive(), user.getFriends(), user.getQuestions());
+				object = editUser(user.getPseudo(), user.getMail(), password, user.getActive(), user.getFriends(),
+						user.getQuestions());
 			}
 			object.setCode(ReturnCode.ERROR_000);
 			log.info("Password changed for User [mail: " + mail + "]");
@@ -306,14 +331,15 @@ public class UserServiceImpl implements UserService {
 
 	/**
 	 * Convert UserBean to User <br />
-	 *  <b><i>Warning</i></b>: Password is not set
+	 * <b><i>Warning</i></b>: Password is not set
 	 * 
-	 * @param bean {@link UserBean}
+	 * @param bean
+	 *            {@link UserBean}
 	 * @return {@link User}
 	 */
 	private User getUserByUserBean(UserBean bean) {
 		User user = new User();
-		if(bean != null){	
+		if (bean != null) {
 			user.setMail(bean.getMail());
 			user.setPseudo(bean.getPseudo());
 			user.setActive(bean.getActive());
@@ -324,7 +350,7 @@ public class UserServiceImpl implements UserService {
 				friends.add(u);
 			}
 			user.setFriends(friends);
-			
+
 			Collection<Question> questions = new ArrayList<Question>();
 			for (QuestionBean question : bean.getQuestion()) {
 				Question q = new Question();
@@ -335,7 +361,7 @@ public class UserServiceImpl implements UserService {
 		}
 		return user;
 	}
-	
+
 	@Override
 	public ReturnObject activeUser(String mail) {
 		log.info("Active user [mail: " + mail + "]");
@@ -345,7 +371,8 @@ public class UserServiceImpl implements UserService {
 			object = getUserByMail(mail);
 			user = (User) object.getObject();
 			if (StringUtils.isNotBlank(user.getMail())) {
-				object = editUser(user.getPseudo(), user.getMail(), user.getPassword(), true, user.getFriends(), user.getQuestions());
+				object = editUser(user.getPseudo(), user.getMail(), user.getPassword(), true, user.getFriends(),
+						user.getQuestions());
 				log.info("User is now active [pseudo: " + user.getPseudo() + "]");
 			}
 		} catch (IllegalArgumentException e) {
@@ -374,4 +401,91 @@ public class UserServiceImpl implements UserService {
 		}
 		return object;
 	}
+
+	@Override
+	public ReturnObject searchUserByPartialPseudo(String partialPseudo) {
+		log.info("Search User by pseudo [pseudo: " + partialPseudo + "]");
+		ReturnObject object = new ReturnObject();
+		Iterable<UserBean> userb = userRepository.findAll();
+		Iterator<UserBean> itUser = userb.iterator();
+		while(itUser.hasNext()){
+			UserBean element = itUser.next();
+			if(element.getPseudo().contains(partialPseudo)){
+				UserBean userB = userRepository.findOne(element.getPseudo());
+				if (userB == null) {
+					object.setCode(ReturnCode.ERROR_100);
+					return object;
+				}
+				//TODO
+			}			
+			itUser = (Iterator<UserBean>) itUser.next();
+		}
+		
+		return object;
+	}
+
+	@Override
+	public ReturnObject addFriendbyPseudo(UserBean user1, UserBean user2) {
+		log.info("Add friend ");
+		ReturnObject object = new ReturnObject();
+
+		if (user1.getFriends().contains(user2) || user2.getFriends().contains(user1)) {
+			// Test if the pseudoAmi is already a friend
+			object.setCode(ReturnCode.ERROR_300);
+			log.error("This person is already your friend.  " + ReturnCode.ERROR_300);
+			return object;
+		} // The person was not a friend yet
+		try {
+			// The friend was add here
+			user1.getFriends().add(user2);
+			userRepository.save(user1);
+
+			user2.getFriends().add(user1);
+			userRepository.save(user2);
+
+			object.setCode(ReturnCode.ERROR_000);
+			log.info("Friend successfully added");
+		} catch (IllegalArgumentException e) {
+			object.setCode(ReturnCode.ERROR_500);
+			log.error("Impossible to add Friend, " + ReturnCode.ERROR_500);
+		} catch (RuntimeException e) {
+			object.setCode(ReturnCode.ERROR_200);
+			log.error("Impossible to add Friend, " + ReturnCode.ERROR_200);
+		} catch (Exception e) {
+			object.setCode(ReturnCode.ERROR_050);
+			log.error("Impossible to add Friend, " + ReturnCode.ERROR_050);
+		}
+		object.setObject(null);
+		return object;
+	}
+
+	@Override
+	public ReturnObject deleteFriend(UserBean user1, UserBean user2) {
+		log.info("Delete Friend [pseudo1: " + user1.getPseudo() + ", pseudo 2: " + user2.getPseudo() + "]");
+		ReturnObject object = new ReturnObject();
+		try {
+			if (user1.getFriends().contains(user2) || user2.getFriends().contains(user1)) {
+				// users are already friends
+				user1.getFriends().remove(user2);
+				userRepository.save(user1);
+
+				user2.getFriends().remove(user1);
+				userRepository.save(user2);
+
+				object.setCode(ReturnCode.ERROR_000);
+			} else {
+				object.setCode(ReturnCode.ERROR_300);
+				log.error("This person is already not you friend. " + ReturnCode.ERROR_100);
+			}
+		} catch (IllegalArgumentException e) {
+			object.setCode(ReturnCode.ERROR_050);
+			log.error("Impossible to delete this friend. " + ReturnCode.ERROR_050);
+		} catch (Exception e) {
+			object.setCode(ReturnCode.ERROR_050);
+			log.error("Impossible to delete this friend. " + ReturnCode.ERROR_050);
+		}
+		object.setObject(null);
+		return object;
+	}
+
 }

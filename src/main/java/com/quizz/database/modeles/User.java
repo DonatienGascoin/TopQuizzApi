@@ -29,6 +29,8 @@ public class User implements Serializable {
 	private java.util.Collection<User> friends;
 
 	private java.util.Collection<Question> questions;
+	
+	private java.util.Collection<Quizz> quizz;
 
 	public User(String pseudo, String password, String mail, Boolean active, Collection<User> friends, Collection<Question> questions) {
 		this.pseudo = pseudo;

@@ -2,6 +2,7 @@ package com.quizz.database.services.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.quizz.database.beans.QuestionBean;
+import com.quizz.database.beans.UserBean;
 import com.quizz.database.datas.ReturnCode;
 import com.quizz.database.datas.Visibility;
 import com.quizz.database.modeles.Question;
@@ -58,6 +60,10 @@ public class AppServiceImpl implements AppService {
 	@Override
 	public ReturnObject getUser(String pseudo) {
 		return userService.getUser(pseudo);
+	}
+	
+	public UserBean getUserBean(String pseudo) {
+		return userService.getUserBean(pseudo);
 	}
 
 	@Override
@@ -276,5 +282,79 @@ public class AppServiceImpl implements AppService {
 		}
 		obj.setCode(ReturnCode.ERROR_100);
 		return obj;
+	}
+
+	@Override
+	public ReturnObject getAllFriendsByPseudo(String pseudo) {
+		log.info("Get all friends by pseudo. [pseudo" + pseudo + "] ");
+		ReturnObject object = new ReturnObject();
+		object = userService.getUser(pseudo);
+		if (object.getCode() != ReturnCode.ERROR_000) {
+			object.setCode(ReturnCode.ERROR_100);
+			return object;
+		}
+		User user = (User) object.getObject();
+		List<User> friendList = new ArrayList<User>();
+		friendList = (ArrayList<User>) user.getFriends();
+		if (CollectionUtils.isNotEmpty(friendList)) {
+			for (User friend : friendList) {
+				object = userService.getUser(friend.getPseudo());
+				friend.setFriends(null);
+				friend.setQuestions(null);
+				ReturnObject oQuizz = getAllQuizzesByPseudo(friend.getPseudo());
+				if(oQuizz.getCode() != ReturnCode.ERROR_000) {
+					object.setCode(ReturnCode.ERROR_100);
+					return object;
+				} 
+				friend.setQuizz((ArrayList<Quizz>) oQuizz.getObject());
+			}
+			object.setObject(friendList);
+			object.setCode(ReturnCode.ERROR_000);
+		}
+		return object;
+	}
+
+	@Override
+	public ReturnObject addFriendbyPseudo(String pseudo, String friendPseudo) {
+		log.info(" add a friend. [friendPseudo: " + friendPseudo + " pseudo" + pseudo + "] ");
+		ReturnObject object = new ReturnObject();
+		UserBean user1 = userService.getUserBean(pseudo);
+		object.setObject(user1);
+		if (user1 == null) {
+			object.setCode(ReturnCode.ERROR_100);
+			return object;
+		}
+		UserBean user2 = userService.getUserBean(friendPseudo);
+		object.setObject(user2);
+		if (user2 == null) {
+			object.setCode(ReturnCode.ERROR_100);
+			return object;
+		}
+		return userService.addFriendbyPseudo(user1, user2);
+	}
+
+	@Override
+	public ReturnObject deleteFriend(String pseudo, String friendPseudo) {
+		log.info(" delete a friend. [friendPseudo: " + friendPseudo + " pseudo" + pseudo + "] ");
+		ReturnObject object = new ReturnObject();
+		UserBean user1 = userService.getUserBean(pseudo);
+		object.setObject(user1);
+		if (user1 == null) {
+			object.setCode(ReturnCode.ERROR_100);
+			return object;
+		}
+		UserBean user2 = userService.getUserBean(friendPseudo);
+		object.setObject(user2);
+		if (user2 == null) {
+			object.setCode(ReturnCode.ERROR_100);
+			return object;
+		}
+		return userService.deleteFriend(user1, user2);
+	}
+
+	@Override
+	public ReturnObject searchUserByPartialPseudo(String pseudo) {
+		log.info(" search User By Partial Pseudo. [pseudo" + pseudo + "] ");
+		return userService.searchUserByPartialPseudo(pseudo);
 	}
 }

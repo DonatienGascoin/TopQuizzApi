@@ -95,5 +95,49 @@ public class UserController {
 			log.error("Impossible to active User [mail: " + mail + "]", e);
 		}
 		return ResponseEntity.ok().body(object);
+	}	
+	
+	@RequestMapping(value = "/searchUserByPseudo", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<ReturnObject> searchUserByPseudo(@RequestParam(name = "pseudo") String pseudo) {
+		ReturnObject object = new ReturnObject();
+		try {
+			object = appService.searchUserByPartialPseudo(pseudo);
+		} catch (Exception e) {
+			log.error("Impossible to search User [pseudo: " + pseudo + "]", e);
+		}
+		return ResponseEntity.ok().body(object);
+	}	
+	
+	@RequestMapping(value = "/getAllFriendsByPseudo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<ReturnObject> getAllFriendsByPseudo(@RequestParam(name = "pseudo") String pseudo) {
+		ReturnObject object = null;
+		try {
+			object = appService.getAllFriendsByPseudo(pseudo);
+		} catch (Exception e) {
+			log.error("Impossible to get all friends [pseudo: " + pseudo + "]", e);
+		}
+		return ResponseEntity.ok().body(object);
+	}
+	
+	@RequestMapping(value = "/addFriend", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<ReturnObject> addFriendbyPseudo(@RequestParam(name = "pseudo") String pseudo, @RequestParam(name = "friendPseudo") String friendPseudo) {
+		ReturnObject object = new ReturnObject();
+		try {
+			object = appService.addFriendbyPseudo(pseudo, friendPseudo);
+		} catch (Exception e) {
+			log.error("Impossible to add Friend [friendPseudo: " + friendPseudo + "to pseudo" + pseudo + "]", e);
+		}
+		return ResponseEntity.ok().body(object);
+	}
+	
+	@RequestMapping(value = "/deleteFriend", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<ReturnObject> deleteFriend(@RequestParam(name = "pseudo") String pseudo, @RequestParam(name = "friendPseudo") String friendPseudo) {
+		ReturnObject object = new ReturnObject();
+		try {
+			object = appService.deleteFriend(pseudo, friendPseudo);
+		} catch (Exception e) {
+			log.error("Impossible to delete Friend [friendPseudo: " + friendPseudo + "to pseudo" + pseudo + "]", e);
+		}
+		return ResponseEntity.ok().body(object);
 	}
 }
