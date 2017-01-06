@@ -97,8 +97,8 @@ public class UserController {
 		return ResponseEntity.ok().body(object);
 	}	
 	
-	@RequestMapping(value = "/searchUserByPseudo", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<ReturnObject> searchUserByPseudo(@RequestParam(name = "pseudo") String pseudo) {
+	@RequestMapping(value = "/searchUserByPartialPseudo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<ReturnObject> searchUserByPartialPseudo(@RequestParam(name = "pseudo") String pseudo) {
 		ReturnObject object = new ReturnObject();
 		try {
 			object = appService.searchUserByPartialPseudo(pseudo);
