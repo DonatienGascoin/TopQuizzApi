@@ -406,8 +406,14 @@ public class UserServiceImpl implements UserService {
 	public ReturnObject searchUserByPartialPseudo(String partialPseudo) {
 		log.info("Search User by pseudo [pseudo: " + partialPseudo + "]");
 		ReturnObject object = new ReturnObject();
+		if(partialPseudo.length()<3){
+			object.setCode(ReturnCode.ERROR_200);
+			log.error("3 letters are necessary to do the research, " + ReturnCode.ERROR_200);
+			return object;
+		}
 		Iterable<UserBean> userb = userRepository.findAll();
 		Iterator<UserBean> itUser = userb.iterator();
+		List<String> users = new ArrayList<String>();
 		while(itUser.hasNext()){
 			UserBean element = itUser.next();
 			if(element.getPseudo().contains(partialPseudo)){
@@ -416,17 +422,17 @@ public class UserServiceImpl implements UserService {
 					object.setCode(ReturnCode.ERROR_100);
 					return object;
 				}
-				//TODO
+				users.add(userB.getPseudo());
 			}			
-			itUser = (Iterator<UserBean>) itUser.next();
 		}
-		
+		object.setCode(ReturnCode.ERROR_000);
+		object.setObject(users);
 		return object;
 	}
 
 	@Override
 	public ReturnObject addFriendbyPseudo(UserBean user1, UserBean user2) {
-		log.info("Add friend ");
+		log.info("Add friend [pseudo1: " + user1 + " pseudo2 : "+ user2 + "]");
 		ReturnObject object = new ReturnObject();
 
 		if (user1.getFriends().contains(user2) || user2.getFriends().contains(user1)) {
