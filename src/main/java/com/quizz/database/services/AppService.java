@@ -79,5 +79,5 @@ public interface AppService {
 
 	public ReturnObject deleteFriend(String pseudo, String friendPseudo);
 
-	public ReturnObject searchUserByPartialPseudo(String pseudo);
+	public ReturnObject searchUserByPartialPseudo(String partialPseudo);
 }

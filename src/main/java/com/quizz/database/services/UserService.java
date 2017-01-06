@@ -41,7 +41,7 @@ public interface UserService {
 	
 	public ReturnObject getQuestions(String pseudo);
 
-	public ReturnObject searchUserByPartialPseudo(String pseudo);
+	public ReturnObject searchUserByPartialPseudo(String partialPseudo);
 	
 	public ReturnObject addFriendbyPseudo (UserBean user, UserBean friendUser);
 	

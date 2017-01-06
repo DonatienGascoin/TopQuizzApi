@@ -434,7 +434,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ReturnObject addFriendbyPseudo(UserBean user1, UserBean user2) {
-		log.info("Add friend ");
+		log.info("Add friend [pseudo1: " + user1 + " pseudo2 : "+ user2 + "]");
 		ReturnObject object = new ReturnObject();
 
 		if (user1.getFriends().contains(user2) || user2.getFriends().contains(user1)) {
