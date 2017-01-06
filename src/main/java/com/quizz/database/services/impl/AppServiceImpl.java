@@ -89,6 +89,7 @@ public class AppServiceImpl implements AppService {
 
 	@Override
 	public ReturnObject getAllThemesByUser(String pseudo) {
+		log.info(" get All Themes By User. [pseudo" + pseudo + "] ");
 		ReturnObject obj = userService.getUser(pseudo);
 		if (StringUtils.isNotBlank(((User) obj.getObject()).getPseudo())) {
 			return themeService.getAllThemesByUser((Collection<Question>) ((User) obj.getObject()).getQuestions());
@@ -109,6 +110,7 @@ public class AppServiceImpl implements AppService {
 
 	@Override
 	public ReturnObject getAllQuizzesByPseudo(String pseudo) {
+		log.info(" get All Quizzes By Pseudo. [pseudo" + pseudo + "] ");
 		ReturnObject obj = userService.getUser(pseudo);
 		if (StringUtils.isNotBlank(((User) obj.getObject()).getPseudo())) {
 			User tmp = (User) obj.getObject();
@@ -167,6 +169,7 @@ public class AppServiceImpl implements AppService {
 
 	@Override
 	public ReturnObject addQuizz(String name, Visibility visibility, String questions) {
+		log.info(" Add quizz. [name : " + name + " visibility : " + visibility + " questions :" + questions + "] ");
 
 		String[] split = StringUtils.split(questions, SEPARATOR_QUIZZ);
 		Collection<Question> questionList = new ArrayList<Question>();
@@ -265,6 +268,7 @@ public class AppServiceImpl implements AppService {
 
 	@Override
 	public ReturnObject getTenLastScoreForQuizz(String pseudo, Integer quizzId) {
+		log.info("Get ten Last score for quizz. [pseudo" + pseudo + " quizzId:" + quizzId + "] ");
 		ReturnObject obj = userService.getUser(pseudo);
 		if (StringUtils.isNotBlank(((User) obj.getObject()).getPseudo())) {
 			return statisticService.getTenLastScoreForQuizz(pseudo, quizzId);
@@ -302,7 +306,7 @@ public class AppServiceImpl implements AppService {
 				friend.setFriends(null); // We don't want this information
 											// either
 				object = getAllQuizzesByPseudo(user.getPseudo());
-				if (object.getCode() == ReturnCode.ERROR_000) {
+				if (object.getCode() != ReturnCode.ERROR_000) {
 					object.setCode(ReturnCode.ERROR_100);
 					return object;
 				}
