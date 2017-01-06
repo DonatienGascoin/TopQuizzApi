@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
 			UserBean tmp = userRepository.findOne(pseudo);
 			result = getUserByUserBean(tmp);
 
-			if (result != null) {
+			if (result.getPseudo() != null) {
 				object.setCode(ReturnCode.ERROR_000);
 				log.info("Get User [pseudo: " + pseudo + "]");
 			} else {
