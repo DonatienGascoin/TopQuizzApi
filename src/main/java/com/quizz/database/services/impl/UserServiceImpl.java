@@ -46,8 +46,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			UserBean tmp = userRepository.findOne(pseudo);
 			result = getUserByUserBean(tmp);
-
-			if (result != null) {
+			if (result.getPseudo() != null) {
 				object.setCode(ReturnCode.ERROR_000);
 				log.info("Get User [pseudo: " + pseudo + "]");
 			} else {
@@ -59,7 +58,6 @@ public class UserServiceImpl implements UserService {
 			log.error("User not found [pseudo: " + pseudo + "], " + ReturnCode.ERROR_100);
 		}
 		object.setObject(result);
-
 		return object;
 	}
 	

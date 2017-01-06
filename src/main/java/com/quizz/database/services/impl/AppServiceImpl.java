@@ -295,22 +295,18 @@ public class AppServiceImpl implements AppService {
 		}
 		User user = (User) object.getObject();
 		List<User> friendList = new ArrayList<User>();
+		friendList = (ArrayList<User>) user.getFriends();
 		if (CollectionUtils.isNotEmpty(friendList)) {
-			for (User friend : user.getFriends()) {
-				friend.setQuestions(null); // We don't want this information
-											// because it's in quiz
-				friend.setFriends(null); // We don't want this information
-											// either
-				object = getAllQuizzesByPseudo(user.getPseudo());
-				if (object.getCode() == ReturnCode.ERROR_000) {
+			for (User friend : friendList) {
+				object = userService.getUser(friend.getPseudo());
+				friend.setFriends(null);
+				friend.setQuestions(null);
+				ReturnObject oQuizz = getAllQuizzesByPseudo(friend.getPseudo());
+				if(oQuizz.getCode() != ReturnCode.ERROR_000) {
 					object.setCode(ReturnCode.ERROR_100);
 					return object;
-				}
-				List<Quizz> lQuizz = ((List<Quizz>) object.getObject());
-				if (CollectionUtils.isNotEmpty(lQuizz)) {
-					friend.setQuizz(lQuizz);
-					friendList.add(friend);
-				}
+				} 
+				friend.setQuizz((ArrayList<Quizz>) oQuizz.getObject());
 			}
 			object.setObject(friendList);
 			object.setCode(ReturnCode.ERROR_000);
