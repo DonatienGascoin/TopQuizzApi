@@ -412,16 +412,16 @@ public class UserServiceImpl implements UserService {
 			log.error("PartialPseudo to small, " + ReturnCode.ERROR_700);
 			return object;
 		}
-		List<String> findByKey = userRepository.findByPseudoContaining(partialPseudo);
+		List<UserBean> findByKey = userRepository.findByPseudoContaining(partialPseudo);
 		List<String> users = new ArrayList<String>();
 		
-		for(String pseudo : findByKey) {
-			UserBean userB = userRepository.findOne(pseudo);
-			if (userB == null) {
-				object.setCode(ReturnCode.ERROR_100);
-				return object;
+		if(!findByKey.isEmpty()) {
+			for(UserBean user : findByKey) {
+				users.add(user.getPseudo());
 			}
-			users.add(userB.getPseudo());
+		} else {
+			object.setCode(ReturnCode.ERROR_100);
+			return object;
 		}
 		
 		object.setCode(ReturnCode.ERROR_000);

@@ -23,5 +23,5 @@ public interface UserRepository extends CrudRepository<UserBean, String>{
 	
 	UserBean findByPseudoAndPassword(String pseudo, String password);
 	
-	List<String> findByPseudoContaining(String pseudo);
+	List<UserBean> findByPseudoContaining(String pseudo);
 }
