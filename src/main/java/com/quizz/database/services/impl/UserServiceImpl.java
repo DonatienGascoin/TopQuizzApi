@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.quizz.database.beans.QuestionBean;
+import com.quizz.database.beans.ResponseTmpBean;
 import com.quizz.database.beans.UserBean;
 import com.quizz.database.datas.ReturnCode;
 import com.quizz.database.modeles.Question;
@@ -407,24 +408,22 @@ public class UserServiceImpl implements UserService {
 		log.info("Search User by pseudo [pseudo: " + partialPseudo + "]");
 		ReturnObject object = new ReturnObject();
 		if(partialPseudo.length()<3){
-			object.setCode(ReturnCode.ERROR_200);
-			log.error("3 letters are necessary to do the research, " + ReturnCode.ERROR_200);
+			object.setCode(ReturnCode.ERROR_700);
+			log.error("PartialPseudo to small, " + ReturnCode.ERROR_700);
 			return object;
 		}
-		Iterable<UserBean> userb = userRepository.findAll();
-		Iterator<UserBean> itUser = userb.iterator();
+		List<UserBean> findByKey = userRepository.findByPseudoContaining(partialPseudo);
 		List<String> users = new ArrayList<String>();
-		while(itUser.hasNext()){
-			UserBean element = itUser.next();
-			if(element.getPseudo().contains(partialPseudo)){
-				UserBean userB = userRepository.findOne(element.getPseudo());
-				if (userB == null) {
-					object.setCode(ReturnCode.ERROR_100);
-					return object;
-				}
-				users.add(userB.getPseudo());
-			}			
+		
+		if(!findByKey.isEmpty()) {
+			for(UserBean user : findByKey) {
+				users.add(user.getPseudo());
+			}
+		} else {
+			object.setCode(ReturnCode.ERROR_100);
+			return object;
 		}
+		
 		object.setCode(ReturnCode.ERROR_000);
 		object.setObject(users);
 		return object;
