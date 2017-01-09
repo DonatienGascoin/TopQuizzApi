@@ -14,6 +14,10 @@ public enum ReturnCode {
 	 */
 	ERROR_100,
 	/**
+	 * Friends have no quizz
+	 */
+	ERROR_125,
+	/**
 	 * QuestionNOtFound
 	 */
 	ERROR_150,

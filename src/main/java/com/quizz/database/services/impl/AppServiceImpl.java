@@ -291,30 +291,34 @@ public class AppServiceImpl implements AppService {
 	@Override
 	public ReturnObject getAllFriendsByPseudo(String pseudo) {
 		log.info("Get all friends by pseudo. [pseudo" + pseudo + "] ");
+		// Object with User
+		ReturnObject obj = new ReturnObject();
+		// Object to return
 		ReturnObject object = new ReturnObject();
-		object = userService.getUser(pseudo);
-		if (object.getCode() != ReturnCode.ERROR_000) {
+		obj = userService.getUser(pseudo);
+		if (obj.getCode() != ReturnCode.ERROR_000) {
 			object.setCode(ReturnCode.ERROR_100);
 			return object;
 		}
-		User user = (User) object.getObject();
+		User user = (User) obj.getObject();
 		List<User> friendList = new ArrayList<User>();
 		friendList = (ArrayList<User>) user.getFriends();
 		if (CollectionUtils.isNotEmpty(friendList)) {
 			for (User friend : friendList) {
-				object = userService.getUser(friend.getPseudo());
-				friend.setFriends(null);
-				friend.setQuestions(null);
+				UserBean u = getUserBean(friend.getPseudo());
+				friend.setMail(u.getMail());
 				ReturnObject oQuizz = getAllQuizzesByPseudo(friend.getPseudo());
 				if(oQuizz.getCode() != ReturnCode.ERROR_000) {
 					object.setCode(ReturnCode.ERROR_100);
 					return object;
-				} 
+				}
 				friend.setQuizz((ArrayList<Quizz>) oQuizz.getObject());
 			}
-			object.setObject(friendList);
-			object.setCode(ReturnCode.ERROR_000);
+		} else {
+			friendList = null;
 		}
+		object.setCode(ReturnCode.ERROR_000);
+		object.setObject(friendList);
 		return object;
 	}
 
