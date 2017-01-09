@@ -98,12 +98,12 @@ public class UserController {
 	}	
 	
 	@RequestMapping(value = "/searchUserByPartialPseudo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<ReturnObject> searchUserByPartialPseudo(@RequestParam(name = "pseudo") String pseudo) {
+	public ResponseEntity<ReturnObject> searchUserByPartialPseudo(@RequestParam(name = "partialPseudo") String partialPseudo, @RequestParam(name = "pseudo") String pseudo) {
 		ReturnObject object = new ReturnObject();
 		try {
-			object = appService.searchUserByPartialPseudo(pseudo);
+			object = appService.searchUserByPartialPseudo(partialPseudo, pseudo);
 		} catch (Exception e) {
-			log.error("Impossible to search User [pseudo: " + pseudo + "]", e);
+			log.error("Impossible to search User [partialpseudo: " + partialPseudo + "]", e);
 		}
 		return ResponseEntity.ok().body(object);
 	}	

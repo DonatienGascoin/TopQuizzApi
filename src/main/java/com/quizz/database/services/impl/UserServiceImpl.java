@@ -404,7 +404,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ReturnObject searchUserByPartialPseudo(String partialPseudo) {
+	public ReturnObject searchUserByPartialPseudo(String partialPseudo, String pseudo) {
 		log.info("Search User by pseudo [pseudo: " + partialPseudo + "]");
 		ReturnObject object = new ReturnObject();
 		if(partialPseudo.length()<3){
@@ -417,7 +417,9 @@ public class UserServiceImpl implements UserService {
 		
 		if(!findByKey.isEmpty()) {
 			for(UserBean user : findByKey) {
-				users.add(user.getPseudo());
+				if(!pseudo.equals(user.getPseudo())) {
+					users.add(user.getPseudo());
+				}	
 			}
 		} else {
 			object.setCode(ReturnCode.ERROR_100);

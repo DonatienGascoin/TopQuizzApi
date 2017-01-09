@@ -357,8 +357,8 @@ public class AppServiceImpl implements AppService {
 	}
 
 	@Override
-	public ReturnObject searchUserByPartialPseudo(String pseudo) {
-		log.info(" search User By Partial Pseudo. [pseudo" + pseudo + "] ");
-		return userService.searchUserByPartialPseudo(pseudo);
+	public ReturnObject searchUserByPartialPseudo(String partialPseudo, String pseudo) {
+		log.info(" search User By Partial Pseudo. [partialPseudo" + partialPseudo + "] ");
+		return userService.searchUserByPartialPseudo(partialPseudo, pseudo);
 	}
 }
