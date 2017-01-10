@@ -1,26 +1,18 @@
 package com.quizz.database.services.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.quizz.database.beans.StatisticBean;
-import com.quizz.database.beans.ThemeBean;
 import com.quizz.database.datas.ReturnCode;
 import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.modeles.Statistic;
-import com.quizz.database.modeles.Theme;
 import com.quizz.database.repository.StatisticRepository;
 import com.quizz.database.services.StatisticService;
 

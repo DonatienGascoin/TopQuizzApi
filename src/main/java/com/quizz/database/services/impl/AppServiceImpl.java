@@ -114,17 +114,31 @@ public class AppServiceImpl implements AppService {
 		ReturnObject obj = userService.getUser(pseudo);
 		if (StringUtils.isNotBlank(((User) obj.getObject()).getPseudo())) {
 			User tmp = (User) obj.getObject();
+			//Get own quizzs
+			List<Quizz> lQuizz = new ArrayList<Quizz>();
+
+			//Test if User have any quizz shared with him
+			if(CollectionUtils.isNotEmpty(tmp.getReiceivedQuizz())){
+				lQuizz.addAll(tmp.getReiceivedQuizz());
+			}
+			
 			if (CollectionUtils.isNotEmpty(tmp.getQuestions())) {
 				Collection<QuestionBean> qBean = new ArrayList<QuestionBean>();
 				for (Question q : tmp.getQuestions()) {
 					qBean.add(q.convertToBean());
 				}
-				return quizzService.getAllQuizzesByQuestionBean(qBean);
-			} else {
-				obj.setObject(new ArrayList<Quizz>());
-				return obj;
+				try{
+					lQuizz.addAll((List<Quizz>)quizzService.getAllQuizzesByQuestionBean(qBean).getObject());
+				}catch (Exception e) {
+					//User have no quizz
+				}
 			}
+			
+			obj.setObject(lQuizz);
+			return obj;
 		}
+		
+		//User not found
 		obj.setCode(ReturnCode.ERROR_100);
 		return obj;
 	}
@@ -289,6 +303,38 @@ public class AppServiceImpl implements AppService {
 	}
 
 	@Override
+	public ReturnObject addShareQuizz(Integer quizzId, String userSharedPseudo) {
+		log.info("Share quizz [quizzId: " + quizzId + " userSharedPseudo: " + userSharedPseudo + "]");
+		ReturnObject obj = userService.getUser(userSharedPseudo);
+		if (StringUtils.isNotBlank(((User) obj.getObject()).getPseudo())) {
+
+			UserBean quizzReceiver = ((User) obj.getObject()).convertToBean();
+			obj = quizzService.shareQuizzToUser(quizzId, quizzReceiver);
+			if (!ReturnCode.ERROR_000.equals(obj.getCode())) {
+				log.error("Impossible to share quizz [quizzId: " + quizzId + " userSharedPseudo: " + userSharedPseudo
+						+ "]");
+			}
+			//Do not need on return statement
+			obj.setObject(null);
+			return obj;
+		}
+		log.error("Impossible te share quizz, target user unreacheable [pseudo: " + userSharedPseudo + "]");
+		obj.setCode(ReturnCode.ERROR_100);
+		return obj;
+	}
+
+	@Override
+	public ReturnObject deleteSharedQuizz(Integer quizzId, String userSharedPseudo) {
+		ReturnObject obj = userService.getUser(userSharedPseudo);
+		if (StringUtils.isNotBlank(((User) obj.getObject()).getPseudo())) {
+			UserBean quizzReceiver = ((User) obj.getObject()).convertToBean();
+			return quizzService.deleteSharedQuizz(quizzId, quizzReceiver);
+		}
+		log.error("Impossible te share quizz, target user unreacheable [pseudo: " + userSharedPseudo + "]");
+		obj.setCode(ReturnCode.ERROR_100);
+		return obj;
+  }
+
 	public ReturnObject getAllFriendsByPseudo(String pseudo) {
 		log.info("Get all friends by pseudo. [pseudo" + pseudo + "] ");
 		// Object with User

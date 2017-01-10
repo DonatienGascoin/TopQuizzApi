@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import lombok.extern.slf4j.Slf4j;
-
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,17 +20,17 @@ import com.quizz.database.modeles.Quizz;
 import com.quizz.database.modeles.Response;
 import com.quizz.database.modeles.ReturnObject;
 import com.quizz.database.modeles.Theme;
+import com.quizz.database.modeles.User;
 import com.quizz.database.repository.QuestionRepository;
 import com.quizz.database.repository.QuizzRepository;
 import com.quizz.database.repository.UserRepository;
 import com.quizz.database.services.QuizzService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 @Service
 public class QuizzServiceImpl implements QuizzService {
-
-	@Autowired
-	private UserRepository userRepository;
 
 	@Autowired
 	private QuestionRepository questionRepository;
@@ -75,7 +74,6 @@ public class QuizzServiceImpl implements QuizzService {
 		object.setObject(quizz);
 		return object;
 	}
-
 
 	@Override
 	public ReturnObject getAllQuizzesByQuestionBean(Collection<QuestionBean> questions) {
@@ -206,6 +204,91 @@ public class QuizzServiceImpl implements QuizzService {
 			}
 		}
 		quizz.setQuestions(questions);
+		Collection<User> sharedUsers = new ArrayList<User>();
+		if (CollectionUtils.isNotEmpty(bean.getSharedUser())) {
+			for (UserBean sU : bean.getSharedUser()) {
+				User user = new User();
+				if (sU != null) {
+					user.setMail(sU.getMail());
+					user.setPseudo(sU.getPseudo());
+					user.setActive(sU.getActive());
+					Collection<User> friends = new ArrayList<User>();
+					for (UserBean userB : sU.getFriends()) {
+						User u = new User();
+						u.setPseudo(userB.getPseudo());
+						friends.add(u);
+					}
+					user.setFriends(friends);
+
+					Collection<Question> questionsSU = new ArrayList<Question>();
+					for (QuestionBean question : sU.getQuestion()) {
+						Question q = new Question();
+						q.setId(question.getId());
+						questions.add(q);
+					}
+					user.setQuestions(questionsSU);
+
+					if (CollectionUtils.isNotEmpty(sU.getReiceivedQuizz())) {
+						Collection<Quizz> quizzs = new ArrayList<Quizz>();
+						for (QuizzBean quizzb : sU.getReiceivedQuizz()) {
+							Quizz quizzSU = new Quizz();
+							quizz.setId(quizzb.getId());
+							quizz.setName(quizzb.getName());
+							Visibility visSU = null;
+							for (Visibility v : Visibility.values()) {
+								if (v.getId() == Integer.parseInt(quizzb.getIsVisible())) {
+									visSU = v;
+								}
+							}
+							quizz.setIsVisible(visSU);
+
+							Collection<Question> questionsQ = new ArrayList<Question>();
+							if (quizzb.getQuestions() != null) {
+								for (QuestionBean question : quizzb.getQuestions()) {
+									Question q = new Question();
+									q.setId(question.getId());
+									q.setPseudo(question.getPseudo());
+									q.setLabel(question.getLabel());
+									q.setExplanation(question.getExplanation());
+
+									if (question.getThemes() != null) {
+										Collection<Theme> themes = new ArrayList<Theme>();
+										for (ThemeBean theme : new ArrayList<ThemeBean>(question.getThemes())) {
+											Theme t = new Theme();
+											t.setId(theme.getId());
+											t.setName(theme.getName());
+											themes.add(t);
+										}
+										q.setThemes(themes);
+									}
+
+									if (question.getResponses() != null) {
+										Collection<Response> responses = new ArrayList<Response>();
+										for (ResponseBean response : new ArrayList<ResponseBean>(
+												question.getResponses())) {
+											Response r = new Response();
+											r.setId(response.getId());
+											r.setIsValide(response.getIsValide());
+											r.setLabel(response.getLabel());
+											responses.add(r);
+										}
+										q.setResponses(responses);
+									}
+
+									questionsQ.add(q);
+								}
+							}
+							quizz.setQuestions(questionsQ);
+
+							quizzs.add(quizzSU);
+						}
+						user.setReiceivedQuizz(quizzs);
+					}
+				}
+				sharedUsers.add(user);
+			}
+			quizz.setSharedUser(sharedUsers);
+		}
 
 		return quizz;
 	}
@@ -221,6 +304,125 @@ public class QuizzServiceImpl implements QuizzService {
 			object.setCode(ReturnCode.ERROR_100);
 		}
 		return object;
+	}
+
+	@Override
+	public ReturnObject shareQuizzToUser(Integer quizzId, UserBean quizzReceiver) {
+		log.info("Share quizz [quizzId: " + quizzId + ", userSharedPseudo: " + quizzReceiver.getPseudo() + "]");
+		ReturnObject object = new ReturnObject();
+
+		QuizzBean quizzToShare = new QuizzBean();
+		try {
+
+			quizzToShare = quizzRepository.findOne(quizzId);
+			if (quizzToShare == null) {
+				log.info("Impossible to found Quizz [quizzId:" + quizzId + "]");
+				object.setCode(ReturnCode.ERROR_125);
+				return object;
+			}
+
+			// Check if Quizz was created by target user
+			for (QuestionBean q : quizzToShare.getQuestions()) {
+				if (quizzReceiver.getPseudo().equals(q.getPseudo())) {
+					log.info("Impossible to found Quizz [quizzId:" + quizzId + "]");
+					object.setCode(ReturnCode.ERROR_325);
+					return object;
+				}
+			}
+
+			for (UserBean user : quizzToShare.getSharedUser()) {
+				if (quizzReceiver.getPseudo().equals(user.getPseudo())) {
+					log.info("quizz already shared with this user [quizzId: " + quizzId + ", pseudo: "
+							+ quizzReceiver.getPseudo() + "]");
+					object.setCode(ReturnCode.ERROR_325);
+					return object;
+				}
+			}
+
+			if (CollectionUtils.isEmpty(quizzToShare.getSharedUser())) {
+				quizzToShare.setSharedUser(new ArrayList<UserBean>());
+			}
+
+			quizzToShare.getSharedUser().add(quizzReceiver);
+
+			quizzToShare = quizzRepository.save(quizzToShare);
+			if (quizzToShare != null) {
+				object.setCode(ReturnCode.ERROR_000);
+				log.info("Quizz successfully shared");
+			} else {
+				object.setCode(ReturnCode.ERROR_050);
+				log.error("Impossible to Share Quizz " + quizzId + ", " + ReturnCode.ERROR_050);
+			}
+
+		} catch (IllegalArgumentException e) {
+			object.setCode(ReturnCode.ERROR_500);
+			log.error("Impossible to Share Quizz " + quizzId + ", " + ReturnCode.ERROR_500, e);
+		} catch (RuntimeException e) {
+			object.setCode(ReturnCode.ERROR_200);
+			log.error("Impossible to Share Quizz " + quizzId + ", " + ReturnCode.ERROR_200, e);
+		} catch (Exception e) {
+			object.setCode(ReturnCode.ERROR_050);
+			log.error("Impossible to Share Quizz " + quizzId + ", " + ReturnCode.ERROR_050, e);
+		}
+		object.setObject(getQuizzByQuizzBean(quizzToShare));
+		return object;
+	}
+
+	@Override
+	public ReturnObject deleteSharedQuizz(Integer quizzId, UserBean userSharedPseudo) {
+		log.info("Delete shared quizz [quizzId: " + quizzId + ", userSharedPseudo: " + userSharedPseudo + "]");
+		ReturnObject obj = new ReturnObject();
+		try {
+			QuizzBean quizzToUnShare = quizzRepository.findOne(quizzId);
+			boolean isShared = false;
+			for (UserBean user : quizzToUnShare.getSharedUser()) {
+				if (user.getPseudo().equals(userSharedPseudo.getPseudo())) {
+					isShared = true;
+					break;
+				}
+			}
+			if (Boolean.TRUE.equals(isShared)) {
+				//First, delete receivedQuizz on User
+				Collection<QuizzBean> reiceivedQuizz = userSharedPseudo.getReiceivedQuizz();
+				for (QuizzBean quizzBean : reiceivedQuizz) {
+					if(quizzToUnShare.getId() == quizzBean.getId()){
+						reiceivedQuizz.remove(quizzBean);
+						break;
+					}
+				}
+				userSharedPseudo.setReiceivedQuizz(reiceivedQuizz);
+								
+				//Second, delete sharedQuizz on Quizz
+				Collection<UserBean> sharedUsers = quizzToUnShare.getSharedUser();
+				for (UserBean userBean : sharedUsers) {
+					if(userSharedPseudo.getPseudo().equals(userBean.getPseudo())){
+						sharedUsers.remove(userBean);
+						break;
+					}
+				}
+				quizzToUnShare.setSharedUser(sharedUsers);
+				
+				
+				quizzRepository.save(quizzToUnShare);
+				
+				obj.setCode(ReturnCode.ERROR_000);
+			} else {
+				log.info("Quizz was not shared with this user");
+				obj.setCode(ReturnCode.ERROR_450);
+				return obj;
+			}
+
+		} catch (IllegalArgumentException e) {
+			obj.setCode(ReturnCode.ERROR_050);
+			log.error("Impossible to delete shared quizz [quizzId: " + quizzId + ", userSharedPseudo: "
+					+ userSharedPseudo + "]");
+		} catch (Exception e) {
+			obj.setCode(ReturnCode.ERROR_050);
+			log.error("Impossible to delete shared quizz [quizzId: " + quizzId + ", userSharedPseudo: "
+					+ userSharedPseudo + "]");
+
+		}
+		return obj;
 	}
 
 }

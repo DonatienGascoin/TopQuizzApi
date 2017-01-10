@@ -6,6 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 
 import com.quizz.database.beans.QuizzBean;
+import com.quizz.database.beans.UserBean;
 
 /**
  * @author Maxence Royer
@@ -16,4 +17,5 @@ public interface QuizzRepository extends CrudRepository<QuizzBean, Integer> {
 	QuizzBean findById(Integer id);
 	
 	QuizzBean findByName(String name);
+	
 }

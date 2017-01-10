@@ -72,6 +72,10 @@ public interface AppService {
 
 	public ReturnObject addScoreForQuizz(String pseudo, Integer quizzId, String quizzName, Integer nbRightAnswers,
 			Integer nbQuestions);
+	
+	public ReturnObject addShareQuizz(Integer quizzId, String userSharedPseudo);
+
+	public ReturnObject deleteSharedQuizz(Integer quizzId, String userSharedPseudo);
 
 	public ReturnObject getAllFriendsByPseudo(String pseudo);
 

@@ -11,11 +11,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.quizz.database.beans.QuestionBean;
+import com.quizz.database.beans.QuizzBean;
+import com.quizz.database.beans.ResponseBean;
+import com.quizz.database.beans.ThemeBean;
 import com.quizz.database.beans.ResponseTmpBean;
 import com.quizz.database.beans.UserBean;
 import com.quizz.database.datas.ReturnCode;
+import com.quizz.database.datas.Visibility;
 import com.quizz.database.modeles.Question;
+import com.quizz.database.modeles.Quizz;
+import com.quizz.database.modeles.Response;
 import com.quizz.database.modeles.ReturnObject;
+import com.quizz.database.modeles.Theme;
 import com.quizz.database.modeles.User;
 import com.quizz.database.repository.UserRepository;
 import com.quizz.database.services.UserService;
@@ -359,6 +366,64 @@ public class UserServiceImpl implements UserService {
 				questions.add(q);
 			}
 			user.setQuestions(questions);
+
+			if (CollectionUtils.isNotEmpty(bean.getReiceivedQuizz())) {
+				Collection<Quizz> quizzs = new ArrayList<Quizz>();
+				for (QuizzBean quizzb : bean.getReiceivedQuizz()) {
+					Quizz quizz = new Quizz();
+					quizz.setId(quizzb.getId());
+					quizz.setName(quizzb.getName());
+					Visibility vis = null;
+					for (Visibility v : Visibility.values()) {
+						if (v.getId() == Integer.parseInt(quizzb.getIsVisible())) {
+							vis = v;
+						}
+					}
+					quizz.setIsVisible(vis);
+
+					Collection<Question> questionsQ = new ArrayList<Question>();
+					if (quizzb.getQuestions() != null) {
+						for (QuestionBean question : quizzb.getQuestions()) {
+							Question q = new Question();
+							q.setId(question.getId());
+							q.setPseudo(question.getPseudo());
+							q.setLabel(question.getLabel());
+							q.setExplanation(question.getExplanation());
+
+							if (question.getThemes() != null) {
+								Collection<Theme> themes = new ArrayList<Theme>();
+								for (ThemeBean theme : new ArrayList<ThemeBean>(question.getThemes())) {
+									Theme t = new Theme();
+									t.setId(theme.getId());
+									t.setName(theme.getName());
+									t.setIdQuestion(theme.getIdQuestion());
+									themes.add(t);
+								}
+								q.setThemes(themes);
+							}
+
+							if (question.getResponses() != null) {
+								Collection<Response> responses = new ArrayList<Response>();
+								for (ResponseBean response : new ArrayList<ResponseBean>(question.getResponses())) {
+									Response r = new Response();
+									r.setId(response.getId());
+									r.setIsValide(response.getIsValide());
+									r.setIdQuestion(response.getIdQuestion());
+									r.setLabel(response.getLabel());
+									responses.add(r);
+								}
+								q.setResponses(responses);
+							}
+
+							questions.add(q);
+						}
+					}
+					quizz.setQuestions(questions);
+
+					quizzs.add(quizz);
+				}
+				user.setReiceivedQuizz(quizzs);
+			}
 		}
 		return user;
 	}

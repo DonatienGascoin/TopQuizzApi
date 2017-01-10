@@ -39,6 +39,14 @@ public class QuizzBean{
 				inverseJoinColumns=
 					@JoinColumn(name="Question", referencedColumnName="id")
 	)
-	public Collection<QuestionBean> questions;
+	private Collection<QuestionBean> questions;
+	
+	@ManyToMany(fetch=FetchType.LAZY)
+	@JoinTable(
+		name="User_Quizz",
+		joinColumns=@JoinColumn(name="Quizz", referencedColumnName="id"),
+		inverseJoinColumns=@JoinColumn(name="User", referencedColumnName="pseudo")
+	)
+	private Collection<UserBean> sharedUser;
 
 }

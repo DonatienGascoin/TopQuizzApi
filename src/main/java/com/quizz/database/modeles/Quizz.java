@@ -8,6 +8,7 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import com.quizz.database.beans.QuestionBean;
 import com.quizz.database.beans.QuizzBean;
+import com.quizz.database.beans.UserBean;
 import com.quizz.database.datas.Visibility;
 
 import lombok.Data;
@@ -26,6 +27,8 @@ public class Quizz implements Serializable {
 	private Visibility isVisible;
 
 	public Collection<Question> questions;
+	
+	public Collection<User> sharedUser;
 
         public Quizz (int id, String name, Visibility isVisible, Collection<Question> questions) {
             this.id = id;
@@ -61,6 +64,14 @@ public class Quizz implements Serializable {
 				questionsBean.add(question.convertToBean());
 			}
 			bean.setQuestions(questionsBean);
+		}
+
+		if (CollectionUtils.isNotEmpty(sharedUser)) {
+			Collection<UserBean> usersBean = new ArrayList<UserBean>();
+			for (User user : sharedUser) {
+				usersBean.add(user.convertToBean());
+			}
+			bean.setSharedUser(usersBean);
 		}
 
 		return bean;

@@ -1,5 +1,7 @@
 package com.quizz.database.beans;
 
+import java.util.Collection;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -41,6 +43,16 @@ public class UserBean {
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn
 	private java.util.Collection<QuestionBean> question;
+	
+
+	
+	@ManyToMany(fetch=FetchType.LAZY)
+	@JoinTable(
+		name="User_Quizz",
+		joinColumns=@JoinColumn(name="User", referencedColumnName="Pseudo"),
+		inverseJoinColumns=@JoinColumn(name="Quizz", referencedColumnName="id")
+	)
+	private Collection<QuizzBean> reiceivedQuizz;
 
 	public UserBean(String pseudo, String password, String mail, Boolean active) {
 		this.pseudo = pseudo;
