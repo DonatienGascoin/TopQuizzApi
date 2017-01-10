@@ -7,6 +7,7 @@ import java.util.Collection;
 import org.apache.commons.collections4.CollectionUtils;
 
 import com.quizz.database.beans.QuestionBean;
+import com.quizz.database.beans.QuizzBean;
 import com.quizz.database.beans.UserBean;
 
 import lombok.Data;
@@ -23,14 +24,17 @@ public class User implements Serializable {
 	private String password;
 
 	private String mail;
-	
+
 	private Boolean active;
 
-	private java.util.Collection<User> friends;
+	private Collection<User> friends;
 
-	private java.util.Collection<Question> questions;
+	private Collection<Question> questions;
 
-	public User(String pseudo, String password, String mail, Boolean active, Collection<User> friends, Collection<Question> questions) {
+	public Collection<Quizz> reiceivedQuizz;
+
+	public User(String pseudo, String password, String mail, Boolean active, Collection<User> friends,
+			Collection<Question> questions) {
 		this.pseudo = pseudo;
 		this.password = password;
 		this.mail = mail;
@@ -60,6 +64,14 @@ public class User implements Serializable {
 				questionsBean.add(question.convertToBean());
 			}
 			bean.setQuestion(questionsBean);
+		}
+
+		if (CollectionUtils.isNotEmpty(reiceivedQuizz)) {
+			Collection<QuizzBean> quizzsBean = new ArrayList<QuizzBean>();
+			for (Quizz quizz : reiceivedQuizz) {
+				quizzsBean.add(quizz.convertToBean());
+			}
+			bean.setReiceivedQuizz(quizzsBean);
 		}
 
 		return bean;

@@ -1,10 +1,13 @@
 package com.quizz.database.services;
 
-import com.quizz.database.modeles.ReturnObject;
+import java.util.Collection;
+
 import com.quizz.database.beans.QuestionBean;
+import com.quizz.database.beans.UserBean;
 import com.quizz.database.datas.Visibility;
 import com.quizz.database.modeles.Question;
-import java.util.Collection;
+import com.quizz.database.modeles.ReturnObject;
+import com.quizz.database.repository.QuizzRepository;
 
 /**
  * 
@@ -24,5 +27,10 @@ public interface QuizzService {
 
 	public ReturnObject deleteQuizzById(Integer id);
 
-	ReturnObject getAllQuizzesByQuestionBean(Collection<QuestionBean> questions);
+	public ReturnObject getAllQuizzesByQuestionBean(Collection<QuestionBean> questions);
+
+	public ReturnObject deleteSharedQuizz(Integer quizzId, UserBean quizzReceiver);
+
+	public ReturnObject shareQuizzToUser(Integer quizzId, UserBean quizzReceiver);
+	
 }

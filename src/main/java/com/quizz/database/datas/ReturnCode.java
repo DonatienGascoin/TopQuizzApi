@@ -14,6 +14,10 @@ public enum ReturnCode {
 	 */
 	ERROR_100,
 	/**
+	 * QuizzNOtFound
+	 */
+	ERROR_125,
+	/**
 	 * QuestionNOtFound
 	 */
 	ERROR_150,
@@ -30,6 +34,10 @@ public enum ReturnCode {
 	 */
 	ERROR_300,
 	/**
+	 * Quizz already shared
+	 */
+	ERROR_325,
+	/**
 	 * Email already exist
 	 */
 	ERROR_350,
@@ -37,6 +45,10 @@ public enum ReturnCode {
 	 * Theme already exist
 	 */
 	ERROR_400,
+	/**
+	 * Quizz was not shared
+	 */
+	ERROR_450,
 	/**
 	 * Illegal Argument Exception
 	 */

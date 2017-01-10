@@ -10,10 +10,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.quizz.database.beans.QuestionBean;
+import com.quizz.database.beans.QuizzBean;
+import com.quizz.database.beans.ResponseBean;
+import com.quizz.database.beans.ThemeBean;
 import com.quizz.database.beans.UserBean;
 import com.quizz.database.datas.ReturnCode;
+import com.quizz.database.datas.Visibility;
 import com.quizz.database.modeles.Question;
+import com.quizz.database.modeles.Quizz;
+import com.quizz.database.modeles.Response;
 import com.quizz.database.modeles.ReturnObject;
+import com.quizz.database.modeles.Theme;
 import com.quizz.database.modeles.User;
 import com.quizz.database.repository.UserRepository;
 import com.quizz.database.services.UserService;
@@ -45,7 +52,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			UserBean tmp = userRepository.findOne(pseudo);
 			result = getUserByUserBean(tmp);
-			
+
 			if (result != null) {
 				object.setCode(ReturnCode.ERROR_000);
 				log.info("Get User [pseudo: " + pseudo + "]");
@@ -74,10 +81,10 @@ public class UserServiceImpl implements UserService {
 		try {
 			UserBean tmp = userRepository.findByPseudoAndPassword(pseudo, password);
 			result = getUserByUserBean(tmp);
-			if(tmp == null || result == null){
+			if (tmp == null || result == null) {
 				object.setCode(ReturnCode.ERROR_100);
 			} else {
-				if(tmp.getActive()) {
+				if (tmp.getActive()) {
 					object.setCode(ReturnCode.ERROR_000);
 					log.info("Credentials are great [pseudo: " + pseudo + "]");
 				} else {
@@ -148,7 +155,7 @@ public class UserServiceImpl implements UserService {
 
 		ReturnObject object = new ReturnObject();
 		User user = new User();
-		//Create empty user in case of existing pseudo or mail
+		// Create empty user in case of existing pseudo or mail
 		object.setObject(user);
 		// Test if pseudo or email was already used
 		if (userRepository.exists(pseudo)) {
@@ -198,7 +205,7 @@ public class UserServiceImpl implements UserService {
 		if (StringUtils.isNotBlank(password)) {
 			u.setPassword(password);
 		}
-		
+
 		u.setActive(active);
 
 		if (CollectionUtils.isNotEmpty(friends)) {
@@ -260,9 +267,9 @@ public class UserServiceImpl implements UserService {
 		try {
 			UserBean findByMail = userRepository.findByMail(mail);
 			user = getUserByUserBean(findByMail);
-			if(StringUtils.isNotBlank(user.getMail())){
+			if (StringUtils.isNotBlank(user.getMail())) {
 				object.setCode(ReturnCode.ERROR_000);
-			}else{				
+			} else {
 				log.error("User not found [mail: " + mail + "], " + ReturnCode.ERROR_100);
 				object.setCode(ReturnCode.ERROR_100);
 			}
@@ -289,7 +296,8 @@ public class UserServiceImpl implements UserService {
 			object = getUserByMail(mail);
 			user = (User) object.getObject();
 			if (StringUtils.isNotBlank(password)) {
-				object = editUser(user.getPseudo(), user.getMail(), password, user.getActive(), user.getFriends(), user.getQuestions());
+				object = editUser(user.getPseudo(), user.getMail(), password, user.getActive(), user.getFriends(),
+						user.getQuestions());
 			}
 			object.setCode(ReturnCode.ERROR_000);
 			log.info("Password changed for User [mail: " + mail + "]");
@@ -306,14 +314,15 @@ public class UserServiceImpl implements UserService {
 
 	/**
 	 * Convert UserBean to User <br />
-	 *  <b><i>Warning</i></b>: Password is not set
+	 * <b><i>Warning</i></b>: Password is not set
 	 * 
-	 * @param bean {@link UserBean}
+	 * @param bean
+	 *            {@link UserBean}
 	 * @return {@link User}
 	 */
 	private User getUserByUserBean(UserBean bean) {
 		User user = new User();
-		if(bean != null){	
+		if (bean != null) {
 			user.setMail(bean.getMail());
 			user.setPseudo(bean.getPseudo());
 			user.setActive(bean.getActive());
@@ -324,7 +333,7 @@ public class UserServiceImpl implements UserService {
 				friends.add(u);
 			}
 			user.setFriends(friends);
-			
+
 			Collection<Question> questions = new ArrayList<Question>();
 			for (QuestionBean question : bean.getQuestion()) {
 				Question q = new Question();
@@ -332,10 +341,68 @@ public class UserServiceImpl implements UserService {
 				questions.add(q);
 			}
 			user.setQuestions(questions);
+
+			if (CollectionUtils.isNotEmpty(bean.getReiceivedQuizz())) {
+				Collection<Quizz> quizzs = new ArrayList<Quizz>();
+				for (QuizzBean quizzb : bean.getReiceivedQuizz()) {
+					Quizz quizz = new Quizz();
+					quizz.setId(quizzb.getId());
+					quizz.setName(quizzb.getName());
+					Visibility vis = null;
+					for (Visibility v : Visibility.values()) {
+						if (v.getId() == Integer.parseInt(quizzb.getIsVisible())) {
+							vis = v;
+						}
+					}
+					quizz.setIsVisible(vis);
+
+					Collection<Question> questionsQ = new ArrayList<Question>();
+					if (quizzb.getQuestions() != null) {
+						for (QuestionBean question : quizzb.getQuestions()) {
+							Question q = new Question();
+							q.setId(question.getId());
+							q.setPseudo(question.getPseudo());
+							q.setLabel(question.getLabel());
+							q.setExplanation(question.getExplanation());
+
+							if (question.getThemes() != null) {
+								Collection<Theme> themes = new ArrayList<Theme>();
+								for (ThemeBean theme : new ArrayList<ThemeBean>(question.getThemes())) {
+									Theme t = new Theme();
+									t.setId(theme.getId());
+									t.setName(theme.getName());
+									t.setIdQuestion(theme.getIdQuestion());
+									themes.add(t);
+								}
+								q.setThemes(themes);
+							}
+
+							if (question.getResponses() != null) {
+								Collection<Response> responses = new ArrayList<Response>();
+								for (ResponseBean response : new ArrayList<ResponseBean>(question.getResponses())) {
+									Response r = new Response();
+									r.setId(response.getId());
+									r.setIsValide(response.getIsValide());
+									r.setIdQuestion(response.getIdQuestion());
+									r.setLabel(response.getLabel());
+									responses.add(r);
+								}
+								q.setResponses(responses);
+							}
+
+							questions.add(q);
+						}
+					}
+					quizz.setQuestions(questions);
+
+					quizzs.add(quizz);
+				}
+				user.setReiceivedQuizz(quizzs);
+			}
 		}
 		return user;
 	}
-	
+
 	@Override
 	public ReturnObject activeUser(String mail) {
 		log.info("Active user [mail: " + mail + "]");
@@ -345,7 +412,8 @@ public class UserServiceImpl implements UserService {
 			object = getUserByMail(mail);
 			user = (User) object.getObject();
 			if (StringUtils.isNotBlank(user.getMail())) {
-				object = editUser(user.getPseudo(), user.getMail(), user.getPassword(), true, user.getFriends(), user.getQuestions());
+				object = editUser(user.getPseudo(), user.getMail(), user.getPassword(), true, user.getFriends(),
+						user.getQuestions());
 				log.info("User is now active [pseudo: " + user.getPseudo() + "]");
 			}
 		} catch (IllegalArgumentException e) {
