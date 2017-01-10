@@ -61,6 +61,10 @@ public class AppServiceImpl implements AppService {
 	public ReturnObject getUser(String pseudo) {
 		return userService.getUser(pseudo);
 	}
+	
+	public UserBean getUserBean(String pseudo) {
+		return userService.getUserBean(pseudo);
+	}
 
 	@Override
 	public ReturnObject addUser(String pseudo, String mail, String password) {
@@ -85,6 +89,7 @@ public class AppServiceImpl implements AppService {
 
 	@Override
 	public ReturnObject getAllThemesByUser(String pseudo) {
+		log.info(" get All Themes By User. [pseudo" + pseudo + "] ");
 		ReturnObject obj = userService.getUser(pseudo);
 		if (StringUtils.isNotBlank(((User) obj.getObject()).getPseudo())) {
 			return themeService.getAllThemesByUser((Collection<Question>) ((User) obj.getObject()).getQuestions());
@@ -105,6 +110,7 @@ public class AppServiceImpl implements AppService {
 
 	@Override
 	public ReturnObject getAllQuizzesByPseudo(String pseudo) {
+		log.info(" get All Quizzes By Pseudo. [pseudo" + pseudo + "] ");
 		ReturnObject obj = userService.getUser(pseudo);
 		if (StringUtils.isNotBlank(((User) obj.getObject()).getPseudo())) {
 			User tmp = (User) obj.getObject();
@@ -177,6 +183,7 @@ public class AppServiceImpl implements AppService {
 
 	@Override
 	public ReturnObject addQuizz(String name, Visibility visibility, String questions) {
+		log.info(" Add quizz. [name : " + name + " visibility : " + visibility + " questions :" + questions + "] ");
 
 		String[] split = StringUtils.split(questions, SEPARATOR_QUIZZ);
 		Collection<Question> questionList = new ArrayList<Question>();
@@ -275,6 +282,7 @@ public class AppServiceImpl implements AppService {
 
 	@Override
 	public ReturnObject getTenLastScoreForQuizz(String pseudo, Integer quizzId) {
+		log.info("Get ten Last score for quizz. [pseudo" + pseudo + " quizzId:" + quizzId + "] ");
 		ReturnObject obj = userService.getUser(pseudo);
 		if (StringUtils.isNotBlank(((User) obj.getObject()).getPseudo())) {
 			return statisticService.getTenLastScoreForQuizz(pseudo, quizzId);
@@ -325,5 +333,82 @@ public class AppServiceImpl implements AppService {
 		log.error("Impossible te share quizz, target user unreacheable [pseudo: " + userSharedPseudo + "]");
 		obj.setCode(ReturnCode.ERROR_100);
 		return obj;
+  }
+
+	public ReturnObject getAllFriendsByPseudo(String pseudo) {
+		log.info("Get all friends by pseudo. [pseudo" + pseudo + "] ");
+		// Object with User
+		ReturnObject obj = new ReturnObject();
+		// Object to return
+		ReturnObject object = new ReturnObject();
+		obj = userService.getUser(pseudo);
+		if (obj.getCode() != ReturnCode.ERROR_000) {
+			object.setCode(ReturnCode.ERROR_100);
+			return object;
+		}
+		User user = (User) obj.getObject();
+		List<User> friendList = new ArrayList<User>();
+		friendList = (ArrayList<User>) user.getFriends();
+		if (CollectionUtils.isNotEmpty(friendList)) {
+			for (User friend : friendList) {
+				UserBean u = getUserBean(friend.getPseudo());
+				friend.setMail(u.getMail());
+				ReturnObject oQuizz = getAllQuizzesByPseudo(friend.getPseudo());
+				if(oQuizz.getCode() != ReturnCode.ERROR_000) {
+					object.setCode(ReturnCode.ERROR_100);
+					return object;
+				}
+				friend.setQuizz((ArrayList<Quizz>) oQuizz.getObject());
+			}
+		} else {
+			friendList = null;
+		}
+		object.setCode(ReturnCode.ERROR_000);
+		object.setObject(friendList);
+		return object;
+	}
+
+	@Override
+	public ReturnObject addFriendbyPseudo(String pseudo, String friendPseudo) {
+		log.info(" add a friend. [friendPseudo: " + friendPseudo + " pseudo" + pseudo + "] ");
+		ReturnObject object = new ReturnObject();
+		UserBean user1 = userService.getUserBean(pseudo);
+		object.setObject(user1);
+		if (user1 == null) {
+			object.setCode(ReturnCode.ERROR_100);
+			return object;
+		}
+		UserBean user2 = userService.getUserBean(friendPseudo);
+		object.setObject(user2);
+		if (user2 == null) {
+			object.setCode(ReturnCode.ERROR_100);
+			return object;
+		}
+		return userService.addFriendbyPseudo(user1, user2);
+	}
+
+	@Override
+	public ReturnObject deleteFriend(String pseudo, String friendPseudo) {
+		log.info(" delete a friend. [friendPseudo: " + friendPseudo + " pseudo" + pseudo + "] ");
+		ReturnObject object = new ReturnObject();
+		UserBean user1 = userService.getUserBean(pseudo);
+		object.setObject(user1);
+		if (user1 == null) {
+			object.setCode(ReturnCode.ERROR_100);
+			return object;
+		}
+		UserBean user2 = userService.getUserBean(friendPseudo);
+		object.setObject(user2);
+		if (user2 == null) {
+			object.setCode(ReturnCode.ERROR_100);
+			return object;
+		}
+		return userService.deleteFriend(user1, user2);
+	}
+
+	@Override
+	public ReturnObject searchUserByPartialPseudo(String partialPseudo, String pseudo) {
+		log.info(" search User By Partial Pseudo. [partialPseudo" + partialPseudo + "] ");
+		return userService.searchUserByPartialPseudo(partialPseudo, pseudo);
 	}
 }

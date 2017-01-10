@@ -2,6 +2,7 @@ package com.quizz.database.services.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -13,6 +14,7 @@ import com.quizz.database.beans.QuestionBean;
 import com.quizz.database.beans.QuizzBean;
 import com.quizz.database.beans.ResponseBean;
 import com.quizz.database.beans.ThemeBean;
+import com.quizz.database.beans.ResponseTmpBean;
 import com.quizz.database.beans.UserBean;
 import com.quizz.database.datas.ReturnCode;
 import com.quizz.database.datas.Visibility;
@@ -52,8 +54,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			UserBean tmp = userRepository.findOne(pseudo);
 			result = getUserByUserBean(tmp);
-
-			if (result != null) {
+			if (result.getPseudo() != null) {
 				object.setCode(ReturnCode.ERROR_000);
 				log.info("Get User [pseudo: " + pseudo + "]");
 			} else {
@@ -65,8 +66,32 @@ public class UserServiceImpl implements UserService {
 			log.error("User not found [pseudo: " + pseudo + "], " + ReturnCode.ERROR_100);
 		}
 		object.setObject(result);
-
 		return object;
+	}
+	
+	/**
+	 * Return pseudo, mail, friend (pseudo), question (id)
+	 * 
+	 * Warning: password was not test
+	 * 
+	 * @return {@link User}
+	 */
+	@Override
+	public UserBean getUserBean(String pseudo) {
+
+		UserBean result = new UserBean();
+		try {
+			result = userRepository.findOne(pseudo);
+
+			if (result != null) {
+				log.info("Get UserBean [pseudo: " + pseudo + "]");
+			} else {
+				log.error("UserBean not found [pseudo: " + pseudo + "]");
+			}
+		} catch (IllegalArgumentException e) {
+			log.error("User not found [pseudo: " + pseudo + "]");
+		}
+		return result;
 	}
 
 	/**
@@ -442,4 +467,97 @@ public class UserServiceImpl implements UserService {
 		}
 		return object;
 	}
+
+	@Override
+	public ReturnObject searchUserByPartialPseudo(String partialPseudo, String pseudo) {
+		log.info("Search User by pseudo [pseudo: " + partialPseudo + "]");
+		ReturnObject object = new ReturnObject();
+		if(partialPseudo.length()<3){
+			object.setCode(ReturnCode.ERROR_700);
+			log.error("PartialPseudo to small, " + ReturnCode.ERROR_700);
+			return object;
+		}
+		List<UserBean> findByKey = userRepository.findByPseudoContaining(partialPseudo);
+		List<String> users = new ArrayList<String>();
+		
+		if(!findByKey.isEmpty()) {
+			for(UserBean user : findByKey) {
+				if(!pseudo.equals(user.getPseudo())) {
+					users.add(user.getPseudo());
+				}	
+			}
+		} else {
+			object.setCode(ReturnCode.ERROR_100);
+			return object;
+		}
+		
+		object.setCode(ReturnCode.ERROR_000);
+		object.setObject(users);
+		return object;
+	}
+
+	@Override
+	public ReturnObject addFriendbyPseudo(UserBean user1, UserBean user2) {
+		log.info("Add friend [pseudo1: " + user1.getPseudo() + " pseudo2 : "+ user2.getPseudo() + "]");
+		ReturnObject object = new ReturnObject();
+
+		if (user1.getFriends().contains(user2) || user2.getFriends().contains(user1)) {
+			// Test if the pseudoAmi is already a friend
+			object.setCode(ReturnCode.ERROR_300);
+			log.error("This person is already your friend.  " + ReturnCode.ERROR_300);
+			return object;
+		} // The person was not a friend yet
+		try {
+			// The friend was add here
+			user1.getFriends().add(user2);
+			userRepository.save(user1);
+
+			user2.getFriends().add(user1);
+			userRepository.save(user2);
+
+			object.setCode(ReturnCode.ERROR_000);
+			log.info("Friend successfully added");
+		} catch (IllegalArgumentException e) {
+			object.setCode(ReturnCode.ERROR_500);
+			log.error("Impossible to add Friend, " + ReturnCode.ERROR_500);
+		} catch (RuntimeException e) {
+			object.setCode(ReturnCode.ERROR_200);
+			log.error("Impossible to add Friend, " + ReturnCode.ERROR_200);
+		} catch (Exception e) {
+			object.setCode(ReturnCode.ERROR_050);
+			log.error("Impossible to add Friend, " + ReturnCode.ERROR_050);
+		}
+		object.setObject(null);
+		return object;
+	}
+
+	@Override
+	public ReturnObject deleteFriend(UserBean user1, UserBean user2) {
+		log.info("Delete Friend [pseudo1: " + user1.getPseudo() + ", pseudo 2: " + user2.getPseudo() + "]");
+		ReturnObject object = new ReturnObject();
+		try {
+			if (user1.getFriends().contains(user2) || user2.getFriends().contains(user1)) {
+				// users are already friends
+				user1.getFriends().remove(user2);
+				userRepository.save(user1);
+
+				user2.getFriends().remove(user1);
+				userRepository.save(user2);
+
+				object.setCode(ReturnCode.ERROR_000);
+			} else {
+				object.setCode(ReturnCode.ERROR_300);
+				log.error("This person is already not you friend. " + ReturnCode.ERROR_100);
+			}
+		} catch (IllegalArgumentException e) {
+			object.setCode(ReturnCode.ERROR_050);
+			log.error("Impossible to delete this friend. " + ReturnCode.ERROR_050);
+		} catch (Exception e) {
+			object.setCode(ReturnCode.ERROR_050);
+			log.error("Impossible to delete this friend. " + ReturnCode.ERROR_050);
+		}
+		object.setObject(null);
+		return object;
+	}
+
 }

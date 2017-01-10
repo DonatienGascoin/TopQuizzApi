@@ -30,8 +30,12 @@ public class User implements Serializable {
 	private Collection<User> friends;
 
 	private Collection<Question> questions;
-
+  
 	public Collection<Quizz> reiceivedQuizz;
+
+	private java.util.Collection<Question> questions;
+	
+	private java.util.Collection<Quizz> quizz;
 
 	public User(String pseudo, String password, String mail, Boolean active, Collection<User> friends,
 			Collection<Question> questions) {

@@ -3,6 +3,7 @@ package com.quizz.database.services;
 import java.util.Collection;
 
 import com.quizz.database.beans.QuestionBean;
+import com.quizz.database.beans.UserBean;
 import com.quizz.database.datas.Visibility;
 import com.quizz.database.modeles.Question;
 import com.quizz.database.modeles.ReturnObject;
@@ -23,6 +24,8 @@ import com.quizz.database.modeles.User;
 public interface AppService {
 
 	public ReturnObject getUser(String pseudo);
+	
+	public UserBean getUserBean(String pseudo);
 
 	public ReturnObject getUserByMail(String mail);
 
@@ -73,4 +76,12 @@ public interface AppService {
 	public ReturnObject addShareQuizz(Integer quizzId, String userSharedPseudo);
 
 	public ReturnObject deleteSharedQuizz(Integer quizzId, String userSharedPseudo);
+
+	public ReturnObject getAllFriendsByPseudo(String pseudo);
+
+	public ReturnObject addFriendbyPseudo(String pseudo, String friendPseudo);
+
+	public ReturnObject deleteFriend(String pseudo, String friendPseudo);
+
+	public ReturnObject searchUserByPartialPseudo(String partialPseudo, String pseudo);
 }
