@@ -57,6 +57,21 @@ public class QuizzController {
 		return ResponseEntity.ok().body(object);
 	}
 
+	@RequestMapping(value = "/getOwnQuizzesByPseudo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<ReturnObject> getOwnQuizzesByPseudo(@RequestParam(name = "pseudo") String pseudo) {
+		ReturnObject object = null;
+		try {
+			object = appService.getOwnQuizzesByPseudo(pseudo);
+			if (object == null) {
+				object = new ReturnObject();
+				object.setCode(ReturnCode.ERROR_050);
+			}
+		} catch (Exception e) {
+			log.error("Impossible to get all quizzes for user [pseudo: " + pseudo + "]", e);
+		}
+		return ResponseEntity.ok().body(object);
+	}
+
 	@RequestMapping(value = "/getQuizzByName", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<ReturnObject> getQuizzByName(@RequestParam(name = "name") String name) {
 		ReturnObject object = null;

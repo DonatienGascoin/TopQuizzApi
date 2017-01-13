@@ -171,128 +171,108 @@ public class QuizzServiceImpl implements QuizzService {
 		Collection<Question> questions = new ArrayList<Question>();
 		if (bean.getQuestions() != null) {
 			for (QuestionBean question : bean.getQuestions()) {
-				Question q = new Question();
-				q.setId(question.getId());
-				q.setPseudo(question.getPseudo());
-				q.setLabel(question.getLabel());
-				q.setExplanation(question.getExplanation());
-
-				if (question.getThemes() != null) {
-					Collection<Theme> themes = new ArrayList<Theme>();
-					for (ThemeBean theme : new ArrayList<ThemeBean>(question.getThemes())) {
-						Theme t = new Theme();
-						t.setId(theme.getId());
-						t.setName(theme.getName());
-						themes.add(t);
-					}
-					q.setThemes(themes);
-				}
-
-				if (question.getResponses() != null) {
-					Collection<Response> responses = new ArrayList<Response>();
-					for (ResponseBean response : new ArrayList<ResponseBean>(question.getResponses())) {
-						Response r = new Response();
-						r.setId(response.getId());
-						r.setIsValide(response.getIsValide());
-						r.setLabel(response.getLabel());
-						responses.add(r);
-					}
-					q.setResponses(responses);
-				}
-
-				questions.add(q);
+				questions.add(getQuestionByQuestionBean(question));
 			}
 		}
 		quizz.setQuestions(questions);
+		
 		Collection<User> sharedUsers = new ArrayList<User>();
 		if (CollectionUtils.isNotEmpty(bean.getSharedUser())) {
 			for (UserBean sU : bean.getSharedUser()) {
-				User user = new User();
-				if (sU != null) {
-					user.setMail(sU.getMail());
-					user.setPseudo(sU.getPseudo());
-					user.setActive(sU.getActive());
-					Collection<User> friends = new ArrayList<User>();
-					for (UserBean userB : sU.getFriends()) {
-						User u = new User();
-						u.setPseudo(userB.getPseudo());
-						friends.add(u);
-					}
-					user.setFriends(friends);
-
-					Collection<Question> questionsSU = new ArrayList<Question>();
-					for (QuestionBean question : sU.getQuestion()) {
-						Question q = new Question();
-						q.setId(question.getId());
-						questions.add(q);
-					}
-					user.setQuestions(questionsSU);
-
-					if (CollectionUtils.isNotEmpty(sU.getReiceivedQuizz())) {
-						Collection<Quizz> quizzs = new ArrayList<Quizz>();
-						for (QuizzBean quizzb : sU.getReiceivedQuizz()) {
-							Quizz quizzSU = new Quizz();
-							quizzSU.setId(quizzb.getId());
-							quizzSU.setName(quizzb.getName());
-							Visibility visSU = null;
-							for (Visibility v : Visibility.values()) {
-								if (v.getId() == Integer.parseInt(quizzb.getIsVisible())) {
-									visSU = v;
-								}
-							}
-							quizzSU.setIsVisible(visSU);
-
-							Collection<Question> questionsQ = new ArrayList<Question>();
-							if (quizzb.getQuestions() != null) {
-								for (QuestionBean question : quizzb.getQuestions()) {
-									Question q = new Question();
-									q.setId(question.getId());
-									q.setPseudo(question.getPseudo());
-									q.setLabel(question.getLabel());
-									q.setExplanation(question.getExplanation());
-
-									if (question.getThemes() != null) {
-										Collection<Theme> themes = new ArrayList<Theme>();
-										for (ThemeBean theme : new ArrayList<ThemeBean>(question.getThemes())) {
-											Theme t = new Theme();
-											t.setId(theme.getId());
-											t.setName(theme.getName());
-											themes.add(t);
-										}
-										q.setThemes(themes);
-									}
-
-									if (question.getResponses() != null) {
-										Collection<Response> responses = new ArrayList<Response>();
-										for (ResponseBean response : new ArrayList<ResponseBean>(
-												question.getResponses())) {
-											Response r = new Response();
-											r.setId(response.getId());
-											r.setIsValide(response.getIsValide());
-											r.setLabel(response.getLabel());
-											responses.add(r);
-										}
-										q.setResponses(responses);
-									}
-
-									questionsQ.add(q);
-								}
-							}
-							quizz.setQuestions(questionsQ);
-
-							quizzs.add(quizzSU);
-						}
-						user.setReiceivedQuizz(quizzs);
-					}
-				}
-				sharedUsers.add(user);
+				sharedUsers.add(getUserByUserBean(sU));
 			}
 			quizz.setSharedUser(sharedUsers);
 		}
 
 		return quizz;
 	}
+	
+	private Question getQuestionByQuestionBean(QuestionBean question){
+		Question q = new Question();
+		q.setId(question.getId());
+		q.setPseudo(question.getPseudo());
+		q.setLabel(question.getLabel());
+		q.setExplanation(question.getExplanation());
 
+		if (question.getThemes() != null) {
+			Collection<Theme> themes = new ArrayList<Theme>();
+			for (ThemeBean theme : new ArrayList<ThemeBean>(question.getThemes())) {
+				Theme t = new Theme();
+				t.setId(theme.getId());
+				t.setIdQuestion(theme.getIdQuestion());
+				t.setName(theme.getName());
+				themes.add(t);
+			}
+			q.setThemes(themes);
+		}
+
+		if (question.getResponses() != null) {
+			Collection<Response> responses = new ArrayList<Response>();
+			for (ResponseBean response : new ArrayList<ResponseBean>(question.getResponses())) {
+				Response r = new Response();
+				r.setId(response.getId());
+				r.setIsValide(response.getIsValide());
+				r.setLabel(response.getLabel());
+				responses.add(r);
+			}
+			q.setResponses(responses);
+		}
+
+		return q;
+	}
+
+	private User getUserByUserBean(UserBean sU){
+		User user = new User();
+		if (sU != null) {
+			user.setMail(sU.getMail());
+			user.setPseudo(sU.getPseudo());
+			user.setActive(sU.getActive());
+			Collection<User> friends = new ArrayList<User>();
+			for (UserBean userB : sU.getFriends()) {
+				User u = new User();
+				u.setPseudo(userB.getPseudo());
+				friends.add(u);
+			}
+			user.setFriends(friends);
+
+			Collection<Question> questionsSU = new ArrayList<Question>();
+			for (QuestionBean question : sU.getQuestion()) {
+				Question q = new Question();
+				q.setId(question.getId());
+				questionsSU.add(q);
+			}
+			user.setQuestions(questionsSU);
+
+			if (CollectionUtils.isNotEmpty(sU.getReiceivedQuizz())) {
+				Collection<Quizz> quizzs = new ArrayList<Quizz>();
+				for (QuizzBean quizzb : sU.getReiceivedQuizz()) {
+					Quizz quizzSU = new Quizz();
+					quizzSU.setId(quizzb.getId());
+					quizzSU.setName(quizzb.getName());
+					Visibility visSU = null;
+					for (Visibility v : Visibility.values()) {
+						if (v.getId() == Integer.parseInt(quizzb.getIsVisible())) {
+							visSU = v;
+						}
+					}
+					quizzSU.setIsVisible(visSU);
+
+					Collection<Question> questionsQ = new ArrayList<Question>();
+					if (quizzb.getQuestions() != null) {
+						for (QuestionBean question : quizzb.getQuestions()) {
+							questionsQ.add(getQuestionByQuestionBean(question));
+						}
+					}
+					quizzSU.setQuestions(questionsQ);
+
+					quizzs.add(quizzSU);
+				}
+				user.setReiceivedQuizz(quizzs);
+			}
+		}
+		return user;
+	}
+	
 	@Override
 	public ReturnObject deleteQuizzById(Integer id) {
 		log.info("Delete Quiz [id: " + id + "]");
