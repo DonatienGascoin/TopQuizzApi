@@ -24,8 +24,6 @@ import com.quizz.database.modeles.User;
 public interface AppService {
 
 	public ReturnObject getUser(String pseudo);
-	
-	public UserBean getUserBean(String pseudo);
 
 	public ReturnObject getUserByMail(String mail);
 
@@ -49,6 +47,8 @@ public interface AppService {
 	public ReturnObject activeUser(String mail);
 
 	public ReturnObject getAllQuizzesByPseudo(String pseudo);
+	
+	public ReturnObject getOwnQuizzesByPseudo(String pseudo);
 
 	public ReturnObject deleteQuizzById(Integer id);
 

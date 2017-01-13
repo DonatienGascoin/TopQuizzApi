@@ -415,10 +415,10 @@ public class UserServiceImpl implements UserService {
 								q.setResponses(responses);
 							}
 
-							questions.add(q);
+							questionsQ.add(q);
 						}
 					}
-					quizz.setQuestions(questions);
+					quizz.setQuestions(questionsQ);
 
 					quizzs.add(quizz);
 				}

@@ -77,7 +77,7 @@ public class QuizzServiceImpl implements QuizzService {
 
 	@Override
 	public ReturnObject getAllQuizzesByQuestionBean(Collection<QuestionBean> questions) {
-		log.info("Get all quizzes by pseudo");
+		log.info("Get all quizzes by Question Bean ");
 		ReturnObject object = new ReturnObject();
 
 		try {
@@ -232,15 +232,15 @@ public class QuizzServiceImpl implements QuizzService {
 						Collection<Quizz> quizzs = new ArrayList<Quizz>();
 						for (QuizzBean quizzb : sU.getReiceivedQuizz()) {
 							Quizz quizzSU = new Quizz();
-							quizz.setId(quizzb.getId());
-							quizz.setName(quizzb.getName());
+							quizzSU.setId(quizzb.getId());
+							quizzSU.setName(quizzb.getName());
 							Visibility visSU = null;
 							for (Visibility v : Visibility.values()) {
 								if (v.getId() == Integer.parseInt(quizzb.getIsVisible())) {
 									visSU = v;
 								}
 							}
-							quizz.setIsVisible(visSU);
+							quizzSU.setIsVisible(visSU);
 
 							Collection<Question> questionsQ = new ArrayList<Question>();
 							if (quizzb.getQuestions() != null) {
@@ -382,29 +382,28 @@ public class QuizzServiceImpl implements QuizzService {
 				}
 			}
 			if (Boolean.TRUE.equals(isShared)) {
-				//First, delete receivedQuizz on User
+				// First, delete receivedQuizz on User
 				Collection<QuizzBean> reiceivedQuizz = userSharedPseudo.getReiceivedQuizz();
 				for (QuizzBean quizzBean : reiceivedQuizz) {
-					if(quizzToUnShare.getId() == quizzBean.getId()){
+					if (quizzToUnShare.getId() == quizzBean.getId()) {
 						reiceivedQuizz.remove(quizzBean);
 						break;
 					}
 				}
 				userSharedPseudo.setReiceivedQuizz(reiceivedQuizz);
-								
-				//Second, delete sharedQuizz on Quizz
+
+				// Second, delete sharedQuizz on Quizz
 				Collection<UserBean> sharedUsers = quizzToUnShare.getSharedUser();
 				for (UserBean userBean : sharedUsers) {
-					if(userSharedPseudo.getPseudo().equals(userBean.getPseudo())){
+					if (userSharedPseudo.getPseudo().equals(userBean.getPseudo())) {
 						sharedUsers.remove(userBean);
 						break;
 					}
 				}
 				quizzToUnShare.setSharedUser(sharedUsers);
-				
-				
+
 				quizzRepository.save(quizzToUnShare);
-				
+
 				obj.setCode(ReturnCode.ERROR_000);
 			} else {
 				log.info("Quizz was not shared with this user");
@@ -423,6 +422,29 @@ public class QuizzServiceImpl implements QuizzService {
 
 		}
 		return obj;
+	}
+
+	@Override
+	public ReturnObject getReceivedQuizz(int id) {
+		log.info("Get quizz by name [id: " + id + "]");
+		ReturnObject object = new ReturnObject();
+
+		try {
+			QuizzBean quizzBean = quizzRepository.findOne(id);
+			if (quizzBean != null) {
+				object.setObject(getQuizzByQuizzBean(quizzBean));
+				object.setCode(ReturnCode.ERROR_000);
+				log.error("Quizz successfully found [id: " + id + "], " + ReturnCode.ERROR_000);
+			}else{
+				object.setCode(ReturnCode.ERROR_050);
+				log.error("An exception has occured when calling getQuizzByName [id: " + id + "], " + ReturnCode.ERROR_050);
+			}
+		} catch (Exception e) {
+			object.setCode(ReturnCode.ERROR_050);
+			log.error("An exception has occured when calling getQuizzByName [id: " + id + "], " + ReturnCode.ERROR_050);
+		}
+
+		return object;
 	}
 
 }

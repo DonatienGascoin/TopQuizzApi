@@ -32,5 +32,7 @@ public interface QuizzService {
 	public ReturnObject deleteSharedQuizz(Integer quizzId, UserBean quizzReceiver);
 
 	public ReturnObject shareQuizzToUser(Integer quizzId, UserBean quizzReceiver);
+
+	public ReturnObject getReceivedQuizz(int id);
 	
 }

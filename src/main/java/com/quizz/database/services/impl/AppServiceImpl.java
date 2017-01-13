@@ -61,10 +61,6 @@ public class AppServiceImpl implements AppService {
 	public ReturnObject getUser(String pseudo) {
 		return userService.getUser(pseudo);
 	}
-	
-	public UserBean getUserBean(String pseudo) {
-		return userService.getUserBean(pseudo);
-	}
 
 	@Override
 	public ReturnObject addUser(String pseudo, String mail, String password) {
@@ -110,35 +106,36 @@ public class AppServiceImpl implements AppService {
 
 	@Override
 	public ReturnObject getAllQuizzesByPseudo(String pseudo) {
-		log.info(" get All Quizzes By Pseudo. [pseudo" + pseudo + "] ");
+		log.info(" get All Quizzes By Pseudo. [pseudo: " + pseudo + "] ");
 		ReturnObject obj = userService.getUser(pseudo);
 		if (StringUtils.isNotBlank(((User) obj.getObject()).getPseudo())) {
 			User tmp = (User) obj.getObject();
-			//Get own quizzs
+			// Get own quizzs
 			List<Quizz> lQuizz = new ArrayList<Quizz>();
 
-			//Test if User have any quizz shared with him
-			if(CollectionUtils.isNotEmpty(tmp.getReiceivedQuizz())){
-				lQuizz.addAll(tmp.getReiceivedQuizz());
+			// Test if User have any quizz shared with him
+			if (CollectionUtils.isNotEmpty(tmp.getReiceivedQuizz())) {
+				for (Quizz q : tmp.getReiceivedQuizz()) {
+					ReturnObject quizzByName = quizzService.getReceivedQuizz(q.getId());
+					if (ReturnCode.ERROR_000.equals(quizzByName.getCode())) {
+						Quizz quizz = (Quizz) quizzByName.getObject();
+						lQuizz.add(quizz);
+					} else {
+						log.error("Impossible to get ReceivedQuizz from User [pseudo: " + pseudo + "]");
+					}
+				}
 			}
 			
-			if (CollectionUtils.isNotEmpty(tmp.getQuestions())) {
-				Collection<QuestionBean> qBean = new ArrayList<QuestionBean>();
-				for (Question q : tmp.getQuestions()) {
-					qBean.add(q.convertToBean());
-				}
-				try{
-					lQuizz.addAll((List<Quizz>)quizzService.getAllQuizzesByQuestionBean(qBean).getObject());
-				}catch (Exception e) {
-					//User have no quizz
-				}
+			ReturnObject ownQuizzesByPseudo = getOwnQuizzesByPseudo(pseudo);
+			if(ReturnCode.ERROR_000.equals(ownQuizzesByPseudo.getCode())){
+				lQuizz.addAll((Collection<Quizz>) ownQuizzesByPseudo.getObject());
 			}
 			
 			obj.setObject(lQuizz);
 			return obj;
 		}
-		
-		//User not found
+
+		// User not found
 		obj.setCode(ReturnCode.ERROR_100);
 		return obj;
 	}
@@ -314,7 +311,7 @@ public class AppServiceImpl implements AppService {
 				log.error("Impossible to share quizz [quizzId: " + quizzId + " userSharedPseudo: " + userSharedPseudo
 						+ "]");
 			}
-			//Do not need on return statement
+			// Do not need on return statement
 			obj.setObject(null);
 			return obj;
 		}
@@ -333,39 +330,65 @@ public class AppServiceImpl implements AppService {
 		log.error("Impossible te share quizz, target user unreacheable [pseudo: " + userSharedPseudo + "]");
 		obj.setCode(ReturnCode.ERROR_100);
 		return obj;
-  }
+	}
 
 	public ReturnObject getAllFriendsByPseudo(String pseudo) {
 		log.info("Get all friends by pseudo. [pseudo" + pseudo + "] ");
 		// Object with User
 		ReturnObject obj = new ReturnObject();
-		// Object to return
-		ReturnObject object = new ReturnObject();
+
 		obj = userService.getUser(pseudo);
 		if (obj.getCode() != ReturnCode.ERROR_000) {
-			object.setCode(ReturnCode.ERROR_100);
-			return object;
+			obj.setCode(ReturnCode.ERROR_100);
+			return obj;
 		}
+
 		User user = (User) obj.getObject();
-		List<User> friendList = new ArrayList<User>();
-		friendList = (ArrayList<User>) user.getFriends();
+		List<User> friendList = (ArrayList<User>) user.getFriends();
 		if (CollectionUtils.isNotEmpty(friendList)) {
 			for (User friend : friendList) {
-				UserBean u = getUserBean(friend.getPseudo());
-				friend.setMail(u.getMail());
-				ReturnObject oQuizz = getAllQuizzesByPseudo(friend.getPseudo());
-				if(oQuizz.getCode() != ReturnCode.ERROR_000) {
-					object.setCode(ReturnCode.ERROR_100);
-					return object;
+				obj = getOwnQuizzesByPseudo(friend.getPseudo());
+				if (!ReturnCode.ERROR_000.equals(obj.getCode())) {
+					obj.setCode(ReturnCode.ERROR_100);
+					return obj;
 				}
-				friend.setQuizz((ArrayList<Quizz>) oQuizz.getObject());
+				friend.setQuizz((ArrayList<Quizz>) obj.getObject());
 			}
 		} else {
 			friendList = null;
 		}
-		object.setCode(ReturnCode.ERROR_000);
-		object.setObject(friendList);
-		return object;
+		obj.setObject(friendList);
+		return obj;
+	}
+
+	@Override
+	public ReturnObject getOwnQuizzesByPseudo(String pseudo) {
+		log.info(" get own Quizzes By Pseudo. [pseudo: " + pseudo + "] ");
+		ReturnObject obj = userService.getUser(pseudo);
+		if (StringUtils.isNotBlank(((User) obj.getObject()).getPseudo())) {
+			User tmp = (User) obj.getObject();
+			// Get own quizzs
+			List<Quizz> lQuizz = new ArrayList<Quizz>();
+			
+			if (CollectionUtils.isNotEmpty(tmp.getQuestions())) {
+				Collection<QuestionBean> qBean = new ArrayList<QuestionBean>();
+				for (Question q : tmp.getQuestions()) {
+					qBean.add(q.convertToBean());
+				}
+				try {
+					lQuizz.addAll((List<Quizz>) quizzService.getAllQuizzesByQuestionBean(qBean).getObject());
+				} catch (Exception e) {
+					// User have no quizz
+				}
+			}
+			log.info("Get own quizz successful");
+			obj.setObject(lQuizz);
+			return obj;
+		}
+
+		// User not found
+		obj.setCode(ReturnCode.ERROR_100);
+		return obj;
 	}
 
 	@Override
