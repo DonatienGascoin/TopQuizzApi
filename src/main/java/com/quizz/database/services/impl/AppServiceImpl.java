@@ -345,14 +345,17 @@ public class AppServiceImpl implements AppService {
 
 		User user = (User) obj.getObject();
 		List<User> friendList = (ArrayList<User>) user.getFriends();
+		String mail;
 		if (CollectionUtils.isNotEmpty(friendList)) {
 			for (User friend : friendList) {
 				obj = getOwnQuizzesByPseudo(friend.getPseudo());
+				mail = (userService.getUserBean(friend.getPseudo())).getMail();
 				if (!ReturnCode.ERROR_000.equals(obj.getCode())) {
 					obj.setCode(ReturnCode.ERROR_100);
 					return obj;
 				}
 				friend.setQuizz((ArrayList<Quizz>) obj.getObject());
+				friend.setMail(mail);
 			}
 		} else {
 			friendList = null;
