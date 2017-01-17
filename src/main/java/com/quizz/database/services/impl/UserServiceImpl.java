@@ -470,7 +470,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ReturnObject searchUserByPartialPseudo(String partialPseudo, String pseudo) {
-		log.info("Search User by pseudo [pseudo: " + partialPseudo + "]");
+		log.info("Search User by pseudo [pseudo: " + partialPseudo + "pseudo: " + pseudo + "]");
 		ReturnObject object = new ReturnObject();
 		if(partialPseudo.length()<3){
 			object.setCode(ReturnCode.ERROR_700);
@@ -478,6 +478,7 @@ public class UserServiceImpl implements UserService {
 			return object;
 		}
 		List<UserBean> findByKey = userRepository.findByPseudoContaining(partialPseudo);
+		findByKey.remove(userRepository.findByPseudoContaining(pseudo));
 		List<String> users = new ArrayList<String>();
 		
 		if(!findByKey.isEmpty()) {
