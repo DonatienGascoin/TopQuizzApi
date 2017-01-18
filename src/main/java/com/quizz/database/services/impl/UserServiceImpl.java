@@ -2,7 +2,6 @@ package com.quizz.database.services.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -14,7 +13,6 @@ import com.quizz.database.beans.QuestionBean;
 import com.quizz.database.beans.QuizzBean;
 import com.quizz.database.beans.ResponseBean;
 import com.quizz.database.beans.ThemeBean;
-import com.quizz.database.beans.ResponseTmpBean;
 import com.quizz.database.beans.UserBean;
 import com.quizz.database.datas.ReturnCode;
 import com.quizz.database.datas.Visibility;

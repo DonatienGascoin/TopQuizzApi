@@ -23,7 +23,6 @@ import com.quizz.database.modeles.Theme;
 import com.quizz.database.modeles.User;
 import com.quizz.database.repository.QuestionRepository;
 import com.quizz.database.repository.QuizzRepository;
-import com.quizz.database.repository.UserRepository;
 import com.quizz.database.services.QuizzService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -175,7 +174,7 @@ public class QuizzServiceImpl implements QuizzService {
 			}
 		}
 		quizz.setQuestions(questions);
-		
+
 		Collection<User> sharedUsers = new ArrayList<User>();
 		if (CollectionUtils.isNotEmpty(bean.getSharedUser())) {
 			for (UserBean sU : bean.getSharedUser()) {
@@ -186,8 +185,8 @@ public class QuizzServiceImpl implements QuizzService {
 
 		return quizz;
 	}
-	
-	private Question getQuestionByQuestionBean(QuestionBean question){
+
+	private Question getQuestionByQuestionBean(QuestionBean question) {
 		Question q = new Question();
 		q.setId(question.getId());
 		q.setPseudo(question.getPseudo());
@@ -221,7 +220,7 @@ public class QuizzServiceImpl implements QuizzService {
 		return q;
 	}
 
-	private User getUserByUserBean(UserBean sU){
+	private User getUserByUserBean(UserBean sU) {
 		User user = new User();
 		if (sU != null) {
 			user.setMail(sU.getMail());
@@ -272,7 +271,7 @@ public class QuizzServiceImpl implements QuizzService {
 		}
 		return user;
 	}
-	
+
 	@Override
 	public ReturnObject deleteQuizzById(Integer id) {
 		log.info("Delete Quiz [id: " + id + "]");
@@ -415,13 +414,36 @@ public class QuizzServiceImpl implements QuizzService {
 				object.setObject(getQuizzByQuizzBean(quizzBean));
 				object.setCode(ReturnCode.ERROR_000);
 				log.error("Quizz successfully found [id: " + id + "], " + ReturnCode.ERROR_000);
-			}else{
+			} else {
 				object.setCode(ReturnCode.ERROR_050);
-				log.error("An exception has occured when calling getQuizzByName [id: " + id + "], " + ReturnCode.ERROR_050);
+				log.error("An exception has occured when calling getQuizzByName [id: " + id + "], "
+						+ ReturnCode.ERROR_050);
 			}
 		} catch (Exception e) {
 			object.setCode(ReturnCode.ERROR_050);
 			log.error("An exception has occured when calling getQuizzByName [id: " + id + "], " + ReturnCode.ERROR_050);
+		}
+
+		return object;
+	}
+
+	@Override
+	public ReturnObject getQuizzById(Integer i) {
+		log.info("Get quizz by id [id: " + i + "]");
+		ReturnObject object = new ReturnObject();
+
+		try {
+			QuizzBean quizzBean = quizzRepository.findOne(i);
+
+			if (quizzBean == null) {
+				object.setCode(ReturnCode.ERROR_050);
+			} else {
+				object.setObject(getQuizzByQuizzBean(quizzBean));
+				object.setCode(ReturnCode.ERROR_000);
+			}
+		} catch (Exception e) {
+			object.setCode(ReturnCode.ERROR_050);
+			log.error("An exception has occured when calling getQuizzById [id: " + i + "], " + ReturnCode.ERROR_050);
 		}
 
 		return object;

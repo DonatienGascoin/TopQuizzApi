@@ -1,9 +1,9 @@
 package com.quizz.database.services;
 
 import java.util.Collection;
+import java.util.Date;
 
 import com.quizz.database.beans.QuestionBean;
-import com.quizz.database.beans.UserBean;
 import com.quizz.database.datas.Visibility;
 import com.quizz.database.modeles.Question;
 import com.quizz.database.modeles.ReturnObject;
@@ -84,4 +84,16 @@ public interface AppService {
 	public ReturnObject deleteFriend(String pseudo, String friendPseudo);
 
 	public ReturnObject searchUserByPartialPseudo(String partialPseudo, String pseudo);
+
+	public ReturnObject createEvaluation(String evaluatorPseudo, String targetPseudo, Integer quizzId, String quizzName, Date deadLine,
+			Integer timer);
+
+	public ReturnObject makeDone(String targetPseudo, Integer id);
+
+	public ReturnObject getEvaluationsForPseudo(String targetPseudo);
+
+	public ReturnObject getEvaluationsForEvaluatorPseudo(String pseudo);
+
+	public ReturnObject createEvaluations(String evaluatorPseudo, String targetPseudos, Integer quizzId,
+			String quizzName, Date deadLine, Integer timer);
 }

@@ -6,7 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 
 import com.quizz.database.beans.QuizzBean;
-import com.quizz.database.beans.UserBean;
 
 /**
  * @author Maxence Royer

@@ -8,7 +8,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 
 import com.quizz.database.beans.ThemeBean;
-import java.util.List;
 
 /**
  * 
