@@ -21,7 +21,7 @@ public class Evaluation implements Serializable {
 
 	private String evaluatorPseudo;
 
-	private String targerPseudo;
+	private String targetPseudo;
 
 	private Integer quizzId;
 
@@ -38,7 +38,7 @@ public class Evaluation implements Serializable {
 		super();
 		this.id = id;
 		this.evaluatorPseudo = evaluatorPseudo;
-		this.targerPseudo = targerPseudo;
+		this.targetPseudo = targerPseudo;
 		this.quizzId = quizzId;
 		this.quizzName = quizzName;
 		this.timer = timer;
@@ -50,7 +50,7 @@ public class Evaluation implements Serializable {
 			Date deadLine, Boolean done) {
 		super();
 		this.evaluatorPseudo = evaluatorPseudo;
-		this.targerPseudo = targerPseudo;
+		this.targetPseudo = targerPseudo;
 		this.quizzId = quizzId;
 		this.quizzName = quizzName;
 		this.timer = timer;
@@ -60,9 +60,9 @@ public class Evaluation implements Serializable {
 
 	public EvaluationBean convertToBean() {
 		if (id != null) {
-			return new EvaluationBean(quizzId, evaluatorPseudo, targerPseudo, quizzName, deadLine, timer, done);
+			return new EvaluationBean(quizzId, evaluatorPseudo, targetPseudo, quizzName, deadLine, timer, done);
 		} else {
-			return new EvaluationBean(quizzId, evaluatorPseudo, targerPseudo, quizzName, deadLine, timer, done);
+			return new EvaluationBean(quizzId, evaluatorPseudo, targetPseudo, quizzName, deadLine, timer, done);
 		}
 	}
 }

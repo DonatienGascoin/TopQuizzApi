@@ -1,7 +1,6 @@
 package com.quizz.database.services;
 
 import java.util.Date;
-import java.util.List;
 
 import com.quizz.database.modeles.ReturnObject;
 
@@ -19,12 +18,9 @@ public interface EvaluationService {
 
 	public ReturnObject makeDone(String targetPseudo, Integer id);
 
-	/**
-	 * Waning: this method does not return {@link ReturnObject}, so never use it
-	 * for return http response !
-	 * 
-	 * @param targetPseudo
-	 * @return {@link List}
-	 */
-	public List<Integer> getEvaluationsForPseudo(String targetPseudo);
+	public ReturnObject getEvaluationsForPseudo(String targetPseudo);
+
+	public ReturnObject getEvaluationsForEvaluatorPseudo(String pseudo);
+
+	public ReturnObject getEvaluations(String targetPseudo, Integer quizzId);
 }

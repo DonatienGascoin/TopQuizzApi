@@ -92,8 +92,12 @@ public interface AppService {
 
 	public ReturnObject getEvaluationsForPseudo(String targetPseudo);
 
-	public ReturnObject getEvaluationsForEvaluatorPseudo(String pseudo);
-
 	public ReturnObject createEvaluations(String evaluatorPseudo, String targetPseudos, Integer quizzId,
 			String quizzName, Date deadLine, Integer timer);
+
+	public ReturnObject getEvaluationsStatisticsForEvaluatorPseudo(String pseudo, Integer quizzId);
+
+	public ReturnObject getEvaluationsForEvaluatorPseudo(String pseudo);
+
+	public ReturnObject getEvaluation(String targetPseudo, Integer quizzId);
 }

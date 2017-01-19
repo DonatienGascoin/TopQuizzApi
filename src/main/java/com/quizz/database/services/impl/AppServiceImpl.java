@@ -14,9 +14,11 @@ import com.quizz.database.beans.QuestionBean;
 import com.quizz.database.beans.UserBean;
 import com.quizz.database.datas.ReturnCode;
 import com.quizz.database.datas.Visibility;
+import com.quizz.database.modeles.Evaluation;
 import com.quizz.database.modeles.Question;
 import com.quizz.database.modeles.Quizz;
 import com.quizz.database.modeles.ReturnObject;
+import com.quizz.database.modeles.Statistic;
 import com.quizz.database.modeles.User;
 import com.quizz.database.services.AppService;
 import com.quizz.database.services.EvaluationService;
@@ -368,7 +370,6 @@ public class AppServiceImpl implements AppService {
 					}
 				}
 				friend.setQuizz(list);
-				
 
 				friend.setMail(mail);
 			}
@@ -473,7 +474,7 @@ public class AppServiceImpl implements AppService {
 		}
 		return evaluationService.createEvaluation(evaluatorPseudo, targetPseudo, quizzId, quizzName, deadLine, timer);
 	}
-	
+
 	@Override
 	public ReturnObject createEvaluations(String evaluatorPseudo, String targetPseudos, Integer quizzId,
 			String quizzName, Date deadLine, Integer timer) {
@@ -486,19 +487,19 @@ public class AppServiceImpl implements AppService {
 			return obj;
 		}
 		String[] pseudos = StringUtils.split(targetPseudos, SEPARATOR);
-		
-		for(String targetPseudo: pseudos){
+
+		for (String targetPseudo : pseudos) {
 			obj = userService.getUser(targetPseudo);
 			if (!targetPseudo.equals(((User) obj.getObject()).getPseudo())) {
 				log.error("Evaluator pseudo not found [pseudo: " + targetPseudo + "]");
 				obj.setCode(ReturnCode.ERROR_100);
-			}else{
+			} else {
 				evaluationService.createEvaluation(evaluatorPseudo, targetPseudo, quizzId, quizzName, deadLine, timer);
 			}
 		}
 
 		return obj;
-		
+
 	}
 
 	@Override
@@ -518,26 +519,64 @@ public class AppServiceImpl implements AppService {
 		log.info(" get evalution Quizzes for Pseudo. [pseudo: " + targetPseudo + "] ");
 		ReturnObject obj = userService.getUser(targetPseudo);
 		if (StringUtils.isNotBlank(((User) obj.getObject()).getPseudo())) {
-			User tmp = (User) obj.getObject();
-
 			log.info("Get quizz id with evaluation for [" + targetPseudo + "]");
-			List<Integer> lId = evaluationService.getEvaluationsForPseudo(targetPseudo);
 
-			// Get associated quizzs
-			List<Quizz> lQuizz = new ArrayList<Quizz>();
+			obj = evaluationService.getEvaluationsForPseudo(targetPseudo);
+			if (ReturnCode.ERROR_000.equals(obj.getCode())) {
+				log.error("Error during get evaluation for pseudo [" + targetPseudo + "]");
+			}
+			return obj;
+		}
+		// User not found
+		obj.setCode(ReturnCode.ERROR_100);
+		return obj;
+	}
 
-			// Test if User have any quizz shared with him
-				for (Integer i : lId) {
-					ReturnObject quizzByName = quizzService.getQuizzById(i);
-					if (ReturnCode.ERROR_000.equals(quizzByName.getCode())) {
-						Quizz quizz = (Quizz) quizzByName.getObject();
-						lQuizz.add(quizz);
-					} else {
-						log.error("Impossible to get quizz with id [id: " + i + "]");
-					}
+	@Override
+	public ReturnObject getEvaluationsForEvaluatorPseudo(String pseudo) {
+		log.info(" get evaluations Quizzes for Pseudo. [pseudo: " + pseudo + "] ");
+		ReturnObject obj = userService.getUser(pseudo);
+		if (StringUtils.isNotBlank(((User) obj.getObject()).getPseudo())) {
+			log.info("Get quizz id with evaluation for [" + pseudo + "]");
+			obj = evaluationService.getEvaluationsForEvaluatorPseudo(pseudo);
+			if (!ReturnCode.ERROR_000.equals(obj.getCode())) {
+				log.error("Error during get evaluation for evaluator pseudo [" + pseudo + "]");
+				obj.setCode(ReturnCode.ERROR_050);
+			}
+			return obj;
+		}
+		// User not found
+		obj.setCode(ReturnCode.ERROR_100);
+		return obj;
+	}
+
+	@Override
+	public ReturnObject getEvaluationsStatisticsForEvaluatorPseudo(String pseudo, Integer quizzId) {
+		log.info(" get statistics Quizzes for Pseudo. [pseudo: " + pseudo + "] ");
+		ReturnObject obj = userService.getUser(pseudo);
+		if (StringUtils.isNotBlank(((User) obj.getObject()).getPseudo())) {
+
+			// Get All user which have to do evaluation
+			obj = getEvaluationsForEvaluatorPseudo(pseudo);
+
+			List<Evaluation> evaluations = (List<Evaluation>) obj.getObject();
+
+			List<Statistic> statistics = new ArrayList<Statistic>();
+
+			for (Evaluation eval : evaluations) {
+				log.info("Get statistics for evaluation [pseudo: " + pseudo + ", quizzid: " + eval.getQuizzId() + "]");
+				ReturnObject ro = statisticService.getStatisticByPseudoAndQuizzId(eval.getTargetPseudo(),
+						eval.getQuizzId());
+				if (ReturnCode.ERROR_000.equals(ro.getCode())) {
+					Statistic stat = (Statistic) ro.getObject();
+					statistics.add(stat);
+				} else {
+					log.error(
+							"Impossible to get statistic with for [pseudo: " + pseudo + ", quizzId: " + quizzId + "]");
 				}
+			}
 
-			obj.setObject(lQuizz);
+			obj.setObject(statistics);
 			return obj;
 		}
 
@@ -547,8 +586,18 @@ public class AppServiceImpl implements AppService {
 	}
 
 	@Override
-	public ReturnObject getEvaluationsForEvaluatorPseudo(String pseudo) {
-		// TODO Auto-generated method stub
-		return null;
+	public ReturnObject getEvaluation(String targetPseudo, Integer quizzId) {
+		log.info(" get evalution [pseudo: " + targetPseudo + ", quizzId: " + quizzId + "]");
+		ReturnObject obj = userService.getUser(targetPseudo);
+		if (StringUtils.isNotBlank(((User) obj.getObject()).getPseudo())) {
+			obj = evaluationService.getEvaluations(targetPseudo, quizzId);
+			if (ReturnCode.ERROR_000.equals(obj.getCode())) {
+				log.error("Error during get evaluation for pseudo [" + targetPseudo + "]");
+			}
+			return obj;
+		}
+		// User not found
+		obj.setCode(ReturnCode.ERROR_100);
+		return obj;
 	}
 }

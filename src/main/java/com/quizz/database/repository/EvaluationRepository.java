@@ -23,4 +23,8 @@ public interface EvaluationRepository extends CrudRepository<EvaluationBean, Int
 
 	List<EvaluationBean> findByTargetPseudoAndDoneAndDeadLineGreaterThan(String targetPseudo, Boolean false1, Date date);
 
+	List<EvaluationBean> findByEvaluatorPseudo(String pseudo);
+
+	EvaluationBean findByTargetPseudoAndDoneAndQuizzId(String targetPseudo, Boolean false1, Integer quizzId);
+
 }

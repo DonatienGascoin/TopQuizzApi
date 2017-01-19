@@ -18,4 +18,6 @@ public interface StatisticService {
 
 	ReturnObject addScoreForQuizz(String pseudo, Integer quizzId, String quizzName, Integer nbRightAnswers, Integer nbQuestions);
 
+	ReturnObject getStatisticByPseudoAndQuizzId(String targetPseudo, Integer quizzId);
+
 }

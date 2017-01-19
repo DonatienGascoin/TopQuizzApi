@@ -18,7 +18,9 @@ import com.quizz.database.beans.StatisticBean;
  */
 @Transactional
 @Component
-public interface StatisticRepository extends CrudRepository<StatisticBean, Integer>{
+public interface StatisticRepository extends CrudRepository<StatisticBean, Integer> {
 	public Collection<StatisticBean> findTop10ByPseudoAndAndQuizzIdOrderByDateDesc(String pseudo, int quizzId);
+
+	public StatisticBean findTop1ByPseudoAndAndQuizzIdOrderByDateDesc(String targetPseudo, Integer quizzId);
 
 }

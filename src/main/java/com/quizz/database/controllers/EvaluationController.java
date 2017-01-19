@@ -50,16 +50,18 @@ public class EvaluationController {
 	/**
 	 * 
 	 * @param evaluatorPseudo
-	 * @param targetPseudos pseudo|pseudo|pseudo|pseudo...
+	 * @param targetPseudos
+	 *            pseudo|pseudo|pseudo|pseudo...
 	 * @param quizzId
 	 * @param quizzName
 	 * @param timestamp
 	 * @param timer
 	 * @return
 	 */
-	@RequestMapping(value = "/createEvaluationForMultipleUsers", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<ReturnObject> createEvaluationForMultipleUsers(@RequestParam(name = "evaluatorPseudo") String evaluatorPseudo,
-			@RequestParam(name = "targetPseudo") String targetPseudos, @RequestParam(name = "quizzId") Integer quizzId,
+	@RequestMapping(value = "/createEvaluationsForMultipleUsers", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<ReturnObject> createEvaluationsForMultipleUsers(
+			@RequestParam(name = "evaluatorPseudo") String evaluatorPseudo,
+			@RequestParam(name = "targetPseudos") String targetPseudos, @RequestParam(name = "quizzId") Integer quizzId,
 			@RequestParam(name = "quizzName") String quizzName, @RequestParam(name = "deadLine") Long timestamp,
 			@RequestParam(name = "timer") Integer timer) {
 		ReturnObject object = new ReturnObject();
@@ -86,8 +88,9 @@ public class EvaluationController {
 		return ResponseEntity.ok().body(object);
 	}
 
-	@RequestMapping(value = "/getEvaluationForPseudo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<ReturnObject> getEvaluationForPseudo(@RequestParam(name = "targetPseudo") String targetPseudo) {
+	@RequestMapping(value = "/getEvaluationsForPseudo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<ReturnObject> getEvaluationsForPseudo(
+			@RequestParam(name = "targetPseudo") String targetPseudo) {
 		ReturnObject object = new ReturnObject();
 		try {
 			object = appService.getEvaluationsForPseudo(targetPseudo);
@@ -97,11 +100,36 @@ public class EvaluationController {
 		return ResponseEntity.ok().body(object);
 	}
 
-	@RequestMapping(value = "/getEvaluationForEvaluatorPseudo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<ReturnObject> getEvaluationForEvaluatorPseudo(@RequestParam(name = "pseudo") String pseudo) {
+	@RequestMapping(value = "/getEvaluation", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<ReturnObject> getEvaluation(@RequestParam(name = "targetPseudo") String targetPseudo,
+			@RequestParam(name = "quizzId") Integer quizzId) {
+		ReturnObject object = new ReturnObject();
+		try {
+			object = appService.getEvaluation(targetPseudo, quizzId);
+		} catch (Exception e) {
+			log.error("Impossible to get evaluation [pseudo: " + targetPseudo + "]", e);
+		}
+		return ResponseEntity.ok().body(object);
+	}
+
+	@RequestMapping(value = "/getEvaluationsForEvaluatorPseudo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<ReturnObject> getEvaluationsStatisticsForEvaluatorPseudo(
+			@RequestParam(name = "pseudo") String pseudo) {
 		ReturnObject object = new ReturnObject();
 		try {
 			object = appService.getEvaluationsForEvaluatorPseudo(pseudo);
+		} catch (Exception e) {
+			log.error("Impossible to get evaluation [pseudo: " + pseudo + "]", e);
+		}
+		return ResponseEntity.ok().body(object);
+	}
+
+	@RequestMapping(value = "/getEvaluationsStatisticsForEvaluatorPseudo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<ReturnObject> getEvaluationsStatisticsForEvaluatorPseudo(
+			@RequestParam(name = "pseudo") String pseudo, @RequestParam(name = "quizzId") Integer quizzId) {
+		ReturnObject object = new ReturnObject();
+		try {
+			object = appService.getEvaluationsStatisticsForEvaluatorPseudo(pseudo, quizzId);
 		} catch (Exception e) {
 			log.error("Impossible to get evaluation [pseudo: " + pseudo + "]", e);
 		}
